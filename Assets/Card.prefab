@@ -44,5 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f043ad0a1e284ae7a43cdfafa74da98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  removedId: 0
   nodePrefab: {fileID: 7283619231811921860, guid: 5c222626e57644af58e773b87c896be5, type: 3}
   edgePrefab: {fileID: 1198453481677518125, guid: da6716132ace14cb68737f2c7c9b68df, type: 3}
+  activeNodeLayer: 6
+  inactiveNodeLayer: 0
+  isActive: 0
+  isVisible: 0
+  allEdges: []
