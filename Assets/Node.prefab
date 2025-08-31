@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -78,8 +78,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: -7443612256222740820, guid: 6f0b23e450f74411799a1f1ce4ce422e, type: 3}
+  m_SortingOrder: 3
+  m_Sprite: {fileID: 538513131370383185, guid: fece6dd8c18b2426f950411c625e8b8d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -125,7 +125,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 9.64
+  m_Radius: 1.8
 --- !u!50 &2678637861867189849
 Rigidbody2D:
   serializedVersion: 5
@@ -168,9 +168,6 @@ MonoBehaviour:
   anchorLayer:
     serializedVersion: 2
     m_Bits: 8
-  activeNodeLayerMask:
-    serializedVersion: 2
-    m_Bits: 64
-  inactiveNodeLayer: 0
   snapRadius: 0.6
   nodeId: 0
+  snappedAnchor: {fileID: 0}

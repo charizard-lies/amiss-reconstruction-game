@@ -2,21 +2,29 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CardScript : MonoBehaviour
-{
+{    //inherit
+    private LevelScript levelManager;
+    private int activeNodeLayer; //ActiveNode
+    private int inactiveNodeLayer; //0
+
+    //attributes
     public int removedId;
-    public GameObject nodePrefab;
-    public GameObject edgePrefab;
-    public int activeNodeLayer; //ActiveNode
-    public int inactiveNodeLayer; //0
-    public bool isActive;
-    public bool isVisible;
     public Dictionary<int, NodeScript> nodeMap = new Dictionary<int, NodeScript>();
     public List<EdgeScript> allEdges = new List<EdgeScript>();
-
-    private GraphData cardData;
-    private LevelScript levelManager;
-    private System.Random rng = new System.Random();
     private Dictionary<int, AnchorScript> initialNodeAnchorMap = new Dictionary<int, AnchorScript>();
+
+    //prefab
+    private GameObject nodePrefab;
+    private GameObject edgePrefab;
+
+    //data
+    private GraphData cardData;
+    private System.Random rng = new System.Random();
+
+    //dynamic
+    public bool isActive;
+    public bool isVisible;
+
     private void Shuffle<T>(IList<T> list)
     {
         int n = list.Count;
@@ -30,15 +38,17 @@ public class CardScript : MonoBehaviour
         }
     }
 
-    public void Initialize(int id, GraphData data, int activeLayer, int inactiveLayer, LevelScript level)
+    public void Initialize(int id, GraphData data, LevelScript level)
     {
         removedId = id;
         cardData = data;
-        activeNodeLayer = activeLayer;
-        inactiveNodeLayer = inactiveLayer;
+        levelManager = level;
+        nodePrefab = level.nodePrefab;
+        edgePrefab = level.edgePrefab;
+        activeNodeLayer = level.activeNodeLayer;
+        inactiveNodeLayer = level.inactiveNodeLayer;
         isActive = false;
         isVisible = false;
-        levelManager = level;
     }
 
     public void Build()
@@ -50,8 +60,8 @@ public class CardScript : MonoBehaviour
         }
 
         HashSet<(int, int)> createdEdges = new HashSet<(int, int)>();
-
         var validAnchors = levelManager.allAnchors.FindAll(anchor => anchor.id != removedId);
+
         //error check
         if (validAnchors.Count < cardData.nodeIds.Count)
         {
@@ -61,6 +71,7 @@ public class CardScript : MonoBehaviour
 
         Shuffle(validAnchors);
 
+        //creating nodes and attaching to anchors
         int counter = 0;
         foreach (int id in cardData.nodeIds)
         {
@@ -80,6 +91,7 @@ public class CardScript : MonoBehaviour
             node.snappedAnchor = assignedAnchor;
         }
 
+        //creating edges from nodes
         foreach (var pair in cardData.edges)
         {
             int nodeFrom = pair.fromNodeId;
@@ -92,7 +104,7 @@ public class CardScript : MonoBehaviour
 
             GameObject edgeObj = Instantiate(edgePrefab, transform);
             EdgeScript edge = edgeObj.GetComponent<EdgeScript>();
-            edge.Initialize(nodeMap[nodeA], nodeMap[nodeB]);
+            edge.Initialize(nodeMap[nodeA].transform, nodeMap[nodeB].transform, levelManager.activeEdgeWidth, Color.white);
 
             allEdges.Add(edge);
             createdEdges.Add((nodeA, nodeB));
@@ -108,9 +120,8 @@ public class CardScript : MonoBehaviour
 
     public void ToggleActive(bool makeActive)
     {
-        Debug.Log($"card {removedId} is being set to active({makeActive})!!!!");
         isActive = makeActive;
-        float alpha = makeActive ? 1f : 0.1f;
+        float alpha = makeActive ? 1f : 0f;
         SetCardAlpha(gameObject, alpha);
 
         if (makeActive)
@@ -133,9 +144,8 @@ public class CardScript : MonoBehaviour
 
     public void ToggleVisible(bool makeVisible)
     {
-        Debug.Log($"card {removedId} is being set to visible({makeVisible})!!!!");
         isVisible = makeVisible;
-        float alpha = makeVisible ? 0.1f : 0f;
+        float alpha = makeVisible ? 0f : 0f;
         SetCardAlpha(gameObject, alpha);
 
         if (isActive && !makeVisible)

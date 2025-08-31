@@ -1,27 +1,39 @@
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 //I build your graph from data and control the parameters regarding behaviour of the graph elements.
 public class DeckScript : MonoBehaviour
 {
-    public GameObject cardPrefab;
-    public GraphData graphData;
-    public CardScript activeCard;
-    public List<CardScript> visibleCards = new List<CardScript>();
-    public List<CardScript> invisibleCards = new List<CardScript>();
-
+    public GraphData testgraph;
+    //inherit
+    private LevelScript levelManager;
+    private GraphData graphData;
     private int activeNodeLayer; //ActiveNode
     private int inactiveNodeLayer; //0
-    private LevelScript levelManager;
 
+    //attributes
+    public List<CardScript> visibleCards = new List<CardScript>();
+    public List<CardScript> invisibleCards = new List<CardScript>();
+    private List<GameObject> siEdges = new List<GameObject>();
 
-    public void Initialize(GraphData data, int activeLayer, int inactiveLayer, LevelScript level)
+    //prefab
+    private GameObject cardPrefab;
+    private GameObject edgePrefab;
+
+    //dynamic
+    private CardScript activeCard;
+
+    public void Initialize(LevelScript level)
     {
-        graphData = data;
-        activeNodeLayer = activeLayer;
-        inactiveNodeLayer = inactiveLayer;
         levelManager = level;
+        graphData = levelManager.graphData;
+        activeNodeLayer = levelManager.activeNodeLayer;
+        inactiveNodeLayer = levelManager.inactiveNodeLayer;
+        cardPrefab = level.cardPrefab;
+        edgePrefab = level.edgePrefab;
     }
 
     public void BuildDeck()
@@ -33,7 +45,7 @@ public class DeckScript : MonoBehaviour
             card.name = $"Card_{i}";
 
             CardScript cardScript = card.GetComponent<CardScript>();
-            cardScript.Initialize(i, graphData.GraphReduce(i), activeNodeLayer, inactiveNodeLayer, levelManager);
+            cardScript.Initialize(i, graphData.GraphReduce(i), levelManager);
 
             cardScript.Build();
             invisibleCards.Add(cardScript);
@@ -44,6 +56,31 @@ public class DeckScript : MonoBehaviour
         AddVisibleCard();
 
         ToggleActiveCard(visibleCards[0].removedId);
+    }
+
+    public void RedrawSIGraph()
+    {
+        foreach (GameObject oldEdge in siEdges)
+        {
+            Destroy(oldEdge);
+        }
+        siEdges.Clear();
+
+        List<CardScript> siCards = visibleCards.Where(n => n != activeCard).ToList();
+        foreach (var card in siCards)
+        {
+            Debug.Log(card.removedId);
+        }
+        GraphData siGraph = levelManager.SIGraph(siCards);
+        testgraph = siGraph;
+
+        foreach (var edge in siGraph.edges)
+        {
+            GameObject edgeObj = Instantiate(edgePrefab, transform);
+            siEdges.Add(edgeObj);
+            EdgeScript edgeScript = edgeObj.GetComponent<EdgeScript>();
+            edgeScript.Initialize(levelManager.anchorMap[edge.fromNodeId].transform, levelManager.anchorMap[edge.toNodeId].transform, levelManager.siEdgeWidth, new Color(1f, 1f, 1f, 0.5f));
+        }
     }
 
     public void ToggleActiveCard(int id)
@@ -64,9 +101,11 @@ public class DeckScript : MonoBehaviour
 
                 card.ToggleActive(true);
                 activeCard = card;
-                Debug.Log($"card {card.removedId} made active");
+                //Debug.Log($"card {card.removedId} made active");
             }
         }
+
+        RedrawSIGraph();
     }
     //change to private?
     private void ToggleVisibleCard(int id, bool makeVisible)
@@ -84,7 +123,7 @@ public class DeckScript : MonoBehaviour
                     invisibleCards.Add(card);
 
                     card.ToggleVisible(false);
-                    Debug.Log($"card {card.removedId} is turning invisible");
+                    //Debug.Log($"card {card.removedId} is turning invisible");
 
                     if (wasActive && visibleCards.Count > 0)
                     {
@@ -97,7 +136,7 @@ public class DeckScript : MonoBehaviour
                     visibleCards.Add(card);
 
                     card.ToggleVisible(true);
-                    Debug.Log($"card {card.removedId} is turning visible");
+                    //Debug.Log($"card {card.removedId} is turning visible");
                 }
                 return;
             }

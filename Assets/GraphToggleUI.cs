@@ -50,7 +50,7 @@ public class GraphToggleUI : MonoBehaviour
         Button plusButton = plusButtonObj.GetComponentInChildren<Button>();
         Button minusButton = minusButtonObj.GetComponentInChildren<Button>();
 
-        submitButton.onClick.AddListener(() => levelManager.checkGraph());
+        submitButton.onClick.AddListener(() => levelManager.CheckGraph());
         plusButton.onClick.AddListener(() => RequestAddVisibleCard());
         minusButton.onClick.AddListener(() => RequestMinusVisibleCard());
 

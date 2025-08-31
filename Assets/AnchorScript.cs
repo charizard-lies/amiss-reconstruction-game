@@ -38,7 +38,7 @@ public class AnchorScript : MonoBehaviour
     {
         if (attachedNodes.Remove(node))
         {
-            Debug.Log($"Node {node.nodeId} detached from anchor {id}");
+            //Debug.Log($"Node {node.nodeId} detached from anchor {id}");
         }
         else
         {

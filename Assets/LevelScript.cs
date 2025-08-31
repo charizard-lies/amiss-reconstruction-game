@@ -6,83 +6,93 @@ using UnityEngine;
 //I will be the logic behind managing various different levels in the game
 public class LevelScript : MonoBehaviour
 {
-    public GameObject deckPrefab;
-    public GraphData graphData;
-    public Transform levelParent;
-    public GraphToggleUI UIManager;
-    public GameObject anchorPrefab;
+    //attr
     public float initRadius;
-    public List<AnchorScript> allAnchors = new List<AnchorScript>();
-    public GraphData submitGraph;
+    public GraphData graphData;
     public int activeNodeLayer; //ActiveNode
     public int inactiveNodeLayer; //0
+    public float activeEdgeWidth;
+    public float siEdgeWidth;
+    public Transform levelParent;
+    public Dictionary<int, AnchorScript> anchorMap = new Dictionary<int, AnchorScript>();
 
-    private DeckScript deckScript;
+    //prefab
+    public GameObject deckPrefab;
+    public GameObject anchorPrefab;
+    public GameObject cardPrefab;
+    public GameObject nodePrefab;
+    public GameObject edgePrefab;
+
+    //managers
+    public DeckScript deckScript;
+    public List<AnchorScript> allAnchors = new List<AnchorScript>();
+    
+    public GraphToggleUI UIManager;
 
     void Start()
     {
-
+        //creating anchors
         for (int i = 0; i < graphData.nodeIds.Count; i++)
         {
             AnchorScript temp = Instantiate(anchorPrefab, getAnchorPos(i, graphData.nodeIds.Count), Quaternion.identity, levelParent).GetComponent<AnchorScript>();
             temp.id = i;
             allAnchors.Add(temp);
+            anchorMap[i] = temp;
         }
 
+        //create deck
         deckScript = Instantiate(deckPrefab, levelParent).GetComponent<DeckScript>();
-        deckScript.Initialize(graphData, activeNodeLayer, inactiveNodeLayer, this);
+        deckScript.Initialize(this);
         deckScript.BuildDeck();
         UIManager.deckManager = deckScript;
+
+        //create ui
         UIManager.InitButtons(graphData);
 
     }
 
-    //check whether the visible graphs overlay to form the correct graph
-    public void checkGraph()
+    public GraphData SIGraph(List<CardScript> cards)
     {
-        List<CardScript> cards = deckScript.visibleCards;
-        submitGraph = ScriptableObject.CreateInstance<GraphData>();
+        GraphData siGraph = ScriptableObject.CreateInstance<GraphData>();
 
         //add anchors as nodes
         foreach (AnchorScript anchor in allAnchors)
         {
-            submitGraph.addNode(anchor.id);
+            siGraph.addNode(anchor.id);
         }
-
         Debug.Log(cards.Count);
-        //go through every card in a deck
+
+        //go through every visible card in a deck
         for (int i = 0; i < cards.Count; i++)
         {
             //go through every node in a card
             CardScript card = cards[i];
-            foreach (KeyValuePair<int, NodeScript> pair in card.nodeMap)
-            {
-                int nodeID = pair.Key;
-                NodeScript node = pair.Value;
-
-                //check all nodes are anchored
-                if (!node.snappedAnchor)
-                {
-                    Debug.Log("false");
-                    UIManager.UpdateSolved(false);
-                }
-            }
 
             //go through every edge in a card
-            Debug.Log($"Card {card.removedId} has {(card.allEdges == null ? "null" : card.allEdges.Count.ToString())} edges");
+            //Debug.Log($"Card {card.removedId} has {(card.allEdges == null ? "null" : card.allEdges.Count.ToString())} edges");
             foreach (EdgeScript edge in card.allEdges)
             {
-                Debug.Log($"added edge {edge.NodeA.snappedAnchor.id} to {edge.NodeB.snappedAnchor.id}");
-                submitGraph.AddEdge(edge.NodeA.snappedAnchor.id, edge.NodeB.snappedAnchor.id);
+                //if both vertices connected to anchor, add edge
+                if (edge.PointA.GetComponent<NodeScript>().snappedAnchor && edge.PointB.GetComponent<NodeScript>().snappedAnchor)
+                {
+                    siGraph.AddEdge(edge.PointA.GetComponent<NodeScript>().snappedAnchor.id, edge.PointB.GetComponent<NodeScript>().snappedAnchor.id);
+                }
             }
         }
 
-        bool isSolved = checkIsomorphism(graphData, submitGraph);
+        return siGraph;
+    }
+
+    //check whether the visible graphs overlay to form the correct graph
+    public void CheckGraph()
+    {
+        GraphData submitGraph = SIGraph(deckScript.visibleCards);
+        bool isSolved = CheckIsomorphism(graphData, submitGraph);
         Debug.Log(isSolved);
         UIManager.UpdateSolved(isSolved);
     }
 
-    public bool checkIsomorphism(GraphData g1, GraphData g2)
+    public bool CheckIsomorphism(GraphData g1, GraphData g2)
     {
         int n = g1.nodeIds.Count;
         if (n != g2.nodeIds.Count || g1.edges.Count != g2.edges.Count)

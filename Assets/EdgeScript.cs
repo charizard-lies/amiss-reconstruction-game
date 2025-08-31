@@ -1,34 +1,44 @@
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.UIElements;
 
 public class EdgeScript : MonoBehaviour
 {
-    public NodeScript NodeA;
-    public NodeScript NodeB;
+    public Transform PointA;
+    public Transform PointB;
+
+    private float width;
+    private Color color;
     private LineRenderer lr;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    
     private void Awake()
     {
         lr = GetComponent<LineRenderer>();
         lr.sortingLayerName = "Default";
-        lr.sortingOrder = 1;
+        lr.sortingOrder = 0;
     }
 
     // Update is called once per frame
-    public void Initialize(NodeScript nodeA, NodeScript nodeB)
+    public void Initialize(Transform A, Transform B, float linew, Color linecol)
     {
-        NodeA = nodeA;
-        NodeB = nodeB;
+        PointA = A;
+        PointB = B;
+        width = linew;
+        color = linecol;
+
+        lr.startWidth = width;
+        lr.endWidth = width;
+        lr.startColor = linecol;
+        lr.endColor = linecol;
+        
     }
 
     void Update()
     {
-        if (NodeA != null && NodeB != null)
+        if (PointA != null && PointB != null)
         {
-            Vector3 start = NodeA.transform.position;
-            start.z = 0.5f;
-            Vector3 end = NodeB.transform.position;
-            end.z = 0.5f;
+            Vector3 start = PointA.position;
+            Vector3 end = PointB.position;
             lr.SetPosition(0, start);
             lr.SetPosition(1, end);
         }
