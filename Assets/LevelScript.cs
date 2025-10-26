@@ -9,8 +9,8 @@ public class LevelScript : MonoBehaviour
     //attr
     public float initRadius;
     public GraphData graphData;
-    public int activeNodeLayer; //ActiveNode
-    public int inactiveNodeLayer; //0
+    public int activeNodeLayer = 6; //ActiveNode
+    public int inactiveNodeLayer = 0; //0
     public float activeEdgeWidth;
     public float siEdgeWidth;
     public Transform levelParent;
@@ -24,10 +24,9 @@ public class LevelScript : MonoBehaviour
     public GameObject edgePrefab;
 
     //managers
-    public DeckScript deckScript;
     public List<AnchorScript> allAnchors = new List<AnchorScript>();
-    
     public GraphToggleUI UIManager;
+    private DeckScript deckScript;
 
     void Start()
     {
