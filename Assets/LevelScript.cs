@@ -7,6 +7,7 @@ using UnityEngine;
 public class LevelScript : MonoBehaviour
 {
     //attr
+    public int levelIndex;
     public float initRadius;
     public GraphData graphData;
     public int activeNodeLayer = 6; //ActiveNode
@@ -30,6 +31,9 @@ public class LevelScript : MonoBehaviour
 
     void Start()
     {
+        levelIndex = GameManager.Instance.selectedLevelId;
+        graphData = Resources.Load<GraphData>($"Levels/Level{levelIndex}");
+
         //creating anchors
         for (int i = 0; i < graphData.nodeIds.Count; i++)
         {
