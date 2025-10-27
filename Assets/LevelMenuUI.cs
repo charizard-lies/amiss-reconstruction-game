@@ -22,7 +22,7 @@ public class LevelMenuUI : MonoBehaviour
         for (int i = 1; i <= totalLevels; i++)
         {
             GameObject buttonObj = Instantiate(levelButtonPrefab, transform);
-            buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = $"Level {i}";
+            buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = $"{i}";
 
             int levelIndex = i; 
             Button button = buttonObj.GetComponent<Button>();
