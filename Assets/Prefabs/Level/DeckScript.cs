@@ -71,15 +71,15 @@ public class DeckScript : MonoBehaviour
         {
             Debug.Log(card.removedId);
         }
-        GraphData siGraph = levelManager.SIGraph(siCards);
-        testgraph = siGraph;
+        GraphData overlayGraph = levelManager.OverlayGraph(siCards);
+        testgraph = overlayGraph;
 
-        foreach (var edge in siGraph.edges)
+        foreach (var edge in overlayGraph.edges)
         {
             GameObject edgeObj = Instantiate(edgePrefab, transform);
             siEdges.Add(edgeObj);
             EdgeScript edgeScript = edgeObj.GetComponent<EdgeScript>();
-            edgeScript.Initialize(levelManager.anchorMap[edge.fromNodeId].transform, levelManager.anchorMap[edge.toNodeId].transform, levelManager.siEdgeWidth, new Color(1f, 1f, 1f, 0.5f));
+            edgeScript.Initialize(levelManager.anchorMap[edge.fromNodeId].transform, levelManager.anchorMap[edge.toNodeId].transform, levelManager.overlayEdgeWidth, new Color(1f, 1f, 1f, 0.5f));
         }
     }
 

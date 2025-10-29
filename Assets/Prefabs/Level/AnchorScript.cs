@@ -16,8 +16,6 @@ public class AnchorScript : MonoBehaviour
                 return false;
             }
         }
-
-        // No conflicts, can accept
         return true;
     }
 

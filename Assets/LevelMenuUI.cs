@@ -5,8 +5,12 @@ using TMPro;
 
 public class LevelMenuUI : MonoBehaviour
 {
+    [Header("References")]
+    public Transform levelGridParent; 
     public GameObject levelButtonPrefab; // assign in Inspector
-    public int totalLevels = 16;
+
+    [Header("Settings")]
+    public int totalLevels;
 
     void Start()
     {
@@ -21,7 +25,7 @@ public class LevelMenuUI : MonoBehaviour
     {
         for (int i = 1; i <= totalLevels; i++)
         {
-            GameObject buttonObj = Instantiate(levelButtonPrefab, transform);
+            GameObject buttonObj = Instantiate(levelButtonPrefab, levelGridParent.transform);
             buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = $"{i}";
 
             int levelIndex = i; 

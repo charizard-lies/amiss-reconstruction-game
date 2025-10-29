@@ -103,7 +103,6 @@ public class NodeScript : MonoBehaviour
             foreach (Collider2D anchor in sorted_anchors)
             {
                 AnchorScript anchorScript = anchor.GetComponent<AnchorScript>();
-                if (anchorScript.id == removedNode) continue;
                 if (anchorScript != null)
                 {
                     //anchor is empty, attach to new anchor

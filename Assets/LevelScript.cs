@@ -6,35 +6,36 @@ using UnityEngine;
 //I will be the logic behind managing various different levels in the game
 public class LevelScript : MonoBehaviour
 {
-    //attr
+    [Header("Attributes")]
     public int levelIndex;
     public float initRadius;
     public GraphData graphData;
     public int activeNodeLayer = 6; //ActiveNode
     public int inactiveNodeLayer = 0; //0
     public float activeEdgeWidth;
-    public float siEdgeWidth;
+    public float overlayEdgeWidth;
     public Transform levelParent;
     public Dictionary<int, AnchorScript> anchorMap = new Dictionary<int, AnchorScript>();
+    public List<AnchorScript> allAnchors = new List<AnchorScript>();
 
-    //prefab
+    [Header("Prefabs")]
     public GameObject deckPrefab;
     public GameObject anchorPrefab;
     public GameObject cardPrefab;
     public GameObject nodePrefab;
     public GameObject edgePrefab;
 
-    //managers
-    public List<AnchorScript> allAnchors = new List<AnchorScript>();
+    [Header("Managers")]
     public GraphToggleUI UIManager;
     private DeckScript deckScript;
 
     void Start()
     {
-        levelIndex = GameManager.Instance.selectedLevelId;
+        //levelIndex = GameManager.Instance.selectedLevelId;
+        levelIndex = 1;
         graphData = Resources.Load<GraphData>($"Levels/Level{levelIndex}");
 
-        //creating anchors
+        //anchors
         for (int i = 0; i < graphData.nodeIds.Count; i++)
         {
             AnchorScript temp = Instantiate(anchorPrefab, getAnchorPos(i, graphData.nodeIds.Count), Quaternion.identity, levelParent).GetComponent<AnchorScript>();
@@ -43,55 +44,52 @@ public class LevelScript : MonoBehaviour
             anchorMap[i] = temp;
         }
 
-        //create deck
+        //game deck
         deckScript = Instantiate(deckPrefab, levelParent).GetComponent<DeckScript>();
         deckScript.Initialize(this);
         deckScript.BuildDeck();
-        UIManager.deckManager = deckScript;
 
         //create ui
+        UIManager.deckManager = deckScript;
         UIManager.InitButtons(graphData);
 
     }
 
-    public GraphData SIGraph(List<CardScript> cards)
+    public GraphData OverlayGraph(List<CardScript> cards)
     {
-        GraphData siGraph = ScriptableObject.CreateInstance<GraphData>();
+        GraphData overlayGraph = ScriptableObject.CreateInstance<GraphData>();
 
-        //add anchors as nodes
         foreach (AnchorScript anchor in allAnchors)
         {
-            siGraph.addNode(anchor.id);
+            overlayGraph.addNode(anchor.id);
         }
-        Debug.Log(cards.Count);
 
-        //go through every visible card in a deck
         for (int i = 0; i < cards.Count; i++)
         {
-            //go through every node in a card
             CardScript card = cards[i];
-
-            //go through every edge in a card
-            //Debug.Log($"Card {card.removedId} has {(card.allEdges == null ? "null" : card.allEdges.Count.ToString())} edges");
             foreach (EdgeScript edge in card.allEdges)
             {
-                //if both vertices connected to anchor, add edge
                 if (edge.PointA.GetComponent<NodeScript>().snappedAnchor && edge.PointB.GetComponent<NodeScript>().snappedAnchor)
                 {
-                    siGraph.AddEdge(edge.PointA.GetComponent<NodeScript>().snappedAnchor.id, edge.PointB.GetComponent<NodeScript>().snappedAnchor.id);
+                    overlayGraph.AddEdge(edge.PointA.GetComponent<NodeScript>().snappedAnchor.id, edge.PointB.GetComponent<NodeScript>().snappedAnchor.id);
                 }
             }
         }
 
-        return siGraph;
+        return overlayGraph;
     }
 
-    //check whether the visible graphs overlay to form the correct graph
     public void CheckGraph()
     {
-        GraphData submitGraph = SIGraph(deckScript.visibleCards);
-        bool isSolved = CheckIsomorphism(graphData, submitGraph);
-        Debug.Log(isSolved);
+        bool isSolved = false;
+
+        bool allNodesSnapped;
+
+        //is overlay graph correct
+        GraphData overlayGraph = OverlayGraph(deckScript.visibleCards);
+        bool overlayCorrect = CheckIsomorphism(graphData, overlayGraph);
+        Debug.Log("Overlay: " +overlayCorrect);
+
         UIManager.UpdateSolved(isSolved);
     }
 
@@ -195,8 +193,10 @@ public class LevelScript : MonoBehaviour
     {
         float angle = 2 * Mathf.PI * counter / n;
         float x = initRadius * Mathf.Cos(angle);
+        x += levelParent.position.x;
         float y = initRadius * Mathf.Sin(angle);
-        Vector3 anchorPos = new Vector3(x, y, 0);
-        return anchorPos;
+        y += levelParent.position.y;
+
+        return new Vector3(x, y, 0);
     }
 }
