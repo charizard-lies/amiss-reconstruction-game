@@ -7,7 +7,6 @@ using UnityEngine.UI;
 //I build your graph from data and control the parameters regarding behaviour of the graph elements.
 public class DeckScript : MonoBehaviour
 {
-    public GraphData testgraph;
     //inherit
     private LevelScript levelManager;
     private GraphData graphData;
@@ -17,7 +16,7 @@ public class DeckScript : MonoBehaviour
     //attributes
     public List<CardScript> visibleCards = new List<CardScript>();
     public List<CardScript> invisibleCards = new List<CardScript>();
-    private List<GameObject> siEdges = new List<GameObject>();
+    private List<GameObject> overlayEdges = new List<GameObject>();
 
     //prefab
     private GameObject cardPrefab;
@@ -58,26 +57,21 @@ public class DeckScript : MonoBehaviour
         ToggleActiveCard(visibleCards[0].removedId);
     }
 
-    public void RedrawSIGraph()
+    public void RedrawOverlayGraph()
     {
-        foreach (GameObject oldEdge in siEdges)
+        foreach (GameObject oldEdge in overlayEdges)
         {
             Destroy(oldEdge);
         }
-        siEdges.Clear();
+        overlayEdges.Clear();
 
-        List<CardScript> siCards = visibleCards.Where(n => n != activeCard).ToList();
-        foreach (var card in siCards)
-        {
-            Debug.Log(card.removedId);
-        }
-        GraphData overlayGraph = levelManager.OverlayGraph(siCards);
-        testgraph = overlayGraph;
+        List<CardScript> cardsToOverlay = visibleCards.Where(n => n != activeCard).ToList();
+        GraphData overlayGraph = levelManager.OverlayGraph(cardsToOverlay);
 
         foreach (var edge in overlayGraph.edges)
         {
             GameObject edgeObj = Instantiate(edgePrefab, transform);
-            siEdges.Add(edgeObj);
+            overlayEdges.Add(edgeObj);
             EdgeScript edgeScript = edgeObj.GetComponent<EdgeScript>();
             edgeScript.Initialize(levelManager.anchorMap[edge.fromNodeId].transform, levelManager.anchorMap[edge.toNodeId].transform, levelManager.overlayEdgeWidth, new Color(1f, 1f, 1f, 0.5f));
         }
@@ -105,9 +99,9 @@ public class DeckScript : MonoBehaviour
             }
         }
 
-        RedrawSIGraph();
+        RedrawOverlayGraph();
     }
-    //change to private?
+    
     private void ToggleVisibleCard(int id, bool makeVisible)
     {
         List<CardScript> temp = makeVisible ? invisibleCards : visibleCards;
