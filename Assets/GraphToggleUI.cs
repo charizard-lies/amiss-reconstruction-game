@@ -11,8 +11,13 @@ public class GraphToggleUI : MonoBehaviour
     public TextMeshProUGUI solvedLabel;
 
     [Header("UI References")]
-    public GameObject buttonPrefab;     // Your TMP button prefab
-    public Transform buttonParent;      // ToggleList
+    public GameObject buttonPrefab;
+    public Transform buttonParent;
+
+    [Header("Card")]
+    public GameObject cardUIPrefab;
+    public Transform cardContentArea;
+    public ScrollRect scrollRect;
 
     [Header("Graph References")]
     public DeckScript deckManager;
@@ -20,7 +25,6 @@ public class GraphToggleUI : MonoBehaviour
 
     private int currentLayerIndex = -1;
     private List<GameObject> cardButtons = new List<GameObject>();
-
     public void AddSolvedLabel()
     {
         GameObject labelObj = new GameObject("SolvedLabel");
@@ -34,7 +38,7 @@ public class GraphToggleUI : MonoBehaviour
     public void InitButtons(GraphData graphData)
     {
         AddSolvedLabel();
-        //create 2 buttons, 1 to increase visible layers by 1 and the other to decrease by 1
+
         GameObject submitButtonObj = Instantiate(buttonPrefab, buttonParent);
         GameObject plusButtonObj = Instantiate(buttonPrefab, buttonParent);
         GameObject minusButtonObj = Instantiate(buttonPrefab, buttonParent);
@@ -50,7 +54,7 @@ public class GraphToggleUI : MonoBehaviour
         Button plusButton = plusButtonObj.GetComponentInChildren<Button>();
         Button minusButton = minusButtonObj.GetComponentInChildren<Button>();
 
-        submitButton.onClick.AddListener(() => levelManager.CheckGraph());
+        submitButton.onClick.AddListener(() => UpdateSolved(levelManager.GraphisSolved()));
         plusButton.onClick.AddListener(() => RequestAddVisibleCard());
         minusButton.onClick.AddListener(() => RequestMinusVisibleCard());
 
@@ -60,9 +64,9 @@ public class GraphToggleUI : MonoBehaviour
     public void UpdateCardButtons()
     {
         // Remove old buttons (skip the first two: + and -)
-        for (int i = 4; i < buttonParent.childCount; i++)
+        for (int i = 0; i < cardContentArea.childCount; i++)
         {
-            Destroy(buttonParent.GetChild(i).gameObject);
+            Destroy(cardContentArea.GetChild(i).gameObject);
         }
 
         cardButtons.Clear();
@@ -71,15 +75,10 @@ public class GraphToggleUI : MonoBehaviour
         {
             int index = card.removedId;
 
-            GameObject btnObj = Instantiate(buttonPrefab, buttonParent);
-            cardButtons.Add(btnObj);
+            GameObject cardObj = Instantiate(cardUIPrefab, cardContentArea);
+            cardButtons.Add(cardObj);
 
-            TextMeshProUGUI label = btnObj.GetComponentInChildren<TextMeshProUGUI>();
-            if (label != null)
-                label.text = "Card " + index;
-
-            Button cardButton = btnObj.GetComponentInChildren<Button>();
-
+            Button cardButton = cardObj.GetComponentInChildren<Button>();
             cardButton.onClick.AddListener(() => deckManager.ToggleActiveCard(index));
 
         }
@@ -101,5 +100,12 @@ public class GraphToggleUI : MonoBehaviour
     {
         deckManager.MinusVisibleCard();
         UpdateCardButtons();
+    }
+
+    Vector2 WorldToUI(Vector3 worldPos, RectTransform cardContainer, Camera cam) {
+        Vector3 screenPos = cam.WorldToScreenPoint(worldPos);
+        Vector2 localPoint;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(cardContainer, screenPos, cam, out localPoint);
+        return localPoint;
     }
 }

@@ -13,7 +13,8 @@ public class LevelScript : MonoBehaviour
     public int activeNodeLayer = 6; //ActiveNode
     public int inactiveNodeLayer = 0; //0
     public float activeEdgeWidth;
-    public float overlayEdgeWidth;
+    public float overlayEdgeWidth = 0.1f;
+    public float overlayEdgeAlpha = 0.1f;
     public Transform levelParent;
     public Dictionary<int, AnchorScript> anchorMap = new Dictionary<int, AnchorScript>();
     public List<AnchorScript> allAnchors = new List<AnchorScript>();
@@ -52,10 +53,9 @@ public class LevelScript : MonoBehaviour
         //create ui
         UIManager.deckManager = deckScript;
         UIManager.InitButtons(graphData);
-
     }
 
-    public GraphData OverlayGraph(List<CardScript> cards)
+    public GraphData BuildOverlayGraph(List<CardScript> cards)
     {
         GraphData overlayGraph = ScriptableObject.CreateInstance<GraphData>();
 
@@ -79,18 +79,32 @@ public class LevelScript : MonoBehaviour
         return overlayGraph;
     }
 
-    public void CheckGraph()
+    public bool GraphisSolved()
     {
         bool isSolved = false;
 
-        bool allNodesSnapped;
+        bool allNodesSnapped = false;
+        foreach(CardScript card in deckScript.visibleCards)
+        {
+            
+        }
+        
+        if (!allNodesSnapped)
+        {
+            return false;
+        }
 
-        //is overlay graph correct
-        GraphData overlayGraph = OverlayGraph(deckScript.visibleCards);
+        bool uniqueAnchorsOverLayers = false;
+        if (!uniqueAnchorsOverLayers)
+        {
+            return false;
+        }
+
+        GraphData overlayGraph = BuildOverlayGraph(deckScript.visibleCards);
         bool overlayCorrect = CheckIsomorphism(graphData, overlayGraph);
-        Debug.Log("Overlay: " +overlayCorrect);
+        Debug.Log("Overlay: " + overlayCorrect);
 
-        UIManager.UpdateSolved(isSolved);
+        return isSolved;
     }
 
     public bool CheckIsomorphism(GraphData g1, GraphData g2)

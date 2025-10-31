@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
 
 //I build your graph from data and control the parameters regarding behaviour of the graph elements.
 public class DeckScript : MonoBehaviour
@@ -10,8 +8,6 @@ public class DeckScript : MonoBehaviour
     //inherit
     private LevelScript levelManager;
     private GraphData graphData;
-    private int activeNodeLayer; //ActiveNode
-    private int inactiveNodeLayer; //0
 
     //attributes
     public List<CardScript> visibleCards = new List<CardScript>();
@@ -29,8 +25,6 @@ public class DeckScript : MonoBehaviour
     {
         levelManager = level;
         graphData = levelManager.graphData;
-        activeNodeLayer = levelManager.activeNodeLayer;
-        inactiveNodeLayer = levelManager.inactiveNodeLayer;
         cardPrefab = level.cardPrefab;
         edgePrefab = level.edgePrefab;
     }
@@ -66,14 +60,14 @@ public class DeckScript : MonoBehaviour
         overlayEdges.Clear();
 
         List<CardScript> cardsToOverlay = visibleCards.Where(n => n != activeCard).ToList();
-        GraphData overlayGraph = levelManager.OverlayGraph(cardsToOverlay);
+        GraphData overlayGraph = levelManager.BuildOverlayGraph(cardsToOverlay);
 
         foreach (var edge in overlayGraph.edges)
         {
             GameObject edgeObj = Instantiate(edgePrefab, transform);
             overlayEdges.Add(edgeObj);
             EdgeScript edgeScript = edgeObj.GetComponent<EdgeScript>();
-            edgeScript.Initialize(levelManager.anchorMap[edge.fromNodeId].transform, levelManager.anchorMap[edge.toNodeId].transform, levelManager.overlayEdgeWidth, new Color(1f, 1f, 1f, 0.5f));
+            edgeScript.Initialize(levelManager.anchorMap[edge.fromNodeId].transform, levelManager.anchorMap[edge.toNodeId].transform, levelManager.overlayEdgeWidth, new Color(1f, 1f, 1f, levelManager.overlayEdgeAlpha));
         }
     }
 
@@ -97,7 +91,7 @@ public class DeckScript : MonoBehaviour
                 activeCard = card;
                 //Debug.Log($"card {card.removedId} made active");
             }
-        }
+        }   
 
         RedrawOverlayGraph();
     }
