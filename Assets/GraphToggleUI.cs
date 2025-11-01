@@ -78,9 +78,12 @@ public class GraphToggleUI : MonoBehaviour
             GameObject cardObj = Instantiate(cardUIPrefab, cardContentArea);
             cardButtons.Add(cardObj);
 
+            CardButtonScript cardButtonScript = cardObj.GetComponent<CardButtonScript>();
+            cardButtonScript.Initiate(levelManager, index);
+            cardButtonScript.DrawCardSafe();
+
             Button cardButton = cardObj.GetComponentInChildren<Button>();
             cardButton.onClick.AddListener(() => deckManager.ToggleActiveCard(index));
-
         }
     }
 
@@ -102,10 +105,4 @@ public class GraphToggleUI : MonoBehaviour
         UpdateCardButtons();
     }
 
-    Vector2 WorldToUI(Vector3 worldPos, RectTransform cardContainer, Camera cam) {
-        Vector3 screenPos = cam.WorldToScreenPoint(worldPos);
-        Vector2 localPoint;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(cardContainer, screenPos, cam, out localPoint);
-        return localPoint;
-    }
 }

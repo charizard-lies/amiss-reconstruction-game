@@ -28,7 +28,7 @@ public class LevelScript : MonoBehaviour
 
     [Header("Managers")]
     public GraphToggleUI UIManager;
-    private DeckScript deckScript;
+    public DeckScript deck;
 
     void Start()
     {
@@ -46,12 +46,12 @@ public class LevelScript : MonoBehaviour
         }
 
         //game deck
-        deckScript = Instantiate(deckPrefab, levelParent).GetComponent<DeckScript>();
-        deckScript.Initialize(this);
-        deckScript.BuildDeck();
+        deck = Instantiate(deckPrefab, levelParent).GetComponent<DeckScript>();
+        deck.Initialize(this);
+        deck.BuildDeck();
 
         //create ui
-        UIManager.deckManager = deckScript;
+        UIManager.deckManager = deck;
         UIManager.InitButtons(graphData);
     }
 
@@ -84,7 +84,7 @@ public class LevelScript : MonoBehaviour
         bool isSolved = false;
 
         bool allNodesSnapped = false;
-        foreach(CardScript card in deckScript.visibleCards)
+        foreach(CardScript card in deck.visibleCards)
         {
             
         }
@@ -100,7 +100,7 @@ public class LevelScript : MonoBehaviour
             return false;
         }
 
-        GraphData overlayGraph = BuildOverlayGraph(deckScript.visibleCards);
+        GraphData overlayGraph = BuildOverlayGraph(deck.visibleCards);
         bool overlayCorrect = CheckIsomorphism(graphData, overlayGraph);
         Debug.Log("Overlay: " + overlayCorrect);
 

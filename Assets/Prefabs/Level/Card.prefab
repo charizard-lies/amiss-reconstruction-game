@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 7343660670426432918}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 915.49133, y: 525.6318, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -45,10 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   removedId: 0
-  nodePrefab: {fileID: 7283619231811921860, guid: 5c222626e57644af58e773b87c896be5, type: 3}
-  edgePrefab: {fileID: 1198453481677518125, guid: da6716132ace14cb68737f2c7c9b68df, type: 3}
-  activeNodeLayer: 6
-  inactiveNodeLayer: 0
+  allEdges: []
   isActive: 0
   isVisible: 0
-  allEdges: []

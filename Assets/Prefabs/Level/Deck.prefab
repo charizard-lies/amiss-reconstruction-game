@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 3699516639447188833}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 915.49133, y: 525.6318, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -44,7 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 818f215431b0a433991af51304d581ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cardPrefab: {fileID: 7343660670426432918, guid: 7e2c67d32d0b945988006bf7c89f0498, type: 3}
-  allCards: []
-  activeCard: {fileID: 0}
   visibleCards: []
+  invisibleCards: []

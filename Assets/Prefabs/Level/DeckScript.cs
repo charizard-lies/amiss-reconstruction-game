@@ -91,8 +91,9 @@ public class DeckScript : MonoBehaviour
                 activeCard = card;
                 //Debug.Log($"card {card.removedId} made active");
             }
-        }   
+        }
 
+        levelManager.UIManager.UpdateCardButtons();
         RedrawOverlayGraph();
     }
     
@@ -126,6 +127,7 @@ public class DeckScript : MonoBehaviour
                     card.ToggleVisible(true);
                     //Debug.Log($"card {card.removedId} is turning visible");
                 }
+                RedrawOverlayGraph();
                 return;
             }
         }
