@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.Collections;
+using UnityEditor.Experimental.GraphView;
 using UnityEditor.VersionControl;
 using UnityEngine;
 
@@ -33,7 +35,7 @@ public class LevelScript : MonoBehaviour
     void Start()
     {
         //levelIndex = GameManager.Instance.selectedLevelId;
-        levelIndex = 1;
+        levelIndex = 2;
         graphData = Resources.Load<GraphData>($"Levels/Level{levelIndex}");
 
         //anchors
@@ -79,32 +81,37 @@ public class LevelScript : MonoBehaviour
         return overlayGraph;
     }
 
-    public bool GraphisSolved()
+    public bool CheckGraphSolved()
     {
-        bool isSolved = false;
+        if (!CheckUniqueSnappedAnchors()) return false;
 
-        bool allNodesSnapped = false;
-        foreach(CardScript card in deck.visibleCards)
-        {
-            
-        }
-        
-        if (!allNodesSnapped)
-        {
-            return false;
-        }
-
-        bool uniqueAnchorsOverLayers = false;
-        if (!uniqueAnchorsOverLayers)
-        {
-            return false;
-        }
+        Debug.Log("anchors are all right");
 
         GraphData overlayGraph = BuildOverlayGraph(deck.visibleCards);
         bool overlayCorrect = CheckIsomorphism(graphData, overlayGraph);
         Debug.Log("Overlay: " + overlayCorrect);
 
-        return isSolved;
+        return overlayCorrect;
+    }
+
+    private bool CheckUniqueSnappedAnchors()
+    {
+        List<AnchorScript> anchors = allAnchors;
+        List<AnchorScript> uniqueAnchors = new List<AnchorScript>();
+
+        foreach (CardScript card in deck.visibleCards)
+        {
+            List<AnchorScript> tempAnchors = new List<AnchorScript>();
+            foreach (NodeScript node in card.nodeMap.Values)
+            {
+                if (!node.snappedAnchor) return false;
+                tempAnchors.Add(node.snappedAnchor);
+                Debug.Log(node.snappedAnchor.id);
+            }
+            uniqueAnchors.Add(anchors.Except(tempAnchors).Single());
+        }
+
+        return uniqueAnchors.Count() == uniqueAnchors.Distinct().Count();
     }
 
     public bool CheckIsomorphism(GraphData g1, GraphData g2)
