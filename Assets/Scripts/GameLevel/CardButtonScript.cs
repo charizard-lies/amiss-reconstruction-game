@@ -10,6 +10,7 @@ public class CardButtonScript : MonoBehaviour
     public GameObject nodeUIPrefab;
     public GameObject edgeUIPrefab;
     public float horizontalPadding;
+    public float lineWidth;
 
     private int cardId;
     private LevelScript levelManager;
@@ -55,7 +56,8 @@ public class CardButtonScript : MonoBehaviour
             var edgeObj = Instantiate(edgeUIPrefab, cardRectTransform);
             DrawUILine(edgeObj.GetComponent<RectTransform>(),
                        WorldToUIPos(edge.PointA.position),
-                       WorldToUIPos(edge.PointB.position));
+                       WorldToUIPos(edge.PointB.position),
+                       lineWidth);
         }
     }
 
@@ -78,11 +80,11 @@ public class CardButtonScript : MonoBehaviour
         return new Vector2(positionOnCard.x, positionOnCard.y);
     }
 
-    void DrawUILine(RectTransform line, Vector2 start, Vector2 end)
+    void DrawUILine(RectTransform line, Vector2 start, Vector2 end, float width)
     {
         Vector2 dir = (end - start).normalized;
         float dist = Vector2.Distance(start, end);
-        line.sizeDelta = new Vector2(dist, 2f);
+        line.sizeDelta = new Vector2(dist, width);
         line.anchoredPosition = (start + end) / 2f;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         line.localRotation = Quaternion.Euler(0, 0, angle);

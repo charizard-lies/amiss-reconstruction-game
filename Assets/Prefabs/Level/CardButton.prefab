@@ -68,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 5359986216648080172, guid: d398ead1143c74ea1aa55194c315fa5a, type: 3}
+  m_Sprite: {fileID: 3473992768077662235, guid: 2d000914a698041cc8fe3c08b4c0c4ab, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -151,3 +151,4 @@ MonoBehaviour:
   nodeUIPrefab: {fileID: 1717456386895854331, guid: a6a679d944a32433c9ee893005e23989, type: 3}
   edgeUIPrefab: {fileID: 3737756791824072775, guid: 83775fcc746a84e4d9050cb8175ddba5, type: 3}
   horizontalPadding: 30
+  lineWidth: 1.3

@@ -9,7 +9,6 @@ using UnityEngine;
 public class LevelScript : MonoBehaviour
 {
     [Header("Attributes")]
-    public int levelIndex;
     public float initRadius;
     public GraphData graphData;
     public int activeNodeLayer = 6; //ActiveNode
@@ -20,6 +19,8 @@ public class LevelScript : MonoBehaviour
     public Transform levelParent;
     public Dictionary<int, AnchorScript> anchorMap = new Dictionary<int, AnchorScript>();
     public List<AnchorScript> allAnchors = new List<AnchorScript>();
+    private int levelIndex;
+    private bool daily;
 
     [Header("Prefabs")]
     public GameObject deckPrefab;
@@ -29,14 +30,24 @@ public class LevelScript : MonoBehaviour
     public GameObject edgePrefab;
 
     [Header("Managers")]
-    public GraphToggleUI UIManager;
+    public LevelUI UIManager;
     public DeckScript deck;
 
     void Start()
     {
-        //levelIndex = GameManager.Instance.selectedLevelId;
-        levelIndex = 2;
-        graphData = Resources.Load<GraphData>($"Levels/Level{levelIndex}");
+        if (GameManager.Instance)
+        {
+            levelIndex = GameManager.Instance.selectedLevelId;
+            daily = GameManager.Instance.selectedDailyLevel;
+        }
+        else
+        {
+            levelIndex = 2;
+            daily = false;
+        }
+        
+        if (daily) graphData = Resources.Load<GraphData>($"Levels/Daily/Level{levelIndex}");
+        else graphData = Resources.Load<GraphData>($"Levels/Normal/Level{levelIndex}");
 
         //anchors
         for (int i = 0; i < graphData.nodeIds.Count; i++)

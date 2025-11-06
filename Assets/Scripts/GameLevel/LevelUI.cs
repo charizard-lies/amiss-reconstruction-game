@@ -6,7 +6,7 @@ using System.Collections.Generic;
 // I control all active, visible, and invisible layers and their editabilty.
 // I control buttons that toggle between these layers.
 
-public class GraphToggleUI : MonoBehaviour
+public class LevelUI : MonoBehaviour
 {
     public TextMeshProUGUI solvedLabel;
 
