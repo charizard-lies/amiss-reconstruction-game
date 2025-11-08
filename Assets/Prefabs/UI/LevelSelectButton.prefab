@@ -149,7 +149,7 @@ GameObject:
   - component: {fileID: 5714751934900466917}
   - component: {fileID: 2825645313567424852}
   m_Layer: 5
-  m_Name: Button
+  m_Name: LevelSelectButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -203,8 +203,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4640294330715232675, guid: 0f3126d1b67e1400d9d04f867ceee9a6, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 3251042183824290668, guid: 0f3126d1b67e1400d9d04f867ceee9a6, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -212,7 +212,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 2
 --- !u!114 &2825645313567424852
 MonoBehaviour:
   m_ObjectHideFlags: 0

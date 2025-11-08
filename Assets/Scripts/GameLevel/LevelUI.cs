@@ -13,8 +13,9 @@ public class LevelUI : MonoBehaviour
     [Header("UI References")]
     public GameObject buttonPrefab;
     public Transform buttonParent;
+    public GameObject pauseMenu;
 
-    [Header("Card")]
+    [Header("CardUI")]
     public GameObject cardUIPrefab;
     public Transform cardContentArea;
     public ScrollRect scrollRect;
@@ -25,16 +26,7 @@ public class LevelUI : MonoBehaviour
 
     private int currentLayerIndex = -1;
     private List<GameObject> cardButtons = new List<GameObject>();
-    public void AddSolvedLabel()
-    {
-        GameObject labelObj = new GameObject("SolvedLabel");
-        labelObj.transform.SetParent(buttonParent, false);
 
-        solvedLabel = labelObj.AddComponent<TextMeshProUGUI>();
-        solvedLabel.text = "Unsolved";
-        solvedLabel.fontSize = 24;
-        solvedLabel.alignment = TextAlignmentOptions.Center;
-    }
     public void InitButtons(GraphData graphData)
     {
         AddSolvedLabel();
@@ -59,6 +51,17 @@ public class LevelUI : MonoBehaviour
         minusButton.onClick.AddListener(() => RequestMinusVisibleCard());
 
         UpdateCardButtons();
+    }
+
+    public void AddSolvedLabel()
+    {
+        GameObject labelObj = new GameObject("SolvedLabel");
+        labelObj.transform.SetParent(buttonParent, false);
+
+        solvedLabel = labelObj.AddComponent<TextMeshProUGUI>();
+        solvedLabel.text = "Unsolved";
+        solvedLabel.fontSize = 24;
+        solvedLabel.alignment = TextAlignmentOptions.Center;
     }
 
     public void UpdateCardButtons()
@@ -93,16 +96,25 @@ public class LevelUI : MonoBehaviour
         else solvedLabel.text = "Unsolved";
     }
 
-    void RequestAddVisibleCard()
+    private void RequestAddVisibleCard()
     {
         deckManager.AddVisibleCard();
         UpdateCardButtons();
     }
 
-    void RequestMinusVisibleCard()
+    private void RequestMinusVisibleCard()
     {
         deckManager.MinusVisibleCard();
         UpdateCardButtons();
     }
 
+    public void Pause()
+    {
+        pauseMenu.SetActive(true);
+    }
+    
+    public void Resume()
+    {
+        pauseMenu.SetActive(false);
+    }
 }

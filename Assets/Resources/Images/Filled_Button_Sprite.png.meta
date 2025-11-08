@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a5a13ee3692cb45aa815480cbe457bfd
+guid: 24b9e69f329524f6b8cb7002e53ec29b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4646876343654227710
-    second: Ellipse 1_0
+      213: 4299700244032853863
+    second: Filled_Button_Sprite_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,23 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Ellipse 1_0
+      name: Filled_Button_Sprite_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 123
-        height: 123
+        width: 258
+        height: 258
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 70, y: 70, z: 70, w: 70}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 201e25de59af28fb0800000000000000
-      internalID: -4646876343654227710
+      spriteID: 7671d36579a9bab30800000000000000
+      internalID: 4299700244032853863
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: bb9e193ff6fb7408aa6ebd844b5139e9
     internalID: 0
     vertices: []
     indices: 
@@ -147,7 +147,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Filled_Button_Sprite_0: 4299700244032853863
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
