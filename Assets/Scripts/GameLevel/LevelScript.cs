@@ -19,7 +19,7 @@ public class LevelScript : MonoBehaviour
     public Transform levelParent;
     public Dictionary<int, AnchorScript> anchorMap = new Dictionary<int, AnchorScript>();
     public List<AnchorScript> allAnchors = new List<AnchorScript>();
-    public int levelIndex;
+    public string levelIndex;
     public bool daily;
 
     [Header("Prefabs")]
@@ -43,7 +43,7 @@ public class LevelScript : MonoBehaviour
         }
         else
         {
-            levelIndex = 2;
+            levelIndex = "2";
             daily = false;
         }
         

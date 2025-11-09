@@ -6,13 +6,13 @@ using TMPro;
 public class LevelMenuUI : MonoBehaviour
 {
     [Header("References")]
-    public Transform levelGridParent; 
+    public Transform levelGridParent;
     public GameObject levelButtonPrefab; // assign in Inspector
 
     [Header("Settings")]
     public int totalLevels;
 
-    void Start()
+    public void Start()
     {
         if (GameManager.Instance == null)
         {
@@ -21,22 +21,27 @@ public class LevelMenuUI : MonoBehaviour
         GenerateLevelButtons();
     }
 
-    void GenerateLevelButtons()
+    public void GenerateLevelButtons()
     {
         for (int i = 1; i <= totalLevels; i++)
         {
             GameObject buttonObj = Instantiate(levelButtonPrefab, levelGridParent.transform);
             buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = $"{i}";
 
-            int levelIndex = i; 
+            string levelIndex = i.ToString();
             Button button = buttonObj.GetComponent<Button>();
             button.onClick.AddListener(() => OnLevelSelected(levelIndex));
         }
     }
 
-    void OnLevelSelected(int index)
+    public void OnLevelSelected(string index)
     {
         Debug.Log($"Selected Level {index}");
         GameManager.Instance.LoadLevelByIndex(index);
+    }
+
+    public void Back()
+    {
+        GameManager.Instance.LoadMainMenu();
     }
 }

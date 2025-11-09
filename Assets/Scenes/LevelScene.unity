@@ -323,6 +323,7 @@ MonoBehaviour:
   buttonPrefab: {fileID: 31639780914712418, guid: 4ce6cca567e644daeb37104f68acf023, type: 3}
   buttonParent: {fileID: 1368538684}
   pauseMenu: {fileID: 287162581}
+  pauseBlocker: {fileID: 2106180005}
   cardUIPrefab: {fileID: 31639780914712418, guid: 791e73c8ff9ef4b78af5bfc884f29c25, type: 3}
   cardContentArea: {fileID: 784877123}
   scrollRect: {fileID: 2092462744}

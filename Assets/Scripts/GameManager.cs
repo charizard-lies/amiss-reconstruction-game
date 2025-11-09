@@ -5,7 +5,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public bool selectedDailyLevel;
-    public int selectedLevelId;
+    public string selectedLevelId;
 
     private void Awake()
     {
@@ -21,21 +21,19 @@ public class GameManager : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().name == "PersistentManager")
         {
-            SceneManager.LoadScene("LevelMenu");
+            LoadMainMenu();
         }
     }
 
-    public void LoadDailyLevel(int id)
+    public void LoadMainMenu()
     {
-        selectedLevelId = id;
-        selectedDailyLevel = true;
-        SceneManager.LoadScene("LevelScene");
+        SceneManager.LoadScene("MainMenu");
     }
 
-    public void LoadLevelByIndex(int id)
+        public void LoadDailyLevel()
     {
-        selectedLevelId = id;
-        selectedDailyLevel = false;
+        selectedLevelId = System.DateTime.Now.ToString("ddMMyyyy");
+        selectedDailyLevel = true;
         SceneManager.LoadScene("LevelScene");
     }
 
@@ -43,9 +41,11 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene("LevelMenu");
     }
-    
-    public void LoadMainMenu()
+
+    public void LoadLevelByIndex(string id)
     {
-        SceneManager.LoadScene("MainMenu");
+        selectedLevelId = id;
+        selectedDailyLevel = false;
+        SceneManager.LoadScene("LevelScene");
     }
 }
