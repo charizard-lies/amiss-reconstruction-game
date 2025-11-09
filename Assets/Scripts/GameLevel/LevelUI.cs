@@ -14,6 +14,7 @@ public class LevelUI : MonoBehaviour
     public GameObject buttonPrefab;
     public Transform buttonParent;
     public GameObject pauseMenu;
+    public GameObject pauseBlocker;
 
     [Header("CardUI")]
     public GameObject cardUIPrefab;
@@ -51,6 +52,7 @@ public class LevelUI : MonoBehaviour
         minusButton.onClick.AddListener(() => RequestMinusVisibleCard());
 
         UpdateCardButtons();
+        Resume();
     }
 
     public void AddSolvedLabel()
@@ -111,11 +113,15 @@ public class LevelUI : MonoBehaviour
     public void Pause()
     {
         pauseMenu.SetActive(true);
+        pauseBlocker.SetActive(true);
+        levelManager.gamePaused = true;
     }
 
     public void Resume()
     {
         pauseMenu.SetActive(false);
+        pauseBlocker.SetActive(false);
+        levelManager.gamePaused = false;
     }
     
     public void Quit()

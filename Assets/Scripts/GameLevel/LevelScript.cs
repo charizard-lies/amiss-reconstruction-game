@@ -32,6 +32,7 @@ public class LevelScript : MonoBehaviour
     [Header("Managers")]
     public LevelUI UIManager;
     public DeckScript deck;
+    public bool gamePaused;
 
     void Start()
     {
@@ -66,6 +67,8 @@ public class LevelScript : MonoBehaviour
         //create ui
         UIManager.deckManager = deck;
         UIManager.InitButtons(graphData);
+
+        gamePaused = false;
     }
 
     public GraphData BuildOverlayGraph(List<CardScript> cards)

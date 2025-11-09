@@ -15,9 +15,9 @@ public class NodeScript : MonoBehaviour
     private Vector3 offset;
     private Camera cam;
     private SpriteRenderer sr;
-    private int removedNode;
     private int activeNodeLayer;
     private int inactiveNodeLayer;
+    private LevelScript levelManager;
 
     private void Awake()
     {
@@ -27,13 +27,13 @@ public class NodeScript : MonoBehaviour
         sr.sortingOrder = 2;
     }
 
-    public void Initialize(int id, int cardId, LayerMask activelayer, int inactivelayer)
+    public void Initialize(int id, LevelScript level)
     {
         nodeId = id;
-        activeNodeLayer = activelayer;
-        inactiveNodeLayer = inactivelayer;
+        activeNodeLayer = level.activeNodeLayer;
+        inactiveNodeLayer = level.inactiveNodeLayer;
         transform.gameObject.layer = inactiveNodeLayer;
-        removedNode = cardId;
+        levelManager = level;
     }   
 
     private void Update()
@@ -45,7 +45,7 @@ public class NodeScript : MonoBehaviour
         mouseWorldPos.z = 0f;
 
         //start drag
-        if (Mouse.current.leftButton.wasPressedThisFrame)
+        if (Mouse.current.leftButton.wasPressedThisFrame && !levelManager.gamePaused)
         {
             
             if (IsMouseOver())

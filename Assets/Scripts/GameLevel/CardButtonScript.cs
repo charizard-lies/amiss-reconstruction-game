@@ -44,7 +44,6 @@ public class CardButtonScript : MonoBehaviour
         {
             if (!node.snappedAnchor) continue;
             
-            Debug.Log(node.nodeId + ":\n");
             GameObject nodeObj = Instantiate(nodeUIPrefab, cardRectTransform);
             nodeObj.GetComponent<RectTransform>().anchoredPosition = WorldToUIPos(node.transform.position);
         }
@@ -74,9 +73,7 @@ public class CardButtonScript : MonoBehaviour
         Vector3 positionProportionalToParent = positionRelativeToParent / parentwidth;
         float cardBoxLength = Math.Min(cardRectTransform.rect.width, cardRectTransform.rect.height) - horizontalPadding*2;
         Vector3 positionOnCard = positionProportionalToParent * cardBoxLength;
-
-        Debug.Log($"({positionRelativeToParent.x},{positionRelativeToParent.y})");
-        Debug.Log($"*({cardRectTransform.rect.width}, {cardRectTransform.rect.height})");
+        
         return new Vector2(positionOnCard.x, positionOnCard.y);
     }
 

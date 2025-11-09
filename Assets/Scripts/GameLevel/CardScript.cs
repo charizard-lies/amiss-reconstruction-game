@@ -84,7 +84,7 @@ public class CardScript : MonoBehaviour
             counter++;
 
             NodeScript node = nodeObj.GetComponent<NodeScript>();
-            node.Initialize(id, removedId, activeNodeLayer, inactiveNodeLayer);
+            node.Initialize(id,levelManager);
             nodeMap[id] = node;
 
             assignedAnchor.Attach(node);
@@ -115,17 +115,16 @@ public class CardScript : MonoBehaviour
             Debug.Log("nodemap is null");
         }
 
-        ToggleVisible(false);
+        gameObject.SetActive(false);
     }
 
     public void ToggleActive(bool makeActive)
     {
         isActive = makeActive;
-        float alpha = makeActive ? 1f : 0f;
-        SetCardAlpha(gameObject, alpha);
 
         if (makeActive)
         {
+            gameObject.SetActive(true);
             gameObject.layer = activeNodeLayer;
             foreach (Transform child in transform)
             {
@@ -134,43 +133,12 @@ public class CardScript : MonoBehaviour
         }
         else
         {
+            gameObject.SetActive(false);
             gameObject.layer = inactiveNodeLayer;
             foreach (Transform child in transform)
             {
                 child.gameObject.layer = inactiveNodeLayer;
             }
-        }
-    }
-
-    public void ToggleVisible(bool makeVisible)
-    {
-        isVisible = makeVisible;
-        float alpha = makeVisible ? 0f : 0f;
-        SetCardAlpha(gameObject, alpha);
-
-        if (isActive && !makeVisible)
-        {
-            ToggleActive(false);
-        }
-    }
-
-    private void SetCardAlpha(GameObject card, float alpha)
-    {
-        SpriteRenderer[] sprites = card.GetComponentsInChildren<SpriteRenderer>();
-        foreach (var sr in sprites)
-        {
-            Color c = sr.color;
-            c.a = alpha;
-            sr.color = c;
-        }
-
-        LineRenderer[] edges = card.GetComponentsInChildren<LineRenderer>();
-        foreach (var edge in edges)
-        {
-            Color c = edge.startColor;
-            c.a = alpha;
-            edge.startColor = c;
-            edge.endColor = c;
         }
     }
     public void ResetCard()
@@ -197,8 +165,6 @@ public class CardScript : MonoBehaviour
             }
         }
 
-        // Optionally reset visibility/active states, alpha, etc.
-        ToggleVisible(false);
         ToggleActive(false);
     }
 }
