@@ -19,8 +19,8 @@ public class LevelScript : MonoBehaviour
     public Transform levelParent;
     public Dictionary<int, AnchorScript> anchorMap = new Dictionary<int, AnchorScript>();
     public List<AnchorScript> allAnchors = new List<AnchorScript>();
-    private int levelIndex;
-    private bool daily;
+    public int levelIndex;
+    public bool daily;
 
     [Header("Prefabs")]
     public GameObject deckPrefab;

@@ -21,8 +21,8 @@ public class LevelUI : MonoBehaviour
     public ScrollRect scrollRect;
 
     [Header("Graph References")]
-    public DeckScript deckManager;
     public LevelScript levelManager;
+    public DeckScript deckManager;
 
     private int currentLayerIndex = -1;
     private List<GameObject> cardButtons = new List<GameObject>();
@@ -112,9 +112,15 @@ public class LevelUI : MonoBehaviour
     {
         pauseMenu.SetActive(true);
     }
-    
+
     public void Resume()
     {
         pauseMenu.SetActive(false);
+    }
+    
+    public void Quit()
+    {
+        if (levelManager.daily) GameManager.Instance.LoadMainMenu();
+        else GameManager.Instance.LoadLevelMenu();
     }
 }
