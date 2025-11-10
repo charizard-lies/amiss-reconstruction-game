@@ -18,6 +18,10 @@ public class LevelUI : MonoBehaviour
 
     [Header("CardUI")]
     public GameObject cardUIPrefab;
+    public Sprite normalCardSprite;
+    public Sprite activeCardSprite;
+    public Color normalGraphColor;
+    public Color activeGraphColor;
     public Transform cardContentArea;
     public ScrollRect scrollRect;
 
@@ -84,8 +88,9 @@ public class LevelUI : MonoBehaviour
             cardButtons.Add(cardObj);
 
             CardButtonScript cardButtonScript = cardObj.GetComponent<CardButtonScript>();
-            cardButtonScript.Initiate(levelManager, index);
-            cardButtonScript.DrawCardSafe();
+            cardButtonScript.Initiate(levelManager, this, index);
+            bool cardIsActive = deckManager.activeCard.removedId == index;
+            cardButtonScript.DrawCardSafe(cardIsActive);
 
             Button cardButton = cardObj.GetComponentInChildren<Button>();
             cardButton.onClick.AddListener(() => deckManager.ToggleActiveCard(index));

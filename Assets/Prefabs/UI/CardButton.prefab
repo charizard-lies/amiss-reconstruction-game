@@ -150,5 +150,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nodeUIPrefab: {fileID: 1717456386895854331, guid: a6a679d944a32433c9ee893005e23989, type: 3}
   edgeUIPrefab: {fileID: 3737756791824072775, guid: 83775fcc746a84e4d9050cb8175ddba5, type: 3}
-  horizontalPadding: 30
+  horizontalPadding: 50
   lineWidth: 1.3

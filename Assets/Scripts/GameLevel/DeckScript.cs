@@ -19,7 +19,7 @@ public class DeckScript : MonoBehaviour
     private GameObject edgePrefab;
 
     //dynamic
-    private CardScript activeCard;
+    public CardScript activeCard;
 
     public void Initialize(LevelScript level)
     {
