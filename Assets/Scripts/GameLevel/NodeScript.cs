@@ -15,24 +15,16 @@ public class NodeScript : MonoBehaviour
     private Vector3 offset;
     private Camera cam;
     private SpriteRenderer sr;
-    private int activeNodeLayer;
-    private int inactiveNodeLayer;
     private LevelScript levelManager;
 
     private void Awake()
     {
         cam = Camera.main;
-        sr = GetComponent<SpriteRenderer>();
-        sr.sortingLayerName = "Default";
-        sr.sortingOrder = 2;
     }
 
     public void Initialize(int id, LevelScript level)
     {
         nodeId = id;
-        activeNodeLayer = level.activeNodeLayer;
-        inactiveNodeLayer = level.inactiveNodeLayer;
-        transform.gameObject.layer = inactiveNodeLayer;
         levelManager = level;
     }   
 
@@ -79,15 +71,19 @@ public class NodeScript : MonoBehaviour
             transform.position = mouseWorldPos + offset;
         }
     }
-
-    //check if mouse is over my current node
     private bool IsMouseOver()
     {
-        Vector2 mouseWorld = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        LayerMask activeLayerMask = 1 << activeNodeLayer;
+        Vector3 mousePos = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
 
-        Collider2D hit = Physics2D.OverlapPoint(mouseWorld, activeLayerMask);
-        return hit != null && hit.gameObject == this.gameObject;
+        RaycastHit2D hit = Physics2D.Raycast(
+            mousePos2D,
+            Vector2.zero,
+            0f,
+            ~0
+        );
+
+        return hit.collider != null && hit.collider.gameObject == this.gameObject;
     }
 
     void Snap()

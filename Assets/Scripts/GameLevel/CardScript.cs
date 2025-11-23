@@ -4,8 +4,6 @@ using UnityEngine;
 public class CardScript : MonoBehaviour
 {    //inherit
     private LevelScript levelManager;
-    private int activeNodeLayer; //ActiveNode
-    private int inactiveNodeLayer; //0
 
     //attributes
     public int removedId;
@@ -45,8 +43,6 @@ public class CardScript : MonoBehaviour
         levelManager = level;
         nodePrefab = level.nodePrefab;
         edgePrefab = level.edgePrefab;
-        activeNodeLayer = level.activeNodeLayer;
-        inactiveNodeLayer = level.inactiveNodeLayer;
         isActive = false;
         isVisible = false;
     }
@@ -125,20 +121,10 @@ public class CardScript : MonoBehaviour
         if (makeActive)
         {
             gameObject.SetActive(true);
-            gameObject.layer = activeNodeLayer;
-            foreach (Transform child in transform)
-            {
-                child.gameObject.layer = activeNodeLayer;
-            }
         }
         else
         {
             gameObject.SetActive(false);
-            gameObject.layer = inactiveNodeLayer;
-            foreach (Transform child in transform)
-            {
-                child.gameObject.layer = inactiveNodeLayer;
-            }
         }
     }
     public void ResetCard()

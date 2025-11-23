@@ -99,11 +99,8 @@ public class LevelScript : MonoBehaviour
     {
         if (!CheckUniqueSnappedAnchors()) return false;
 
-        Debug.Log("anchors are all right");
-
-        GraphData overlayGraph = BuildOverlayGraph(deck.visibleCards);
+        GraphData overlayGraph = BuildOverlayGraph(deck.allCards.Where(card => card.isVisible).ToList());
         bool overlayCorrect = CheckIsomorphism(graphData, overlayGraph);
-        Debug.Log("Overlay: " + overlayCorrect);
 
         return overlayCorrect;
     }
@@ -113,14 +110,14 @@ public class LevelScript : MonoBehaviour
         List<AnchorScript> anchors = allAnchors;
         List<AnchorScript> uniqueAnchors = new List<AnchorScript>();
 
-        foreach (CardScript card in deck.visibleCards)
+        foreach (CardScript card in deck.allCards)
         {
+            if (!card.isVisible) continue;
             List<AnchorScript> tempAnchors = new List<AnchorScript>();
             foreach (NodeScript node in card.nodeMap.Values)
             {
                 if (!node.snappedAnchor) return false;
                 tempAnchors.Add(node.snappedAnchor);
-                Debug.Log(node.snappedAnchor.id);
             }
             uniqueAnchors.Add(anchors.Except(tempAnchors).Single());
         }

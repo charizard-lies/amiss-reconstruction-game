@@ -179,7 +179,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5524986479468968878, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_PixelsPerUnitMultiplier
-      value: 0.7
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7441664785205868030, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_Pivot.x
@@ -325,6 +325,10 @@ MonoBehaviour:
   pauseMenu: {fileID: 287162581}
   pauseBlocker: {fileID: 2106180005}
   cardUIPrefab: {fileID: 31639780914712418, guid: 791e73c8ff9ef4b78af5bfc884f29c25, type: 3}
+  normalCardSprite: {fileID: 21300000, guid: 02fa691f089884261abc29b614a2c321, type: 3}
+  activeCardSprite: {fileID: 21300000, guid: df52d60bb1d84400f9b63bcc16a3795b, type: 3}
+  normalGraphColor: {r: 1, g: 1, b: 1, a: 1}
+  activeGraphColor: {r: 0.023529412, g: 0.05490196, b: 0.16862746, a: 1}
   cardContentArea: {fileID: 784877123}
   scrollRect: {fileID: 2092462744}
   levelManager: {fileID: 491654708}
@@ -960,7 +964,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1163509940181317849, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_PixelsPerUnitMultiplier
-      value: 0.7
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2064364174056803162, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_text

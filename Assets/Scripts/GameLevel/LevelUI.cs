@@ -30,32 +30,21 @@ public class LevelUI : MonoBehaviour
     public DeckScript deckManager;
 
     private int currentLayerIndex = -1;
-    private List<GameObject> cardButtons = new List<GameObject>();
+    public List<GameObject> cardButtons = new List<GameObject>();
 
     public void InitButtons(GraphData graphData)
     {
         AddSolvedLabel();
 
         GameObject submitButtonObj = Instantiate(buttonPrefab, buttonParent);
-        GameObject plusButtonObj = Instantiate(buttonPrefab, buttonParent);
-        GameObject minusButtonObj = Instantiate(buttonPrefab, buttonParent);
 
         TextMeshProUGUI submitLabel = submitButtonObj.GetComponentInChildren<TextMeshProUGUI>();
         if (submitLabel != null) submitLabel.text = "Submit";
-        TextMeshProUGUI plusLabel = plusButtonObj.GetComponentInChildren<TextMeshProUGUI>();
-        if (plusLabel != null) plusLabel.text = "+";
-        TextMeshProUGUI minusLabel = minusButtonObj.GetComponentInChildren<TextMeshProUGUI>();
-        if (minusLabel != null) minusLabel.text = "-";
-
         Button submitButton = submitButtonObj.GetComponentInChildren<Button>();
-        Button plusButton = plusButtonObj.GetComponentInChildren<Button>();
-        Button minusButton = minusButtonObj.GetComponentInChildren<Button>();
 
         submitButton.onClick.AddListener(() => UpdateSolved(levelManager.CheckGraphSolved()));
-        plusButton.onClick.AddListener(() => RequestAddVisibleCard());
-        minusButton.onClick.AddListener(() => RequestMinusVisibleCard());
 
-        UpdateCardButtons();
+        CreateCardButtons();
         Resume();
     }
 
@@ -70,7 +59,7 @@ public class LevelUI : MonoBehaviour
         solvedLabel.alignment = TextAlignmentOptions.Center;
     }
 
-    public void UpdateCardButtons()
+    public void CreateCardButtons()
     {
         // Remove old buttons (skip the first two: + and -)
         for (int i = 0; i < cardContentArea.childCount; i++)
@@ -80,11 +69,12 @@ public class LevelUI : MonoBehaviour
 
         cardButtons.Clear();
 
-        foreach (var card in deckManager.visibleCards)
+        foreach (var card in deckManager.allCards)
         {
             int index = card.removedId;
 
-            GameObject cardObj = Instantiate(cardUIPrefab, cardContentArea);
+            GameObject cardWrapperObj = Instantiate(cardUIPrefab, cardContentArea);
+            GameObject cardObj = cardWrapperObj.transform.GetChild(0).gameObject;
             cardButtons.Add(cardObj);
 
             CardButtonScript cardButtonScript = cardObj.GetComponent<CardButtonScript>();
@@ -94,6 +84,30 @@ public class LevelUI : MonoBehaviour
 
             Button cardButton = cardObj.GetComponentInChildren<Button>();
             cardButton.onClick.AddListener(() => deckManager.ToggleActiveCard(index));
+
+            Debug.Log($"card {cardButtonScript.cardId}: visible is {card.isVisible}");
+            cardObj.GetComponent<RectTransform>().anchoredPosition = card.isVisible ? cardButtonScript.topPos : cardButtonScript.bottomPos;
+            // dragScript.SnapCard(dragScript.topPos);
+        }
+    }
+
+    public void UpdateCardButtons()
+    {
+        foreach (var cardButtonObj in cardButtons)
+        {
+            for (int i=0; i < cardButtonObj.transform.childCount; i++)
+            {
+                Destroy(cardButtonObj.transform.GetChild(i).gameObject);
+            }
+            CardButtonScript cardButtonScript = cardButtonObj.GetComponent<CardButtonScript>();
+            int index = cardButtonScript.cardId;
+
+            bool cardIsActive = deckManager.activeCard.removedId == index;
+            cardButtonScript.DrawCardSafe(cardIsActive);
+
+            Button cardButton = cardButtonObj.GetComponentInChildren<Button>();
+            cardButton.onClick.AddListener(() => deckManager.ToggleActiveCard(index));
+            // dragScript.SnapCard(dragScript.topPos);
         }
     }
 

@@ -10,8 +10,7 @@ public class DeckScript : MonoBehaviour
     private GraphData graphData;
 
     //attributes
-    public List<CardScript> visibleCards = new List<CardScript>();
-    public List<CardScript> invisibleCards = new List<CardScript>();
+    public List<CardScript> allCards = new List<CardScript>();
     private List<GameObject> overlayEdges = new List<GameObject>();
 
     //prefab
@@ -41,14 +40,10 @@ public class DeckScript : MonoBehaviour
             cardScript.Initialize(i, graphData.GraphReduce(i), levelManager);
 
             cardScript.Build();
-            invisibleCards.Add(cardScript);
+            allCards.Add(cardScript);
+            cardScript.isVisible = true;
         }
-
-        AddVisibleCard();
-        AddVisibleCard();
-        AddVisibleCard();
-
-        ToggleActiveCard(visibleCards[0].removedId);
+        ToggleActiveCard(allCards[0].removedId);
     }
 
     public void RedrawOverlayGraph()
@@ -59,7 +54,7 @@ public class DeckScript : MonoBehaviour
         }
         overlayEdges.Clear();
 
-        List<CardScript> cardsToOverlay = visibleCards.Where(n => n != activeCard).ToList();
+        List<CardScript> cardsToOverlay = allCards.Where(n => n != activeCard && n.isVisible).ToList();
         GraphData overlayGraph = levelManager.BuildOverlayGraph(cardsToOverlay);
 
         foreach (var edge in overlayGraph.edges)
@@ -73,95 +68,48 @@ public class DeckScript : MonoBehaviour
 
     public void ToggleActiveCard(int id)
     {
-        //assumption: no invisible card will be toggled
         if (activeCard) activeCard.ToggleActive(false);
-        foreach (CardScript card in visibleCards)
-        {
-            if (card.removedId == id)
-            {
-                //test
-                if (!card.isVisible)
-                {
-                    Debug.LogWarning($"Invisible card ({card.removedId}) is being toggled to active");
-                    return;
-                }
-                //test
 
-                card.ToggleActive(true);
-                activeCard = card;
-            }
+        CardScript newActiveCard = allCards.First(card => card.removedId == id);
+
+        if (!newActiveCard.isVisible)
+        {
+            ToggleVisibleCard(id, true);
+            GameObject cardButtonObj = levelManager.UIManager.cardButtons.First(card => card.GetComponent<CardButtonScript>().cardId == id);
+            CardButtonScript cardButtonScript = cardButtonObj.GetComponent<CardButtonScript>();
+            cardButtonScript.Slide(true);
         }
+
+        newActiveCard.ToggleActive(true);
+        activeCard = newActiveCard;
 
         levelManager.UIManager.UpdateCardButtons();
         RedrawOverlayGraph();
     }
     
-    private void ToggleVisibleCard(int id, bool makeVisible)
+    public void ToggleVisibleCard(int id, bool makeVisible)
     {
-        List<CardScript> cardsToSearch = makeVisible ? invisibleCards : visibleCards;
-        CardScript cardToToggle = null;
-
-        foreach (CardScript card in cardsToSearch)
+        CardScript cardToToggle = allCards.First(card => card.removedId == id);
+        if (cardToToggle.isActive && !makeVisible)
         {
-            if (card.removedId == id)
-            {
-                cardToToggle = card;
-            }
+            CardScript cardToReplaceActive = allCards.First(card => card.isVisible);
+            ToggleActiveCard(cardToReplaceActive.removedId);
         }
-
-        if (!makeVisible)
-        {
-            if (cardToToggle == null)
-            {
-                Debug.LogWarning("card not found");
-                return;
-            }
-            bool wasActive = activeCard == cardToToggle;
-            if (wasActive && visibleCards.Count > 1) ToggleActiveCard(visibleCards[0].removedId);
-            else Debug.LogWarning("No more invisible cards to become active!");
-
-            cardToToggle.isVisible = false;
-            visibleCards.Remove(cardToToggle);
-            invisibleCards.Add(cardToToggle);
-
-        }
-        else
-        {
-            cardToToggle.isVisible = true;
-            invisibleCards.Remove(cardToToggle);
-            visibleCards.Add(cardToToggle);
-        }
-        
+        cardToToggle.isVisible = makeVisible;
         RedrawOverlayGraph();
         return;
     }
 
     public void AddVisibleCard()
     {
-        if (invisibleCards.Count == 0)
-        {
-            Debug.LogWarning("No invisible cards available to add.");
-            return;
-        }
-        
-        invisibleCards.Sort((a, b) => a.removedId.CompareTo(b.removedId));
-        CardScript cardToShow = invisibleCards[0];
-        
+        CardScript cardToShow = allCards.First(card => !card.isVisible);
         ToggleVisibleCard(cardToShow.removedId, true);
     }
 
     public void MinusVisibleCard()
     {
-        if (visibleCards.Count <= 1)
-        {
-            Debug.LogWarning("At least one card must remain visible.");
-            return;
-        }
-
-        CardScript cardToHide = visibleCards[visibleCards.Count - 1];
+        CardScript cardToHide = allCards.First(card => card.isVisible);
         ToggleVisibleCard(cardToHide.removedId, false);
-
-        //reset card
         cardToHide.ResetCard();
     }
 }
