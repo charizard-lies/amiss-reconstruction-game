@@ -11,8 +11,6 @@ public class LevelScript : MonoBehaviour
     [Header("Attributes")]
     public float initRadius;
     public GraphData graphData;
-    public int activeNodeLayer = 6; //ActiveNode
-    public int inactiveNodeLayer = 0; //0
     public float activeEdgeWidth;
     public float overlayEdgeWidth = 0.1f;
     public float overlayEdgeAlpha = 0.1f;
@@ -113,6 +111,7 @@ public class LevelScript : MonoBehaviour
         foreach (CardScript card in deck.allCards)
         {
             if (!card.isVisible) continue;
+            
             List<AnchorScript> tempAnchors = new List<AnchorScript>();
             foreach (NodeScript node in card.nodeMap.Values)
             {

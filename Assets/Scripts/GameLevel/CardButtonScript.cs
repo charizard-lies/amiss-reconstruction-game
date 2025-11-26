@@ -21,7 +21,6 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     public float horizontalPadding;
     public float lineWidth;
 
-
     private Sprite normalCardSprite;
     private Sprite activeCardSprite;
     private Color normalGraphColor;
@@ -45,10 +44,10 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     [Header("Other")]
     public int cardId;
     public bool isSnapping = false;
-    public bool isDragging = false;
     private CardScript card;
     private RectTransform rect;
     private Vector2 targetPos;
+    private Button cardButton;
 
     public void Initiate(LevelScript level, LevelUI UI, int id)
     {
@@ -56,6 +55,7 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         levelManager = level;
         card = level.deck.allCards.First(card => card.removedId == id);
         rect = GetComponent<RectTransform>();
+        cardButton = GetComponent<Button>();
         UIManager = UI;
         bottomPos = rect.anchoredPosition;
         topPos = new Vector2(bottomPos.x, bottomPos.y + maxOffset);
@@ -65,6 +65,7 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         normalGraphColor = UIManager.normalGraphColor;
         activeGraphColor = UIManager.activeGraphColor;
 
+        cardButton.onClick.AddListener(() => level.deck.ToggleActiveCard(cardId));
         OnSnapTop.AddListener(() =>
             UIManager.levelManager.deck.ToggleVisibleCard(cardId, true)
         );
@@ -145,10 +146,6 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (card.isActive) return;
-
-        isSnapping = false;
-        isDragging = false;
-
         pointerInitialPos = eventData.position;
     }
 
@@ -156,7 +153,7 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         if (card.isActive) return;
 
-        if (Vector2.Distance(pointerInitialPos, eventData.position) > dragThreshold) isDragging = true;
+        if (Vector2.Distance(pointerInitialPos, eventData.position) > dragThreshold) cardButton.interactable = false;
 
         Vector2 drag = eventData.delta;
         float newY = rect.anchoredPosition.y + drag.y;
@@ -168,9 +165,8 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     public void OnEndDrag(PointerEventData eventData)
     {
         if (card.isActive) return;
-
-        isDragging = false;
         isSnapping = true;
+        cardButton.interactable = true;
 
         float currentY = rect.anchoredPosition.y;
         float halfway = (topPos.y + bottomPos.y) / 2f;
@@ -186,15 +182,6 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         }
     }
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (isDragging || card.isActive || !card.isVisible)
-        {
-            eventData.Use();
-            return;
-        }
-        Debug.Log("Clicked normally!");
-    }
 
     public void Slide (bool slideUp)
     {
@@ -218,7 +205,6 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
             }
             rect.anchoredPosition = targetPosition;
             isSnapping = false;
-            isDragging = false;
         }
     }
 
@@ -226,6 +212,5 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         if (!isSnapping) return;
         SnapCardStep(targetPos);
-        
     }
 }

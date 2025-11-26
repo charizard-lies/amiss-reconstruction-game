@@ -14,7 +14,6 @@ public class NodeScript : MonoBehaviour
     private bool isDragging = false;
     private Vector3 offset;
     private Camera cam;
-    private SpriteRenderer sr;
     private LevelScript levelManager;
 
     private void Awake()
@@ -106,6 +105,7 @@ public class NodeScript : MonoBehaviour
                     {
                         snappedAnchor = anchor.GetComponent<AnchorScript>();
                         anchorScript.Attach(this);
+                        levelManager.UIManager.UpdateSolved(levelManager.CheckGraphSolved());
                         break;
                     }
                     //anchor is filled
@@ -113,7 +113,6 @@ public class NodeScript : MonoBehaviour
 
                 }
             }
-
         }
         //no anchors
         else

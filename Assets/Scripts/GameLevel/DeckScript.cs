@@ -96,6 +96,7 @@ public class DeckScript : MonoBehaviour
             ToggleActiveCard(cardToReplaceActive.removedId);
         }
         cardToToggle.isVisible = makeVisible;
+        levelManager.UIManager.UpdateSolved(levelManager.CheckGraphSolved());
         RedrawOverlayGraph();
         return;
     }
