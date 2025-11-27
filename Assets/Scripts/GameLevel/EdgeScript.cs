@@ -2,17 +2,18 @@ using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.UIElements;
 
+[RequireComponent(typeof(LineRenderer))]
 public class EdgeScript : MonoBehaviour
 {
     public Transform PointA;
     public Transform PointB;
 
     private float width;
-    private Color color;
     private LineRenderer lr;
     
     private void Awake()
     {
+        Debug.Log("am awake");
         lr = GetComponent<LineRenderer>();
         lr.sortingLayerName = "Default";
         lr.sortingOrder = 0;
@@ -24,8 +25,8 @@ public class EdgeScript : MonoBehaviour
         PointA = A;
         PointB = B;
         width = linew;
-        color = linecol;
 
+        Debug.Log(lr);
         lr.startWidth = width;
         lr.endWidth = width;
         lr.startColor = linecol;

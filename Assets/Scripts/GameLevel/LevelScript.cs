@@ -1,8 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Unity.Collections;
-using UnityEditor.Experimental.GraphView;
-using UnityEditor.VersionControl;
 using UnityEngine;
 
 //I will be the logic behind managing various different levels in the game
@@ -14,11 +11,13 @@ public class LevelScript : MonoBehaviour
     public float activeEdgeWidth;
     public float overlayEdgeWidth = 0.1f;
     public float overlayEdgeAlpha = 0.1f;
+    public Color edgeColor = Color.white;
     public Transform levelParent;
     public Dictionary<int, AnchorScript> anchorMap = new Dictionary<int, AnchorScript>();
     public List<AnchorScript> allAnchors = new List<AnchorScript>();
     public string levelIndex;
     public bool daily;
+    private System.Random rng = new System.Random();
 
     [Header("Prefabs")]
     public GameObject deckPrefab;
@@ -44,11 +43,98 @@ public class LevelScript : MonoBehaviour
             levelIndex = "2";
             daily = false;
         }
-        
+
         if (daily) graphData = Resources.Load<GraphData>($"Levels/Daily/Level{levelIndex}");
         else graphData = Resources.Load<GraphData>($"Levels/Normal/Level{levelIndex}");
 
-        //anchors
+        BuildAnchors();
+        SaveManager.CurrentState = LoadLevelState();
+
+        deck = Instantiate(deckPrefab, levelParent).GetComponent<DeckScript>();
+        deck.Initialize(this);
+        deck.Build();
+        UIManager.CreateCardButtons();
+
+        gamePaused = false;
+    }
+
+    private LevelState LoadLevelState()
+    {
+        LevelState loaded = SaveManager.Load(levelIndex);
+        if (loaded != null) return loaded;
+
+        return CreateFreshLevelState();
+    }
+
+    private List<T> Shuffle<T>(List<T> list)
+    {
+        int n = list.Count;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.Next(n + 1);
+            T value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+
+        return list;
+    }
+
+    private List<int> ShuffledAnchorIds(int removedId)
+    {
+        List<int> shuffledAnchors = allAnchors
+        .FindAll(anchor => anchor.id != removedId)
+        .Select(anchor => anchor.id)
+        .ToList();
+
+        return Shuffle(shuffledAnchors);
+    }
+
+    private LevelState CreateFreshLevelState()
+    {
+        LevelState state = new LevelState();
+        state.levelIndex = levelIndex;
+        state.activeCardId = graphData.nodeIds[0];
+
+        foreach (int nodeId in graphData.nodeIds)
+        {
+            state.idToCardStatesMap[nodeId] = CreateFreshCardState(nodeId);
+        }
+
+        return state;
+    }
+    
+    private CardState CreateFreshCardState(int removedId)
+    {
+        CardState state = new CardState();
+        GraphData reducedGraphData = graphData.GraphReduce(removedId);
+        List<int> shuffledAnchorIds = ShuffledAnchorIds(removedId);
+
+        state.isVisible = true;
+        state.nodeAnchorIdMap = reducedGraphData.nodeIds
+        .Select((nodeId, i) => new { nodeId, value = shuffledAnchorIds[i] })
+        .ToDictionary(x => x.nodeId, x => x.value);
+        
+        
+        foreach(int nodeId in graphData.nodeIds)
+        {
+            if (nodeId == removedId) continue;
+
+            NodeState nodeState = new NodeState();
+            nodeState.nodeId = nodeId;
+            nodeState.snapped = true;
+            nodeState.snappedAnchorId = state.nodeAnchorIdMap[nodeId];
+            nodeState.pos = anchorMap[state.nodeAnchorIdMap[nodeId]].transform.position;
+
+            state.nodes.Add(nodeState);
+        }
+
+        return state;
+    }
+
+    private void BuildAnchors()
+    {
         for (int i = 0; i < graphData.nodeIds.Count; i++)
         {
             AnchorScript temp = Instantiate(anchorPrefab, getAnchorPos(i, graphData.nodeIds.Count), Quaternion.identity, levelParent).GetComponent<AnchorScript>();
@@ -56,17 +142,6 @@ public class LevelScript : MonoBehaviour
             allAnchors.Add(temp);
             anchorMap[i] = temp;
         }
-
-        //game deck
-        deck = Instantiate(deckPrefab, levelParent).GetComponent<DeckScript>();
-        deck.Initialize(this);
-        deck.BuildDeck();
-
-        //create ui
-        UIManager.deckManager = deck;
-        UIManager.InitButtons(graphData);
-
-        gamePaused = false;
     }
 
     public GraphData BuildOverlayGraph(List<CardScript> cards)
@@ -212,7 +287,7 @@ public class LevelScript : MonoBehaviour
             var g2Neighbors = g2Adj[perm[i]];
 
             //map the neighbours of g1 onto what they would be on g2
-            var mappedG1Neighbors = g1Neighbors.Select(neigh => perm[neigh]).ToHashSet();
+            var mappedG1Neighbors = System.Linq.Enumerable.ToHashSet(g1Neighbors.Select(neigh => perm[neigh]));
 
             if (!mappedG1Neighbors.SetEquals(g2Neighbors))
                 return false;

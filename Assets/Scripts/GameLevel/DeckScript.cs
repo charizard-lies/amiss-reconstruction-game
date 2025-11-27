@@ -8,6 +8,7 @@ public class DeckScript : MonoBehaviour
     //inherit
     private LevelScript levelManager;
     private GraphData graphData;
+    private LevelState levelState;
 
     //attributes
     public List<CardScript> allCards = new List<CardScript>();
@@ -26,9 +27,10 @@ public class DeckScript : MonoBehaviour
         graphData = levelManager.graphData;
         cardPrefab = level.cardPrefab;
         edgePrefab = level.edgePrefab;
+        levelState = SaveManager.CurrentState;
     }
 
-    public void BuildDeck()
+    public void Build()
     {
         for (int i = 0; i < graphData.nodeIds.Count; i++)
         {
@@ -41,9 +43,10 @@ public class DeckScript : MonoBehaviour
 
             cardScript.Build();
             allCards.Add(cardScript);
-            cardScript.isVisible = true;
+            cardScript.isVisible = levelState.idToCardStatesMap[i].isVisible;
+            card.SetActive(false);
         }
-        ToggleActiveCard(allCards[0].removedId);
+        ToggleActiveCard(levelState.activeCardId);
     }
 
     public void RedrawOverlayGraph()

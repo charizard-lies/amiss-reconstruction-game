@@ -27,16 +27,9 @@ public class LevelUI : MonoBehaviour
 
     [Header("Graph References")]
     public LevelScript levelManager;
-    public DeckScript deckManager;
 
     private int currentLayerIndex = -1;
     public List<GameObject> cardButtons = new List<GameObject>();
-
-    public void InitButtons(GraphData graphData)
-    {
-        CreateCardButtons();
-        Resume();
-    }
     public void CreateCardButtons()
     {
         // Remove old buttons (skip the first two: + and -)
@@ -47,7 +40,7 @@ public class LevelUI : MonoBehaviour
 
         cardButtons.Clear();
 
-        foreach (var card in deckManager.allCards)
+        foreach (var card in levelManager.deck.allCards)
         {
             int index = card.removedId;
 
@@ -57,14 +50,13 @@ public class LevelUI : MonoBehaviour
 
             CardButtonScript cardButtonScript = cardObj.GetComponent<CardButtonScript>();
             cardButtonScript.Initiate(levelManager, this, index);
-            bool cardIsActive = deckManager.activeCard.removedId == index;
+            bool cardIsActive = levelManager.deck.activeCard.removedId == index;
             cardButtonScript.DrawCardSafe(cardIsActive);
 
             Button cardButton = cardObj.GetComponentInChildren<Button>();
-            cardButton.onClick.AddListener(() => deckManager.ToggleActiveCard(index));
+            cardButton.onClick.AddListener(() => levelManager.deck.ToggleActiveCard(index));
 
             cardObj.GetComponent<RectTransform>().anchoredPosition = card.isVisible ? cardButtonScript.topPos : cardButtonScript.bottomPos;
-            // dragScript.SnapCard(dragScript.topPos);
         }
     }
 
@@ -79,7 +71,7 @@ public class LevelUI : MonoBehaviour
             CardButtonScript cardButtonScript = cardButtonObj.GetComponent<CardButtonScript>();
             int index = cardButtonScript.cardId;
 
-            bool cardIsActive = deckManager.activeCard.removedId == index;
+            bool cardIsActive = levelManager.deck.activeCard.removedId == index;
             cardButtonScript.DrawCardSafe(cardIsActive);
 
             Button cardButton = cardButtonObj.GetComponentInChildren<Button>();
@@ -95,19 +87,7 @@ public class LevelUI : MonoBehaviour
             pauseBlocker.SetActive(true);
         }
     }
-
-    private void RequestAddVisibleCard()
-    {
-        deckManager.AddVisibleCard();
-        UpdateCardButtons();
-    }
-
-    private void RequestMinusVisibleCard()
-    {
-        deckManager.MinusVisibleCard();
-        UpdateCardButtons();
-    }
-
+    
     public void Pause()
     {
         pauseMenu.SetActive(true);

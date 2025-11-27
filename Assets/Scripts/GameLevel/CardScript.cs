@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CardScript : MonoBehaviour
@@ -10,6 +11,7 @@ public class CardScript : MonoBehaviour
     public Dictionary<int, NodeScript> nodeMap = new Dictionary<int, NodeScript>();
     public List<EdgeScript> allEdges = new List<EdgeScript>();
     private Dictionary<int, AnchorScript> initialNodeAnchorMap = new Dictionary<int, AnchorScript>();
+    private CardState cardState;
 
     //prefab
     private GameObject nodePrefab;
@@ -17,24 +19,10 @@ public class CardScript : MonoBehaviour
 
     //data
     private GraphData cardData;
-    private System.Random rng = new System.Random();
 
     //dynamic
     public bool isActive;
     public bool isVisible;
-
-    private void Shuffle<T>(IList<T> list)
-    {
-        int n = list.Count;
-        while (n > 1)
-        {
-            n--;
-            int k = rng.Next(n + 1);
-            T value = list[k];
-            list[k] = list[n];
-            list[n] = value;
-        }
-    }
 
     public void Initialize(int id, GraphData data, LevelScript level)
     {
@@ -45,75 +33,63 @@ public class CardScript : MonoBehaviour
         edgePrefab = level.edgePrefab;
         isActive = false;
         isVisible = false;
+        cardState = SaveManager.CurrentState.idToCardStatesMap[removedId];
     }
 
     public void Build()
     {
-        if (nodeMap.Count > 0 || allEdges.Count > 0)
-        {
-            Debug.LogWarning("Build() called on non-empty card. Did you forget ResetCard()?");
-            return;
-        }
+        ResetCard();
 
-        HashSet<(int, int)> createdEdges = new HashSet<(int, int)>();
-        var validAnchors = levelManager.allAnchors.FindAll(anchor => anchor.id != removedId);
-
-        //error check
-        if (validAnchors.Count < cardData.nodeIds.Count)
-        {
-            Debug.LogError("Not enough anchors for nodes!");
-            return;
-        }
-
-        Shuffle(validAnchors);
-
-        //creating nodes and attaching to anchors
-        int counter = 0;
-        foreach (int id in cardData.nodeIds)
-        {
-            AnchorScript assignedAnchor = validAnchors[counter];
-            initialNodeAnchorMap[id] = assignedAnchor;  // store initial anchor
-
-            Vector3 nodePos = validAnchors[counter].transform.position;
-            nodePos.z = -1;
-            GameObject nodeObj = Instantiate(nodePrefab, nodePos, Quaternion.identity, transform);
-            counter++;
-
-            NodeScript node = nodeObj.GetComponent<NodeScript>();
-            node.Initialize(id,levelManager);
-            nodeMap[id] = node;
-
-            assignedAnchor.Attach(node);
-            node.snappedAnchor = assignedAnchor;
-        }
-
-        //creating edges from nodes
-        foreach (var pair in cardData.edges)
-        {
-            int nodeFrom = pair.fromNodeId;
-            int nodeTo = pair.toNodeId;
-
-            int nodeA = Mathf.Min(nodeFrom, nodeTo);
-            int nodeB = Mathf.Max(nodeFrom, nodeTo);
-
-            if (createdEdges.Contains((nodeA, nodeB))) continue;
-
-            GameObject edgeObj = Instantiate(edgePrefab, transform);
-            EdgeScript edge = edgeObj.GetComponent<EdgeScript>();
-            edge.Initialize(nodeMap[nodeA].transform, nodeMap[nodeB].transform, levelManager.activeEdgeWidth, Color.white);
-
-            allEdges.Add(edge);
-            createdEdges.Add((nodeA, nodeB));
-        }
-
-        if (nodeMap == null)
-        {
-            Debug.Log("nodemap is null");
-        }
-
-        gameObject.SetActive(false);
+        foreach (NodeState node in cardState.nodes) SpawnNode(node.nodeId);
+        SpawnEdges(levelManager.edgeColor);
     }
 
+    private void SpawnNode(int nodeId)
+    {
+        NodeState nodeData = cardState.nodes.First(node => node.nodeId == nodeId);
+        Vector3 nodePos;
+        AnchorScript spawnAnchor = null;
+
+        if (nodeData.snapped)
+        {
+            List<AnchorScript> anchors = levelManager.allAnchors;
+            spawnAnchor = anchors.First(anchor => anchor.id == nodeData.snappedAnchorId);
+            nodePos = spawnAnchor.transform.position;
+        }
+        else nodePos = nodeData.pos;
+        
+
+        GameObject nodeObj = Instantiate(nodePrefab, nodePos, Quaternion.identity, transform);
+
+        NodeScript node = nodeObj.GetComponent<NodeScript>();
+        node.Initialize(nodeId, levelManager);
+        nodeMap[nodeId] = node;
+
+        if (spawnAnchor) node.SnapToAnchor(spawnAnchor);
+    }
+
+    private void SpawnEdges(Color edgeColor)
+    {
+        HashSet<(int, int)> createdEdges = new HashSet<(int, int)>();
+
+        foreach (var pair in cardData.edges)
+        {
+            int nodeFromId = Mathf.Min(pair.fromNodeId, pair.toNodeId);
+            int nodeToId = Mathf.Max(pair.fromNodeId, pair.toNodeId);
+
+            if (createdEdges.Contains((nodeFromId, nodeToId))) continue;
+
+            GameObject edgeObj = Instantiate(edgePrefab);
+            EdgeScript edge = edgeObj.GetComponent<EdgeScript>();
+            edge.Initialize(nodeMap[nodeFromId].transform, nodeMap[nodeToId].transform, levelManager.activeEdgeWidth, edgeColor);
+            edgeObj.transform.SetParent(transform);
+
+            allEdges.Add(edge);
+            createdEdges.Add((nodeFromId, nodeToId));
+        }
+
+    }
+    
     public void ToggleActive(bool makeActive)
     {
         isActive = makeActive;
@@ -127,6 +103,7 @@ public class CardScript : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+    
     public void ResetCard()
     {
         foreach (var kvp in nodeMap)

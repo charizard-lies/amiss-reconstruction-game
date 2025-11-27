@@ -35,7 +35,6 @@ public class NodeScript : MonoBehaviour
         Vector3 mouseWorldPos = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         mouseWorldPos.z = 0f;
 
-        //start drag
         if (Mouse.current.leftButton.wasPressedThisFrame && !levelManager.gamePaused)
         {
             
@@ -57,7 +56,6 @@ public class NodeScript : MonoBehaviour
             }
         }
 
-        //end drag
         if (Mouse.current.leftButton.wasReleasedThisFrame && isDragging)
         {
             isDragging = false;
@@ -126,6 +124,11 @@ public class NodeScript : MonoBehaviour
         }
     }
     
+    public void SnapToAnchor (AnchorScript anchor)
+    {
+        snappedAnchor = anchor;
+        anchor.Attach(this);
+    }
     private IEnumerator DelayedSnap()
     {
         yield return null; // Waits 1 frame

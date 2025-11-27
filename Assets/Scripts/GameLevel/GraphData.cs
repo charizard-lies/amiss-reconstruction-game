@@ -43,7 +43,6 @@ public class GraphData : ScriptableObject
             nodeIds.Add(id);
         }
     }
-
     public void AddEdge(int aID, int bID)
     {
         if (!edges.Any(e =>
