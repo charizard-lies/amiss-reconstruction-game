@@ -49,6 +49,15 @@ public class DeckScript : MonoBehaviour
         ToggleActiveCard(levelState.activeCardId);
     }
 
+    public void ResetDeck()
+    {
+        foreach (CardScript card in allCards)
+        {
+            card.ResetCard();
+        }
+        ToggleActiveCard(levelState.activeCardId);
+    }
+
     public void RedrawOverlayGraph()
     {
         foreach (GameObject oldEdge in overlayEdges)

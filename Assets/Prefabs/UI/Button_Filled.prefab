@@ -10,7 +10,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 990286486283047063, guid: af2f20c9dd5074fdca8a06b98c1ae305, type: 3}
       propertyPath: m_Name
-      value: Button
+      value: Button_Filled
+      objectReference: {fileID: 0}
+    - target: {fileID: 5960551664902288761, guid: af2f20c9dd5074fdca8a06b98c1ae305, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 83a778362205843c9b7b726639e19df5, type: 2}
+    - target: {fileID: 5960551664902288761, guid: af2f20c9dd5074fdca8a06b98c1ae305, type: 3}
+      propertyPath: m_sharedMaterial
+      value: 
+      objectReference: {fileID: -849638207874586076, guid: 83a778362205843c9b7b726639e19df5, type: 2}
+    - target: {fileID: 5960551664902288761, guid: af2f20c9dd5074fdca8a06b98c1ae305, type: 3}
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8489583335933511850, guid: af2f20c9dd5074fdca8a06b98c1ae305, type: 3}
       propertyPath: m_Pivot.x

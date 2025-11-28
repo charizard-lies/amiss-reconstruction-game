@@ -10,7 +10,6 @@ public class CardScript : MonoBehaviour
     public int removedId;
     public Dictionary<int, NodeScript> nodeMap = new Dictionary<int, NodeScript>();
     public List<EdgeScript> allEdges = new List<EdgeScript>();
-    private Dictionary<int, AnchorScript> initialNodeAnchorMap = new Dictionary<int, AnchorScript>();
     private CardState cardState;
 
     //prefab
@@ -38,8 +37,6 @@ public class CardScript : MonoBehaviour
 
     public void Build()
     {
-        ResetCard();
-
         foreach (NodeState node in cardState.nodes) SpawnNode(node.nodeId);
         SpawnEdges(levelManager.edgeColor);
     }
@@ -111,16 +108,15 @@ public class CardScript : MonoBehaviour
             int nodeId = kvp.Key;
             NodeScript node = kvp.Value;
 
-            if (initialNodeAnchorMap.TryGetValue(nodeId, out AnchorScript anchor))
+            if (cardState.nodeAnchorIdMap != null)
             {
-                // Detach from current anchor if any
                 if (node.snappedAnchor != null)
                     node.snappedAnchor.Detach(node);
 
-                // Move node to initial anchor position and attach
-                node.transform.position = new Vector3(anchor.transform.position.x, anchor.transform.position.y, node.transform.position.z);
-                anchor.Attach(node);
-                node.snappedAnchor = anchor;
+                AnchorScript originalAnchor = levelManager.anchorMap[cardState.nodeAnchorIdMap[nodeId]];
+                node.transform.position = new Vector3(originalAnchor.transform.position.x, originalAnchor.transform.position.y, node.transform.position.z);
+                originalAnchor.Attach(node);
+                node.snappedAnchor = originalAnchor;
             }
             else
             {

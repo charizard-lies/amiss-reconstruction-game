@@ -58,6 +58,11 @@ public class LevelScript : MonoBehaviour
         gamePaused = false;
     }
 
+    public void Restart()
+    {
+        deck.ResetDeck();
+    }
+
     private LevelState LoadLevelState()
     {
         LevelState loaded = SaveManager.Load(levelIndex);
