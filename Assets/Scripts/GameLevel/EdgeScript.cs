@@ -13,7 +13,6 @@ public class EdgeScript : MonoBehaviour
     
     private void Awake()
     {
-        Debug.Log("am awake");
         lr = GetComponent<LineRenderer>();
         lr.sortingLayerName = "Default";
         lr.sortingOrder = 0;
@@ -26,7 +25,6 @@ public class EdgeScript : MonoBehaviour
         PointB = B;
         width = linew;
 
-        Debug.Log(lr);
         lr.startWidth = width;
         lr.endWidth = width;
         lr.startColor = linecol;

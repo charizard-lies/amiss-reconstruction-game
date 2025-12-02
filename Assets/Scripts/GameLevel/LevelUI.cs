@@ -64,7 +64,7 @@ public class LevelUI : MonoBehaviour
     {
         foreach (var cardButtonObj in cardButtons)
         {
-            for (int i=0; i < cardButtonObj.transform.childCount; i++)
+            for (int i = 0; i < cardButtonObj.transform.childCount; i++)
             {
                 Destroy(cardButtonObj.transform.GetChild(i).gameObject);
             }
@@ -87,12 +87,14 @@ public class LevelUI : MonoBehaviour
             pauseBlocker.SetActive(true);
         }
     }
-    
+
     public void Pause()
     {
         pauseMenu.SetActive(true);
         pauseBlocker.SetActive(true);
         levelManager.gamePaused = true;
+
+        SaveManager.Save(levelManager.levelIndex);
     }
 
     public void Resume()
@@ -116,5 +118,10 @@ public class LevelUI : MonoBehaviour
     public void OpenMainMenu()
     {
         GameManager.Instance.LoadMainMenu();
+    }
+
+    public void DeleteSave()
+    {
+        SaveManager.Delete(levelManager.levelIndex);
     }
 }

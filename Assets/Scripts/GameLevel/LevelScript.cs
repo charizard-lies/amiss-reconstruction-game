@@ -7,6 +7,7 @@ public class LevelScript : MonoBehaviour
 {
     [Header("Attributes")]
     public float initRadius;
+    public LevelState levelState;
     public GraphData graphData;
     public float activeEdgeWidth;
     public float overlayEdgeWidth = 0.1f;
@@ -49,6 +50,7 @@ public class LevelScript : MonoBehaviour
 
         BuildAnchors();
         SaveManager.CurrentState = LoadLevelState();
+        levelState = SaveManager.CurrentState;
 
         deck = Instantiate(deckPrefab, levelParent).GetComponent<DeckScript>();
         deck.Initialize(this);
@@ -106,6 +108,7 @@ public class LevelScript : MonoBehaviour
         {
             state.idToCardStatesMap[nodeId] = CreateFreshCardState(nodeId);
         }
+        state.EnsureList();
 
         return state;
     }
@@ -128,7 +131,6 @@ public class LevelScript : MonoBehaviour
 
             NodeState nodeState = new NodeState();
             nodeState.nodeId = nodeId;
-            nodeState.snapped = true;
             nodeState.snappedAnchorId = state.nodeAnchorIdMap[nodeId];
             nodeState.pos = anchorMap[state.nodeAnchorIdMap[nodeId]].transform.position;
 

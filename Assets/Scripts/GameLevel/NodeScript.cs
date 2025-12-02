@@ -15,45 +15,35 @@ public class NodeScript : MonoBehaviour
     private Vector3 offset;
     private Camera cam;
     private LevelScript levelManager;
+    private NodeState nodeState;
 
     private void Awake()
     {
         cam = Camera.main;
     }
 
-    public void Initialize(int id, LevelScript level)
+    public void Initialize(int id, LevelScript level, CardScript card)
     {
         nodeId = id;
         levelManager = level;
+        nodeState = card.cardState.nodes.First(nodeState => nodeState.nodeId == id);
     }   
 
     private void Update()
     {
         if (Mouse.current == null) return;
-
-        // Get mouse position in world space
         Vector3 mouseWorldPos = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
         mouseWorldPos.z = 0f;
 
         if (Mouse.current.leftButton.wasPressedThisFrame && !levelManager.gamePaused)
         {
-            
             if (IsMouseOver())
             {
-                //first detach current anchor
-                if (snappedAnchor != null)
-                {
-                    snappedAnchor.Detach(this);
-                    snappedAnchor = null;
-                }
-
+                if (snappedAnchor != null) UnsnapFromAnchor(snappedAnchor);
                 isDragging = true;
                 offset = transform.position - mouseWorldPos;
             }
-            else
-            {
-                StartCoroutine(DelayedSnap());
-            }
+            else StartCoroutine(DelayedSnap());
         }
 
         if (Mouse.current.leftButton.wasReleasedThisFrame && isDragging)
@@ -62,11 +52,7 @@ public class NodeScript : MonoBehaviour
             Snap();
         }
 
-        //follow mouse
-        if (isDragging)
-        {
-            transform.position = mouseWorldPos + offset;
-        }
+        if (isDragging) transform.position = mouseWorldPos + offset;
     }
     private bool IsMouseOver()
     {
@@ -85,50 +71,45 @@ public class NodeScript : MonoBehaviour
 
     void Snap()
     {
-        Collider2D[] anchors = Physics2D.OverlapCircleAll(transform.position, snapRadius, anchorLayer);
+        Collider2D[] anchorsFound = Physics2D.OverlapCircleAll(transform.position, snapRadius, anchorLayer);
 
-        //found anchors
-        if (anchors != null && anchors.Length > 0)
+        if (anchorsFound == null || anchorsFound.Length < 1) return;
+        
+        Collider2D[] anchorCollidersByDist = anchorsFound.OrderBy(a => Vector2.Distance(a.transform.position, transform.position)).ToArray();
+
+        foreach (Collider2D anchor in anchorCollidersByDist)
         {
-            Collider2D[] sorted_anchors = anchors.OrderBy(a => Vector2.SqrMagnitude(a.transform.position - transform.position)).ToArray();
-
-            //Cycle through all anchors in range by distance
-            foreach (Collider2D anchor in sorted_anchors)
-            {
-                AnchorScript anchorScript = anchor.GetComponent<AnchorScript>();
-                if (anchorScript != null)
-                {
-                    //anchor is empty, attach to new anchor
-                    if (anchorScript.CanAccept(this))
-                    {
-                        snappedAnchor = anchor.GetComponent<AnchorScript>();
-                        anchorScript.Attach(this);
-                        levelManager.UIManager.UpdateSolved(levelManager.CheckGraphSolved());
-                        break;
-                    }
-                    //anchor is filled
-                    else continue;
-
-                }
-            }
+            AnchorScript anchorScript = anchor.GetComponent<AnchorScript>();
+            if (anchorScript == null) continue;
+            if (!anchorScript.CanAccept(this)) continue;
+            
+            snappedAnchor = anchor.GetComponent<AnchorScript>();
+            anchorScript.Attach(this);
+            levelManager.UIManager.UpdateSolved(levelManager.CheckGraphSolved());
         }
-        //no anchors
-        else
-        {
-            if (snappedAnchor != null)
-            {
-                AnchorScript anchorScript = snappedAnchor.GetComponent<AnchorScript>();
-                anchorScript.Detach(this);
-                snappedAnchor = null;
-            }
-        }
+        
     }
-    
-    public void SnapToAnchor (AnchorScript anchor)
+
+    public void SnapToAnchor(AnchorScript anchor)
     {
         snappedAnchor = anchor;
         anchor.Attach(this);
+        UpdateNodeState();
     }
+
+    public void UnsnapFromAnchor(AnchorScript anchor)
+    {
+        snappedAnchor = null;
+        anchor.Detach(this);
+        UpdateNodeState();
+    }
+    
+    private void UpdateNodeState()
+    {
+        nodeState.pos = transform.position;
+        nodeState.snappedAnchorId = snappedAnchor == null ? null : snappedAnchor.id;
+    }
+
     private IEnumerator DelayedSnap()
     {
         yield return null; // Waits 1 frame

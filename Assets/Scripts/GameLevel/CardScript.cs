@@ -10,7 +10,7 @@ public class CardScript : MonoBehaviour
     public int removedId;
     public Dictionary<int, NodeScript> nodeMap = new Dictionary<int, NodeScript>();
     public List<EdgeScript> allEdges = new List<EdgeScript>();
-    private CardState cardState;
+    public CardState cardState;
 
     //prefab
     private GameObject nodePrefab;
@@ -30,9 +30,15 @@ public class CardScript : MonoBehaviour
         levelManager = level;
         nodePrefab = level.nodePrefab;
         edgePrefab = level.edgePrefab;
-        isActive = false;
-        isVisible = false;
+
+        if (SaveManager.CurrentState == null) return;
+        if (SaveManager.CurrentState.idToCardStatesMap == null) return;
+
         cardState = SaveManager.CurrentState.idToCardStatesMap[removedId];
+        
+
+        isActive = false;
+        isVisible = cardState.isVisible;
     }
 
     public void Build()
@@ -47,7 +53,7 @@ public class CardScript : MonoBehaviour
         Vector3 nodePos;
         AnchorScript spawnAnchor = null;
 
-        if (nodeData.snapped)
+        if (nodeData.snappedAnchorId != null)
         {
             List<AnchorScript> anchors = levelManager.allAnchors;
             spawnAnchor = anchors.First(anchor => anchor.id == nodeData.snappedAnchorId);
@@ -59,7 +65,7 @@ public class CardScript : MonoBehaviour
         GameObject nodeObj = Instantiate(nodePrefab, nodePos, Quaternion.identity, transform);
 
         NodeScript node = nodeObj.GetComponent<NodeScript>();
-        node.Initialize(nodeId, levelManager);
+        node.Initialize(nodeId, levelManager, this);
         nodeMap[nodeId] = node;
 
         if (spawnAnchor) node.SnapToAnchor(spawnAnchor);

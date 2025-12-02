@@ -8,7 +8,7 @@ public class DeckScript : MonoBehaviour
     //inherit
     private LevelScript levelManager;
     private GraphData graphData;
-    private LevelState levelState;
+    public LevelState levelState;
 
     //attributes
     public List<CardScript> allCards = new List<CardScript>();
@@ -43,7 +43,6 @@ public class DeckScript : MonoBehaviour
 
             cardScript.Build();
             allCards.Add(cardScript);
-            cardScript.isVisible = levelState.idToCardStatesMap[i].isVisible;
             card.SetActive(false);
         }
         ToggleActiveCard(levelState.activeCardId);
@@ -80,9 +79,11 @@ public class DeckScript : MonoBehaviour
 
     public void ToggleActiveCard(int id)
     {
+        Debug.Log($"toggle card {id} active");
         if (activeCard) activeCard.ToggleActive(false);
 
         CardScript newActiveCard = allCards.First(card => card.removedId == id);
+        levelState.activeCardId = id;
 
         if (!newActiveCard.isVisible)
         {
@@ -102,11 +103,15 @@ public class DeckScript : MonoBehaviour
     public void ToggleVisibleCard(int id, bool makeVisible)
     {
         CardScript cardToToggle = allCards.First(card => card.removedId == id);
+
         if (cardToToggle.isActive && !makeVisible)
         {
             CardScript cardToReplaceActive = allCards.First(card => card.isVisible);
             ToggleActiveCard(cardToReplaceActive.removedId);
         }
+
+        levelState.idToCardStatesMap[id].isVisible = makeVisible;
+
         cardToToggle.isVisible = makeVisible;
         levelManager.UIManager.UpdateSolved(levelManager.CheckGraphSolved());
         RedrawOverlayGraph();

@@ -17,6 +17,7 @@ public static class SaveManager
     }
     public static void Save(string levelIndex)
     {
+        currentState.EnsureList();
         string json = JsonUtility.ToJson(currentState, true);
         File.WriteAllText(SavePath(levelIndex), json);
     }
@@ -28,6 +29,18 @@ public static class SaveManager
             return null; // No save exists
 
         string json = File.ReadAllText(path);
-        return JsonUtility.FromJson<LevelState>(json);
+        Debug.Log(json);
+        var state = JsonUtility.FromJson<LevelState>(json);
+        state.EnsureDict();
+        return state;
+    }
+
+    public static void Delete(string levelIndex)
+    {
+        if (File.Exists(SavePath(levelIndex)))
+        {
+            File.Delete(SavePath(levelIndex));
+            Debug.Log("Save deleted.");
+        }
     }
 }
