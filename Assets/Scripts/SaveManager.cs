@@ -18,20 +18,27 @@ public static class SaveManager
     public static void Save(string levelIndex)
     {
         currentState.EnsureList();
+        foreach(var kv in currentState.idToCardStatesMap)
+        {
+            kv.Value.EnsureList();
+        } 
         string json = JsonUtility.ToJson(currentState, true);
         File.WriteAllText(SavePath(levelIndex), json);
+
+        string path = SavePath(levelIndex);
+        File.WriteAllText(path, json);
     }
     public static LevelState Load(string levelIndex)
     {
         string path = SavePath(levelIndex);
-
-        if (!File.Exists(path))
-            return null; // No save exists
+        if (!File.Exists(path)) return null;
 
         string json = File.ReadAllText(path);
-        Debug.Log(json);
         var state = JsonUtility.FromJson<LevelState>(json);
+
         state.EnsureDict();
+        foreach (var kv in state.idToCardStatesMap) kv.Value.EnsureDict();
+
         return state;
     }
 

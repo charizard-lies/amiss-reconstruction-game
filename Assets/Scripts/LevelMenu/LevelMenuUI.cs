@@ -36,7 +36,6 @@ public class LevelMenuUI : MonoBehaviour
 
     public void OnLevelSelected(string index)
     {
-        Debug.Log($"Selected Level {index}");
         GameManager.Instance.LoadLevelByIndex(index);
     }
 

@@ -27,12 +27,9 @@ public class LevelUI : MonoBehaviour
 
     [Header("Graph References")]
     public LevelScript levelManager;
-
-    private int currentLayerIndex = -1;
     public List<GameObject> cardButtons = new List<GameObject>();
     public void CreateCardButtons()
     {
-        // Remove old buttons (skip the first two: + and -)
         for (int i = 0; i < cardContentArea.childCount; i++)
         {
             Destroy(cardContentArea.GetChild(i).gameObject);
@@ -50,8 +47,7 @@ public class LevelUI : MonoBehaviour
 
             CardButtonScript cardButtonScript = cardObj.GetComponent<CardButtonScript>();
             cardButtonScript.Initiate(levelManager, this, index);
-            bool cardIsActive = levelManager.deck.activeCard.removedId == index;
-            cardButtonScript.DrawCardSafe(cardIsActive);
+            cardButtonScript.DrawCardAfterFrame();
 
             Button cardButton = cardObj.GetComponentInChildren<Button>();
             cardButton.onClick.AddListener(() => levelManager.deck.ToggleActiveCard(index));
@@ -69,13 +65,7 @@ public class LevelUI : MonoBehaviour
                 Destroy(cardButtonObj.transform.GetChild(i).gameObject);
             }
             CardButtonScript cardButtonScript = cardButtonObj.GetComponent<CardButtonScript>();
-            int index = cardButtonScript.cardId;
-
-            bool cardIsActive = levelManager.deck.activeCard.removedId == index;
-            cardButtonScript.DrawCardSafe(cardIsActive);
-
-            Button cardButton = cardButtonObj.GetComponentInChildren<Button>();
-            // dragScript.SnapCard(dragScript.topPos);
+            cardButtonScript.DrawCardAfterFrame();
         }
     }
 

@@ -49,26 +49,27 @@ public class CardScript : MonoBehaviour
 
     private void SpawnNode(int nodeId)
     {
-        NodeState nodeData = cardState.nodes.First(node => node.nodeId == nodeId);
+        NodeState nodeState = cardState.nodes.First(node => node.nodeId == nodeId);
         Vector3 nodePos;
         AnchorScript spawnAnchor = null;
 
-        if (nodeData.snappedAnchorId != null)
+        if (nodeState.GetSnappedAnchorId() != null)
         {
             List<AnchorScript> anchors = levelManager.allAnchors;
-            spawnAnchor = anchors.First(anchor => anchor.id == nodeData.snappedAnchorId);
+            spawnAnchor = anchors.First(anchor => anchor.id == nodeState.GetSnappedAnchorId());
             nodePos = spawnAnchor.transform.position;
         }
-        else nodePos = nodeData.pos;
-        
+        else nodePos = nodeState.pos;
 
         GameObject nodeObj = Instantiate(nodePrefab, nodePos, Quaternion.identity, transform);
-
         NodeScript node = nodeObj.GetComponent<NodeScript>();
         node.Initialize(nodeId, levelManager, this);
         nodeMap[nodeId] = node;
 
-        if (spawnAnchor) node.SnapToAnchor(spawnAnchor);
+        if (spawnAnchor)
+        {
+            node.SnapToAnchor(spawnAnchor);
+        }
     }
 
     private void SpawnEdges(Color edgeColor)

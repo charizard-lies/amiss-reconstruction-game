@@ -34,7 +34,6 @@ public class DeckScript : MonoBehaviour
     {
         for (int i = 0; i < graphData.nodeIds.Count; i++)
         {
-            //change to prefab
             GameObject card = Instantiate(cardPrefab, transform);
             card.name = $"Card_{i}";
 
@@ -79,7 +78,6 @@ public class DeckScript : MonoBehaviour
 
     public void ToggleActiveCard(int id)
     {
-        Debug.Log($"toggle card {id} active");
         if (activeCard) activeCard.ToggleActive(false);
 
         CardScript newActiveCard = allCards.First(card => card.removedId == id);

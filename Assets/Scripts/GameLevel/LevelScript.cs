@@ -131,6 +131,7 @@ public class LevelScript : MonoBehaviour
 
             NodeState nodeState = new NodeState();
             nodeState.nodeId = nodeId;
+            nodeState.snapped = true;
             nodeState.snappedAnchorId = state.nodeAnchorIdMap[nodeId];
             nodeState.pos = anchorMap[state.nodeAnchorIdMap[nodeId]].transform.position;
 

@@ -27,7 +27,7 @@ public class NodeScript : MonoBehaviour
         nodeId = id;
         levelManager = level;
         nodeState = card.cardState.nodes.First(nodeState => nodeState.nodeId == id);
-    }   
+    }
 
     private void Update()
     {
@@ -37,23 +37,40 @@ public class NodeScript : MonoBehaviour
 
         if (Mouse.current.leftButton.wasPressedThisFrame && !levelManager.gamePaused)
         {
-            if (IsMouseOver())
-            {
-                if (snappedAnchor != null) UnsnapFromAnchor(snappedAnchor);
-                isDragging = true;
-                offset = transform.position - mouseWorldPos;
-            }
-            else StartCoroutine(DelayedSnap());
+            ManageNodePickup(mouseWorldPos);
         }
 
         if (Mouse.current.leftButton.wasReleasedThisFrame && isDragging)
         {
             isDragging = false;
-            Snap();
+            ManageNodeRelease();
         }
 
         if (isDragging) transform.position = mouseWorldPos + offset;
     }
+    
+    private void ManageNodePickup(Vector3 mouseWorldPos)
+    {
+        if (IsMouseOver())
+            {
+                if (snappedAnchor != null) UnsnapFromAnchor(snappedAnchor);
+                isDragging = true;
+                offset = transform.position - mouseWorldPos;
+            }
+        else StartCoroutine(DelayedSnap());
+    }
+
+    private void ManageNodeRelease()
+    {
+        AnchorScript potentialSnappingAnchor = FindAnchorToSnap();
+        if (potentialSnappingAnchor)
+        {
+            SnapToAnchor(potentialSnappingAnchor);
+            levelManager.UIManager.UpdateSolved(levelManager.CheckGraphSolved());
+        }
+        UpdateNodeState();
+    }
+    
     private bool IsMouseOver()
     {
         Vector3 mousePos = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
@@ -66,28 +83,26 @@ public class NodeScript : MonoBehaviour
             ~0
         );
 
-        return hit.collider != null && hit.collider.gameObject == this.gameObject;
+        return hit.collider != null && hit.collider.gameObject == gameObject;
     }
 
-    void Snap()
+    private AnchorScript FindAnchorToSnap()
     {
         Collider2D[] anchorsFound = Physics2D.OverlapCircleAll(transform.position, snapRadius, anchorLayer);
 
-        if (anchorsFound == null || anchorsFound.Length < 1) return;
-        
+        if (anchorsFound == null || anchorsFound.Length < 1) return null;
+
         Collider2D[] anchorCollidersByDist = anchorsFound.OrderBy(a => Vector2.Distance(a.transform.position, transform.position)).ToArray();
 
         foreach (Collider2D anchor in anchorCollidersByDist)
         {
-            AnchorScript anchorScript = anchor.GetComponent<AnchorScript>();
-            if (anchorScript == null) continue;
-            if (!anchorScript.CanAccept(this)) continue;
-            
-            snappedAnchor = anchor.GetComponent<AnchorScript>();
-            anchorScript.Attach(this);
-            levelManager.UIManager.UpdateSolved(levelManager.CheckGraphSolved());
+            AnchorScript anchorDetected = anchor.GetComponent<AnchorScript>();
+            if (anchorDetected == null) continue;
+            if (!anchorDetected.CanAccept(this)) continue;
+
+            return anchorDetected;
         }
-        
+        return null;
     }
 
     public void SnapToAnchor(AnchorScript anchor)
@@ -107,12 +122,13 @@ public class NodeScript : MonoBehaviour
     private void UpdateNodeState()
     {
         nodeState.pos = transform.position;
-        nodeState.snappedAnchorId = snappedAnchor == null ? null : snappedAnchor.id;
+        nodeState.snapped = snappedAnchor != null;
+        if (nodeState.snapped) nodeState.snappedAnchorId = snappedAnchor.id;
     }
 
     private IEnumerator DelayedSnap()
     {
-        yield return null; // Waits 1 frame
-        Snap();
+        yield return null;
+        ManageNodeRelease();
     }
 }

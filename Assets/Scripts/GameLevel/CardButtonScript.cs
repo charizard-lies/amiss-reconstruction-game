@@ -6,6 +6,14 @@ using System.Collections;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using System;
+using System.Collections.Generic;
+
+[System.Serializable]
+public class NodeEntry
+{
+    public int id;
+    public NodeScript node;
+}
 
 public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -44,7 +52,8 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     [Header("Other")]
     public int cardId;
     public bool isSnapping = false;
-    private CardScript card;
+    public CardScript card;
+    public Dictionary<int, NodeScript> idToNodeScriptMap;
     private RectTransform rect;
     private Vector2 targetPos;
     private Button cardButton;
@@ -54,6 +63,8 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         cardId = id;
         levelManager = level;
         card = level.deck.allCards.First(card => card.removedId == id);
+        idToNodeScriptMap = card.nodeMap;
+
         rect = GetComponent<RectTransform>();
         cardButton = GetComponent<Button>();
         UIManager = UI;
@@ -74,25 +85,26 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         );
     }
 
-    public void DrawCardSafe(bool isActive)
+    public void DrawCardAfterFrame()
     {
-        StartCoroutine(DrawCardWhenReady(isActive));
+        StartCoroutine(DrawCardWhenReady());
     }
 
-    private IEnumerator DrawCardWhenReady(bool isActive)
+    private IEnumerator DrawCardWhenReady()
     {
         yield return null;
-        DrawCard(isActive);
+        DrawCard();
     }
 
-    private void DrawCard(bool isActive)
+    private void DrawCard()
     {
         ClearChildren(rect);
+        bool isActive = SaveManager.CurrentState.activeCardId == cardId;
 
         if (isActive) gameObject.GetComponent<Image>().sprite = activeCardSprite;
         else gameObject.GetComponent<Image>().sprite = normalCardSprite;
 
-        foreach (NodeScript node in card.nodeMap.Values)
+        foreach (NodeScript node in idToNodeScriptMap.Values)
         {
             if (!node.snappedAnchor) continue;
 
@@ -183,7 +195,7 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     }
 
 
-    public void Slide (bool slideUp)
+    public void Slide(bool slideUp)
     {
         targetPos = slideUp ? topPos : bottomPos;
         isSnapping = true;
