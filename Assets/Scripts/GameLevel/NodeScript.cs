@@ -10,12 +10,14 @@ public class NodeScript : MonoBehaviour
     public float snapRadius;
     public int nodeId;
     public AnchorScript snappedAnchor;
-    
+
     private bool isDragging = false;
-    private Vector3 offset;
+    private bool isSnapping;
+    private Vector2 currMouseWorldPos;
     private Camera cam;
     private LevelScript levelManager;
     private NodeState nodeState;
+    private Vector3 velocity = Vector3.zero;
 
     private void Awake()
     {
@@ -27,50 +29,65 @@ public class NodeScript : MonoBehaviour
         nodeId = id;
         levelManager = level;
         nodeState = card.cardState.nodes.First(nodeState => nodeState.nodeId == id);
+        isSnapping = snappedAnchor == null ? false : true;
     }
 
     private void Update()
     {
         if (Mouse.current == null) return;
-        Vector3 mouseWorldPos = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        mouseWorldPos.z = 0f;
 
-        if (Mouse.current.leftButton.wasPressedThisFrame && !levelManager.gamePaused)
-        {
-            ManageNodePickup(mouseWorldPos);
-        }
+        if (Mouse.current.leftButton.wasPressedThisFrame && !levelManager.gamePaused) ManageNodePickup();
+        if (Mouse.current.leftButton.wasReleasedThisFrame && isDragging) ManageNodeRelease();
+        if (isDragging) ManageNodeDrag();
+        if (isSnapping) ManageNodeSnap();
 
-        if (Mouse.current.leftButton.wasReleasedThisFrame && isDragging)
-        {
-            isDragging = false;
-            ManageNodeRelease();
-        }
-
-        if (isDragging) transform.position = mouseWorldPos + offset;
     }
-    
-    private void ManageNodePickup(Vector3 mouseWorldPos)
+
+    private void ManageNodePickup()
     {
         if (IsMouseOver())
-            {
-                if (snappedAnchor != null) UnsnapFromAnchor(snappedAnchor);
-                isDragging = true;
-                offset = transform.position - mouseWorldPos;
-            }
+        {
+            if (snappedAnchor != null) UnsnapFromAnchor(snappedAnchor);
+            isDragging = true;
+        }
         else StartCoroutine(DelayedSnap());
+    }
+    
+    private void ManageNodeDrag()
+    {
+        currMouseWorldPos = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+        Approach(currMouseWorldPos);
     }
 
     private void ManageNodeRelease()
     {
+        isDragging = false;
         AnchorScript potentialSnappingAnchor = FindAnchorToSnap();
         if (potentialSnappingAnchor)
         {
+            isSnapping = true;
             SnapToAnchor(potentialSnappingAnchor);
             levelManager.UIManager.UpdateSolved(levelManager.CheckGraphSolved());
         }
         UpdateNodeState();
     }
     
+    private void ManageNodeSnap()
+    {
+        if (!snappedAnchor) Debug.LogWarning("isSnapping is true but no anchor to snap to");
+
+        Approach(snappedAnchor.transform.position);
+    }
+
+    private void Approach(Vector3 targetPos)
+    {
+        transform.position = Vector3.SmoothDamp(
+            transform.position,
+            targetPos,
+            ref velocity,
+            levelManager.nodeAttractionTime
+        );
+    }
     private bool IsMouseOver()
     {
         Vector3 mousePos = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
@@ -107,6 +124,7 @@ public class NodeScript : MonoBehaviour
 
     public void SnapToAnchor(AnchorScript anchor)
     {
+        isSnapping = true;
         snappedAnchor = anchor;
         anchor.Attach(this);
         UpdateNodeState();
@@ -114,6 +132,7 @@ public class NodeScript : MonoBehaviour
 
     public void UnsnapFromAnchor(AnchorScript anchor)
     {
+        isSnapping = false;
         snappedAnchor = null;
         anchor.Detach(this);
         UpdateNodeState();

@@ -6,19 +6,19 @@ using UnityEngine;
 public class LevelScript : MonoBehaviour
 {
     [Header("Attributes")]
-    public float initRadius;
-    public LevelState levelState;
     public GraphData graphData;
+    public float initRadius;
+    public float nodeAttractionTime=0.1f;
     public float activeEdgeWidth;
     public float overlayEdgeWidth = 0.1f;
     public float overlayEdgeAlpha = 0.1f;
     public Color edgeColor = Color.white;
     public Transform levelParent;
-    public Dictionary<int, AnchorScript> anchorMap = new Dictionary<int, AnchorScript>();
-    public List<AnchorScript> allAnchors = new List<AnchorScript>();
+
     public string levelIndex;
     public bool daily;
-    private System.Random rng = new System.Random();
+    public LevelState levelState;
+
 
     [Header("Prefabs")]
     public GameObject deckPrefab;
@@ -31,6 +31,9 @@ public class LevelScript : MonoBehaviour
     public LevelUI UIManager;
     public DeckScript deck;
     public bool gamePaused;
+    private System.Random rng = new System.Random();
+    public Dictionary<int, AnchorScript> anchorMap = new Dictionary<int, AnchorScript>();
+    public List<AnchorScript> allAnchors = new List<AnchorScript>();
 
     void Start()
     {

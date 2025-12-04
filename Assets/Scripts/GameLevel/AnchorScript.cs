@@ -21,26 +21,12 @@ public class AnchorScript : MonoBehaviour
 
     public void Attach(NodeScript node)
     {
-        node.transform.position = new Vector3(transform.position.x, transform.position.y, node.transform.position.z);
-        if (!attachedNodes.Contains(node))
-        {
-            attachedNodes.Add(node);
-        }
-        else
-        {
-            Debug.LogWarning($"Node {node.nodeId} was already attached to anchor {id}");
-        }
+        if (!attachedNodes.Contains(node)) attachedNodes.Add(node);
+        else Debug.LogWarning($"Node {node.nodeId} was already attached to anchor {id}");
     }
 
     public void Detach(NodeScript node)
     {
-        if (attachedNodes.Remove(node))
-        {
-            //Debug.Log($"Node {node.nodeId} detached from anchor {id}");
-        }
-        else
-        {
-            Debug.LogWarning($"Node {node.nodeId} was not attached to anchor {id}");
-        }
+        attachedNodes.Remove(node);
     }
 }

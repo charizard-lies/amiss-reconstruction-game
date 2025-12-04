@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4196116977190689916}
   - component: {fileID: 1024132827154862823}
   - component: {fileID: 2506410831231368188}
-  - component: {fileID: 2678637861867189849}
   - component: {fileID: 9160648349318288427}
   m_Layer: 0
   m_Name: Node
@@ -126,33 +125,6 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 1.8
---- !u!50 &2678637861867189849
-Rigidbody2D:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7283619231811921860}
-  m_BodyType: 1
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
 --- !u!114 &9160648349318288427
 MonoBehaviour:
   m_ObjectHideFlags: 0
