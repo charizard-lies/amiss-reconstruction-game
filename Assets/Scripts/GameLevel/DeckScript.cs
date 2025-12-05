@@ -111,7 +111,6 @@ public class DeckScript : MonoBehaviour
         levelState.idToCardStatesMap[id].isVisible = makeVisible;
 
         cardToToggle.isVisible = makeVisible;
-        levelManager.UIManager.UpdateSolved(levelManager.CheckGraphSolved());
         RedrawOverlayGraph();
         return;
     }

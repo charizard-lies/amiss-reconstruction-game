@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-//I will be the logic behind managing various different levels in the game
 public class LevelScript : MonoBehaviour
 {
     [Header("Attributes")]
@@ -66,6 +65,8 @@ public class LevelScript : MonoBehaviour
     public void Restart()
     {
         deck.ResetDeck();
+        gamePaused = false;
+        UIManager.hasShownWin = false;
     }
 
     private LevelState LoadLevelState()
@@ -182,11 +183,21 @@ public class LevelScript : MonoBehaviour
     public bool CheckGraphSolved()
     {
         if (!CheckUniqueSnappedAnchors()) return false;
+        if (!CheckAllCardsVisible()) return false;
 
         GraphData overlayGraph = BuildOverlayGraph(deck.allCards.Where(card => card.isVisible).ToList());
         bool overlayCorrect = CheckIsomorphism(graphData, overlayGraph);
 
         return overlayCorrect;
+    }
+
+    private bool CheckAllCardsVisible()
+    {
+        foreach(CardScript card in deck.allCards)
+        {
+            if (!card.isVisible) return false;
+        }
+        return true;
     }
 
     private bool CheckUniqueSnappedAnchors()

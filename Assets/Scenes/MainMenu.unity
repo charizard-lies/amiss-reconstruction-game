@@ -441,6 +441,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SettingsButton
       objectReference: {fileID: 0}
+    - target: {fileID: 2245363211381206467, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -511,7 +515,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7441664785205868030, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7441664785205868030, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_AnchorMin.x
@@ -519,11 +523,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7441664785205868030, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_AnchorMin.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7441664785205868030, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 680
       objectReference: {fileID: 0}
     - target: {fileID: 7441664785205868030, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_SizeDelta.y
@@ -559,11 +563,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7441664785205868030, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 440
       objectReference: {fileID: 0}
     - target: {fileID: 7441664785205868030, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -700
       objectReference: {fileID: 0}
     - target: {fileID: 7441664785205868030, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

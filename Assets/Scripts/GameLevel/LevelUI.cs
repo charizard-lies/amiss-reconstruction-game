@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 using TMPro;
 using System.Collections.Generic;
 
@@ -8,9 +9,8 @@ using System.Collections.Generic;
 
 public class LevelUI : MonoBehaviour
 {
-    public TextMeshProUGUI solvedLabel;
-
     [Header("UI References")]
+    public TextMeshProUGUI levelLabel;
     public GameObject buttonPrefab;
     public GameObject pauseMenu;
     public GameObject pauseBlocker;
@@ -28,6 +28,21 @@ public class LevelUI : MonoBehaviour
     [Header("Graph References")]
     public LevelScript levelManager;
     public List<GameObject> cardButtons = new List<GameObject>();
+
+    [Header("Other")]
+    public bool hasShownWin;
+
+    private void Start()
+    {
+        if (GameManager.Instance.selectedDailyLevel)
+        {
+            int dayIndex = (DateTime.Now.Date - GameManager.Instance.startDate.Date).Days + 1;
+            levelLabel.text = "Daily Level #" + dayIndex;
+        }
+        else levelLabel.text = "Level " + GameManager.Instance.selectedLevelId;
+
+        hasShownWin = false;
+    }
     public void CreateCardButtons()
     {
         for (int i = 0; i < cardContentArea.childCount; i++)
@@ -71,11 +86,18 @@ public class LevelUI : MonoBehaviour
 
     public void UpdateSolved(bool solved)
     {
-        if (solved)
-        {
-            winMenu.SetActive(true);
-            pauseBlocker.SetActive(true);
-        }
+        if (!solved || hasShownWin) return;
+            
+        winMenu.SetActive(true);
+        pauseBlocker.SetActive(true);
+        hasShownWin = true;
+        levelManager.gamePaused = true;
+    }
+
+    public void AdmirePuzzle()
+    {
+        winMenu.SetActive(false);
+        pauseBlocker.SetActive(false);
     }
 
     public void Pause()

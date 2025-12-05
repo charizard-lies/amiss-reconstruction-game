@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    public DateTime startDate = new DateTime(2025, 12, 6);
     public bool selectedDailyLevel;
     public string selectedLevelId;
 
