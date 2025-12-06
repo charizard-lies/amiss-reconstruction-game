@@ -24,9 +24,6 @@ public static class SaveManager
         } 
         string json = JsonUtility.ToJson(currentState, true);
         File.WriteAllText(SavePath(levelIndex), json);
-
-        string path = SavePath(levelIndex);
-        File.WriteAllText(path, json);
     }
     public static LevelState Load(string levelIndex)
     {
