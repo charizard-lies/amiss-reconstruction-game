@@ -95,11 +95,13 @@ public class LevelScript : MonoBehaviour
     private List<int> ShuffledAnchorIds(int removedId)
     {
         List<int> shuffledAnchors = allAnchors
-        .FindAll(anchor => anchor.id != removedId)
         .Select(anchor => anchor.id)
         .ToList();
 
-        return Shuffle(shuffledAnchors);
+        Shuffle(shuffledAnchors);
+        shuffledAnchors.RemoveAt(shuffledAnchors.Count - 1);
+
+        return shuffledAnchors;
     }
 
     private LevelState CreateFreshLevelState()

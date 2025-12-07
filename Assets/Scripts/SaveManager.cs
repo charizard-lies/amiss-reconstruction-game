@@ -1,5 +1,7 @@
 using System.IO;
 using UnityEngine;
+using System.Runtime.InteropServices;
+
 
 public static class SaveManager
 {
@@ -24,6 +26,7 @@ public static class SaveManager
         } 
         string json = JsonUtility.ToJson(currentState, true);
         File.WriteAllText(SavePath(levelIndex), json);
+        FileSync.Sync();
     }
     public static LevelState Load(string levelIndex)
     {
@@ -46,5 +49,16 @@ public static class SaveManager
             File.Delete(SavePath(levelIndex));
             Debug.Log("Save deleted.");
         }
+    }
+}
+
+public static class FileSync {
+    [DllImport("__Internal")]
+    private static extern void SyncFs();
+
+    public static void Sync() {
+#if UNITY_WEBGL && !UNITY_EDITOR
+        SyncFs();
+#endif
     }
 }

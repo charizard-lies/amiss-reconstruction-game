@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System;
 using TMPro;
 using System.Collections.Generic;
+using NUnit.Framework;
 
 // I control all active, visible, and invisible layers and their editabilty.
 // I control buttons that toggle between these layers.
@@ -15,6 +16,7 @@ public class LevelUI : MonoBehaviour
     public GameObject pauseMenu;
     public GameObject pauseBlocker;
     public GameObject winMenu;
+    public GameObject confirmRestartMenu;
 
     [Header("CardUI")]
     public GameObject cardUIPrefab;
@@ -88,16 +90,46 @@ public class LevelUI : MonoBehaviour
     {
         if (!solved || hasShownWin) return;
             
-        winMenu.SetActive(true);
-        pauseBlocker.SetActive(true);
+        SaveManager.Save(GameManager.Instance.selectedLevelId);
+        ShowWinMenu();
         hasShownWin = true;
         levelManager.gamePaused = true;
+    }
+
+    public void ShowWinMenu()
+    {
+        winMenu.SetActive(true);
+        pauseBlocker.SetActive(true);
     }
 
     public void AdmirePuzzle()
     {
         winMenu.SetActive(false);
         pauseBlocker.SetActive(false);
+    }
+
+    public void TryRestart()
+    {
+        if (!hasShownWin)
+        {
+            Restart();
+            return;
+        } 
+
+        confirmRestartMenu.SetActive(true);
+    }
+
+    public void Restart()
+    {
+        levelManager.Restart();
+        confirmRestartMenu.SetActive(false);
+        winMenu.SetActive(false);
+        pauseBlocker.SetActive(false);
+    }
+
+    public void CancelRestart()
+    {
+        confirmRestartMenu.SetActive(false);
     }
 
     public void Pause()
@@ -120,16 +152,6 @@ public class LevelUI : MonoBehaviour
     {
         if (levelManager.daily) GameManager.Instance.LoadMainMenu();
         else GameManager.Instance.LoadLevelMenu();
-    }
-
-    public void OpenLevelMenu()
-    {
-        GameManager.Instance.LoadLevelMenu();
-    }
-
-    public void OpenMainMenu()
-    {
-        GameManager.Instance.LoadMainMenu();
     }
 
     public void DeleteSave()
