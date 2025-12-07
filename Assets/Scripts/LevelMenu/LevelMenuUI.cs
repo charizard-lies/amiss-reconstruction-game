@@ -7,7 +7,11 @@ public class LevelMenuUI : MonoBehaviour
 {
     [Header("References")]
     public Transform levelGridParent;
-    public GameObject levelButtonPrefab; // assign in Inspector
+    public GameObject levelButtonPrefab;
+    public Sprite uncompletedBoxSprite;
+    public Color uncompletedTextColor;
+    public Sprite completedBoxSprite;
+    public Color completedTextColor;
 
     [Header("Settings")]
     public int totalLevels;
@@ -26,6 +30,19 @@ public class LevelMenuUI : MonoBehaviour
         for (int i = 1; i <= totalLevels; i++)
         {
             GameObject buttonObj = Instantiate(levelButtonPrefab, levelGridParent.transform);
+            
+            LevelState levelState = SaveManager.Load(i.ToString());
+            if(levelState == null || !levelState.solved) 
+            {
+                buttonObj.GetComponent<Image>().sprite = uncompletedBoxSprite;
+                buttonObj.GetComponentInChildren<TextMeshProUGUI>().color = uncompletedTextColor;
+            }
+            else 
+            {
+                buttonObj.GetComponent<Image>().sprite = completedBoxSprite;
+                buttonObj.GetComponentInChildren<TextMeshProUGUI>().color = completedTextColor;
+            }
+            
             buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = $"{i}";
 
             string levelIndex = i.ToString();

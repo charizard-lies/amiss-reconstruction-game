@@ -827,6 +827,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelGridParent: {fileID: 1626499974}
   levelButtonPrefab: {fileID: 4622035051035574867, guid: c10bbc2fbd0f24330b94e39625184d9e, type: 3}
+  uncompletedBoxSprite: {fileID: 21300000, guid: 02fa691f089884261abc29b614a2c321, type: 3}
+  uncompletedTextColor: {r: 1, g: 1, b: 1, a: 1}
+  completedBoxSprite: {fileID: 21300000, guid: df52d60bb1d84400f9b63bcc16a3795b, type: 3}
+  completedTextColor: {r: 0.03137255, g: 0.05882353, b: 0.16862746, a: 1}
   totalLevels: 24
 --- !u!224 &2096621964 stripped
 RectTransform:

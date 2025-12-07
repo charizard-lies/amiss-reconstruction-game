@@ -7,6 +7,7 @@ public class LevelState
 {
     public string levelIndex;
     public int activeCardId;
+    public bool solved;
     public List<idCardStatePair> idCardStatePairs = new List<idCardStatePair>();
 
     [System.NonSerialized]

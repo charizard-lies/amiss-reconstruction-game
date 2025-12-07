@@ -109,6 +109,7 @@ public class LevelScript : MonoBehaviour
         LevelState state = new LevelState();
         state.levelIndex = levelIndex;
         state.activeCardId = graphData.nodeIds[0];
+        state.solved = false;
 
         foreach (int nodeId in graphData.nodeIds)
         {
@@ -245,7 +246,6 @@ public class LevelScript : MonoBehaviour
         return false;
     }
 
-    //turns any graph into an isomorphic adjacency list with nodes 0...n
     private static Dictionary<int, HashSet<int>> BuildAdjacencyList(GraphData g)
     {
         var map = new Dictionary<int, int>();
@@ -270,8 +270,6 @@ public class LevelScript : MonoBehaviour
 
         return adj;
     }
-
-    //get list of all permutations (every way to order n numbers in list)
     private static List<List<int>> GetPermutations(List<int> list)
     {
         var result = new List<List<int>>();

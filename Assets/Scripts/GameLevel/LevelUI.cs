@@ -89,7 +89,8 @@ public class LevelUI : MonoBehaviour
     public void UpdateSolved(bool solved)
     {
         if (!solved || hasShownWin) return;
-            
+        
+        levelManager.levelState.solved = true;
         SaveManager.Save(GameManager.Instance.selectedLevelId);
         ShowWinMenu();
         hasShownWin = true;
