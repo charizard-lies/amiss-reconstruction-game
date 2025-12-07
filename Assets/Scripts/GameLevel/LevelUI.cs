@@ -42,9 +42,8 @@ public class LevelUI : MonoBehaviour
             levelLabel.text = "Daily Level #" + dayIndex;
         }
         else levelLabel.text = "Level " + GameManager.Instance.selectedLevelId;
-
-        hasShownWin = false;
     }
+    
     public void CreateCardButtons()
     {
         for (int i = 0; i < cardContentArea.childCount; i++)
@@ -71,6 +70,17 @@ public class LevelUI : MonoBehaviour
 
             cardObj.GetComponent<RectTransform>().anchoredPosition = card.isVisible ? cardButtonScript.topPos : cardButtonScript.bottomPos;
         }
+
+
+        //shift this out!! VVV
+        if(SaveManager.CurrentState.solved){
+            ShowWinMenu();
+        }
+        else
+        {
+            hasShownWin = false;
+        }
+        //shift this out ^^^^^
     }
 
     public void UpdateCardButtons()
@@ -93,14 +103,16 @@ public class LevelUI : MonoBehaviour
         levelManager.levelState.solved = true;
         SaveManager.Save(GameManager.Instance.selectedLevelId);
         ShowWinMenu();
-        hasShownWin = true;
-        levelManager.gamePaused = true;
     }
 
     public void ShowWinMenu()
     {
         winMenu.SetActive(true);
         pauseBlocker.SetActive(true);
+        hasShownWin = true;
+        levelManager.gamePaused = true;
+
+        SaveManager.Save(levelManager.levelIndex);
     }
 
     public void AdmirePuzzle()
@@ -126,6 +138,10 @@ public class LevelUI : MonoBehaviour
         confirmRestartMenu.SetActive(false);
         winMenu.SetActive(false);
         pauseBlocker.SetActive(false);
+        levelManager.gamePaused = false;
+
+        levelManager.levelState.solved = false;
+        SaveManager.Save(GameManager.Instance.selectedLevelId);
     }
 
     public void CancelRestart()

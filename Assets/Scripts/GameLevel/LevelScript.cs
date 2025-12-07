@@ -57,9 +57,8 @@ public class LevelScript : MonoBehaviour
         deck = Instantiate(deckPrefab, levelParent).GetComponent<DeckScript>();
         deck.Initialize(this);
         deck.Build();
-        UIManager.CreateCardButtons();
-
         gamePaused = false;
+        UIManager.CreateCardButtons();
     }
 
     public void Restart()
