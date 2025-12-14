@@ -964,6 +964,9 @@ MonoBehaviour:
   overlayEdgeAlpha: 0.1
   edgeColor: {r: 1, g: 1, b: 1, a: 1}
   levelParent: {fileID: 491654707}
+  anchorLayer:
+    serializedVersion: 2
+    m_Bits: 8
   levelIndex: 0
   daily: 0
   levelState:
@@ -1110,7 +1113,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -28.809479, w: 0}
+  m_margin: {x: 0, y: 0, z: -243.2761, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

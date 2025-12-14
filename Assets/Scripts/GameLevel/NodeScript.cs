@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Collider2D))]
 public class NodeScript : MonoBehaviour
 {
-    public LayerMask anchorLayer;
+    private LayerMask anchorLayer;
     public float snapRadius;
     public int nodeId;
     public AnchorScript snappedAnchor;
@@ -30,6 +30,7 @@ public class NodeScript : MonoBehaviour
         levelManager = level;
         nodeState = card.cardState.nodes.First(nodeState => nodeState.nodeId == id);
         isSnapping = snappedAnchor == null ? false : true;
+        anchorLayer = levelManager.anchorLayer;
     }
 
     private void Update()
@@ -47,6 +48,7 @@ public class NodeScript : MonoBehaviour
     {
         if (IsMouseOver())
         {
+            Debug.Log("mouse pickup success");
             if (snappedAnchor != null) UnsnapFromAnchor(snappedAnchor);
             isDragging = true;
         }
@@ -88,19 +90,16 @@ public class NodeScript : MonoBehaviour
             levelManager.nodeAttractionTime
         );
     }
+    
     private bool IsMouseOver()
     {
-        Vector3 mousePos = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-        Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
+        Vector3 mousePos = Mouse.current.position.ReadValue();
+        mousePos.z = -cam.transform.position.z;
+        Vector2 worldPos = cam.ScreenToWorldPoint(mousePos);
 
-        RaycastHit2D hit = Physics2D.Raycast(
-            mousePos2D,
-            Vector2.zero,
-            0f,
-            ~0
-        );
-
-        return hit.collider != null && hit.collider.gameObject == gameObject;
+        int mask = ~anchorLayer.value; 
+        Collider2D col = Physics2D.OverlapPoint(worldPos, mask);
+        return col != null && col.gameObject == gameObject;
     }
 
     private AnchorScript FindAnchorToSnap()

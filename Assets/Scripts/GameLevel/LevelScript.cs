@@ -13,7 +13,7 @@ public class LevelScript : MonoBehaviour
     public float overlayEdgeAlpha = 0.1f;
     public Color edgeColor = Color.white;
     public Transform levelParent;
-
+    public LayerMask anchorLayer;
     public string levelIndex;
     public bool daily;
     public LevelState levelState;
@@ -49,7 +49,7 @@ public class LevelScript : MonoBehaviour
 
         if (daily) graphData = Resources.Load<GraphData>($"Levels/Daily/Level{levelIndex}");
         else graphData = Resources.Load<GraphData>($"Levels/Normal/Level{levelIndex}");
-
+    
         BuildAnchors();
         SaveManager.CurrentState = LoadLevelState();
         levelState = SaveManager.CurrentState;
@@ -149,9 +149,12 @@ public class LevelScript : MonoBehaviour
 
     private void BuildAnchors()
     {
+        int layer = Mathf.RoundToInt(Mathf.Log(anchorLayer.value, 2));
         for (int i = 0; i < graphData.nodeIds.Count; i++)
         {
             AnchorScript temp = Instantiate(anchorPrefab, getAnchorPos(i, graphData.nodeIds.Count), Quaternion.identity, levelParent).GetComponent<AnchorScript>();
+            temp.gameObject.layer = layer;
+            Debug.Assert(anchorLayer.value != 0, "Anchor layer not set!");
             temp.id = i;
             allAnchors.Add(temp);
             anchorMap[i] = temp;
