@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using System.Collections;
 using System.Linq;
 using System;
@@ -14,7 +13,7 @@ public class NodeEntry
     public NodeScript node;
 }
 
-public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class CardButtonScript : MonoBehaviour
 {
     [Header("Prefabs")]
     public GameObject nodeUIPrefab;
@@ -61,7 +60,6 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     {
         cardId = id;
         levelManager = level;
-        card = level.deck.allCards.First(card => card.removedId == id);
         idToNodeScriptMap = card.nodeMap;
 
         rect = GetComponent<RectTransform>();
@@ -74,14 +72,6 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         activeCardSprite = UIManager.activeCardSprite;
         normalGraphColor = UIManager.normalGraphColor;
         activeGraphColor = UIManager.activeGraphColor;
-
-        cardButton.onClick.AddListener(() => level.deck.ToggleActiveCard(cardId));
-        OnSnapTop.AddListener(() =>
-            UIManager.levelManager.deck.ToggleVisibleCard(cardId, true)
-        );
-        OnSnapBottom.AddListener(() =>
-            UIManager.levelManager.deck.ToggleVisibleCard(cardId, false)
-        );
     }
 
     public void DrawCardAfterFrame()
@@ -154,74 +144,4 @@ public class CardButtonScript : MonoBehaviour, IBeginDragHandler, IDragHandler, 
         line.localRotation = Quaternion.Euler(0, 0, angle);
     }
 
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        if (card.isActive) return;
-        pointerInitialPos = eventData.position;
-    }
-
-    public void OnDrag(PointerEventData eventData)
-    {
-        if (card.isActive) return;
-
-        if (Vector2.Distance(pointerInitialPos, eventData.position) > dragThreshold) cardButton.interactable = false;
-
-        Vector2 drag = eventData.delta;
-        float newY = rect.anchoredPosition.y + drag.y;
-        newY = Mathf.Clamp(newY, bottomPos.y, topPos.y);
-
-        rect.anchoredPosition = new Vector2(bottomPos.x, newY);
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        if (card.isActive) return;
-        isSnapping = true;
-        cardButton.interactable = true;
-
-        float currentY = rect.anchoredPosition.y;
-        float halfway = (topPos.y + bottomPos.y) / 2f;
-
-        if (currentY > halfway)
-        {
-            targetPos = topPos;
-        }
-        else
-        {
-            targetPos = bottomPos;
-            OnSnapBottom?.Invoke();
-        }
-    }
-
-
-    public void Slide(bool slideUp)
-    {
-        targetPos = slideUp ? topPos : bottomPos;
-        isSnapping = true;
-    }
-
-    private void SnapCardStep(Vector2 targetPosition)
-    {
-        rect.anchoredPosition = Vector2.Lerp(rect.anchoredPosition, targetPosition, Time.deltaTime * snapSpeed);
-
-        if (Vector2.Distance(rect.anchoredPosition, targetPosition) < 0.1f)
-        {
-            if (targetPosition == topPos)
-            {
-                OnSnapTop?.Invoke();
-            }
-            else
-            {
-                OnSnapBottom?.Invoke();
-            }
-            rect.anchoredPosition = targetPosition;
-            isSnapping = false;
-        }
-    }
-
-    void Update()
-    {
-        if (!isSnapping) return;
-        SnapCardStep(targetPos);
-    }
 }
