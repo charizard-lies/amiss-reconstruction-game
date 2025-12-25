@@ -614,7 +614,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.0215664, y: 1.0215664, z: 1}
+  m_LocalScale: {x: 1.1350738, y: 1.1350738, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -905,8 +905,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 2.5}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -5}
+  m_SizeDelta: {x: 10, y: 10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &491654708
 MonoBehaviour:
@@ -923,30 +923,16 @@ MonoBehaviour:
   graphData: {fileID: 11400000, guid: cfa9d6576e74842489e78e6973c7c577, type: 2}
   initRadius: 3.5
   nodeAttractionTime: 0.1
-  activeEdgeWidth: 0.03
-  overlayEdgeWidth: 0.02
-  overlayEdgeAlpha: 0.1
   edgeColor: {r: 1, g: 1, b: 1, a: 1}
+  edgeWidth: 0.2
   levelParent: {fileID: 491654707}
-  anchorLayer:
-    serializedVersion: 2
-    m_Bits: 8
   levelIndex: 0
-  daily: 0
-  levelState:
-    levelIndex: 
-    activeCardId: 0
-    solved: 0
-    idCardStatePairs: []
-  deckPrefab: {fileID: 3699516639447188833, guid: d0b61148da615473bb0cae9114a7a588, type: 3}
-  anchorPrefab: {fileID: 9112591901401882349, guid: ce85b13dcef7b4aea93fc73c192a8923, type: 3}
-  cardPrefab: {fileID: 7343660670426432918, guid: 7e2c67d32d0b945988006bf7c89f0498, type: 3}
   nodePrefab: {fileID: 7283619231811921860, guid: 5c222626e57644af58e773b87c896be5, type: 3}
   edgePrefab: {fileID: 1198453481677518125, guid: da6716132ace14cb68737f2c7c9b68df, type: 3}
+  allNodePos: []
+  nodeScripts: []
   UIManager: {fileID: 66158510}
-  deck: {fileID: 0}
   gamePaused: 0
-  allAnchors: []
 --- !u!1 &539244818
 GameObject:
   m_ObjectHideFlags: 0
@@ -1551,7 +1537,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 9
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

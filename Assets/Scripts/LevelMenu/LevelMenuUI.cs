@@ -27,28 +27,28 @@ public class LevelMenuUI : MonoBehaviour
 
     public void GenerateLevelButtons()
     {
-        for (int i = 1; i <= totalLevels; i++)
-        {
-            GameObject buttonObj = Instantiate(levelButtonPrefab, levelGridParent.transform);
+        // for (int i = 1; i <= totalLevels; i++)
+        // {
+        //     GameObject buttonObj = Instantiate(levelButtonPrefab, levelGridParent.transform);
             
-            LevelState levelState = SaveManager.Load(i.ToString());
-            if(levelState == null || !levelState.solved) 
-            {
-                buttonObj.GetComponent<Image>().sprite = uncompletedBoxSprite;
-                buttonObj.GetComponentInChildren<TextMeshProUGUI>().color = uncompletedTextColor;
-            }
-            else 
-            {
-                buttonObj.GetComponent<Image>().sprite = completedBoxSprite;
-                buttonObj.GetComponentInChildren<TextMeshProUGUI>().color = completedTextColor;
-            }
+        //     LevelState levelState = SaveManager.Load(i.ToString());
+        //     if(levelState == null || !levelState.solved) 
+        //     {
+        //         buttonObj.GetComponent<Image>().sprite = uncompletedBoxSprite;
+        //         buttonObj.GetComponentInChildren<TextMeshProUGUI>().color = uncompletedTextColor;
+        //     }
+        //     else 
+        //     {
+        //         buttonObj.GetComponent<Image>().sprite = completedBoxSprite;
+        //         buttonObj.GetComponentInChildren<TextMeshProUGUI>().color = completedTextColor;
+        //     }
             
-            buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = $"{i}";
+        //     buttonObj.GetComponentInChildren<TextMeshProUGUI>().text = $"{i}";
 
-            string levelIndex = i.ToString();
-            Button button = buttonObj.GetComponent<Button>();
-            button.onClick.AddListener(() => OnLevelSelected(levelIndex));
-        }
+        //     string levelIndex = i.ToString();
+        //     Button button = buttonObj.GetComponent<Button>();
+        //     button.onClick.AddListener(() => OnLevelSelected(levelIndex));
+        // }
     }
 
     public void OnLevelSelected(string index)

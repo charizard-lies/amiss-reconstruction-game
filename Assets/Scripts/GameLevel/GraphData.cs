@@ -1,6 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Linq;
+using Unity.VisualScripting;
+using UnityEditor.PackageManager;
+
+[CreateAssetMenu(fileName = "GraphData", menuName = "Graph/GraphData")]
 
 //I only control the data of the graphs, preparing it for other scripts to use
 public class GraphData : ScriptableObject
@@ -8,7 +13,7 @@ public class GraphData : ScriptableObject
     [System.Serializable]
     public class Node
     {
-        public int pos=-1;
+        public int id;
         public List<int> adjacentNodeIds = new List<int>();
     }
     public class Edge
@@ -22,8 +27,12 @@ public class GraphData : ScriptableObject
             else { fromNodeId = b; toNodeId = a; }
         }
     }
-    
-    
+    [System.Serializable]
+    public class CardArrangement
+    {
+        public List<int> arrangement = new List<int>();
+    }
+
     [SerializeField] public List<Node> nodes = new List<Node>();
     public List<Edge> edges
     {
@@ -40,28 +49,5 @@ public class GraphData : ScriptableObject
             return edgeSet.ToList();
         }
     }
-    
-    
-    public void SetNodes(int n)
-    {
-        nodes.Clear();
-        for(int i = 0; i < n; i++)
-        {
-            nodes.Add(new Node{pos = i});
-        }
-    }
-    
-    public void AddEdge(int a, int b)
-    {
-        if(nodes[a].adjacentNodeIds.Contains(b) || nodes[b].adjacentNodeIds.Contains(a)) Debug.LogError("edge already exists");
-
-        nodes[a].adjacentNodeIds.Add(b);
-        nodes[b].adjacentNodeIds.Add(a);
-    }
-
-    public List<Node> GetDegreeSortedNodes()
-    {
-        return nodes.OrderByDescending(n => n.adjacentNodeIds.Count).ToList();
-    }
-
+    [SerializeField] public List<CardArrangement> nodePositions = new List<CardArrangement>();
 }

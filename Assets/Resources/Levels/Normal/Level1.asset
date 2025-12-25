@@ -12,11 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9834b6e85dc854e91a8d37dd6f7c2196, type: 3}
   m_Name: Level1
   m_EditorClassIdentifier: 
-  nodeIds: 00000000010000000200000003000000
-  edges:
-  - fromNodeId: 0
-    toNodeId: 1
-  - fromNodeId: 0
-    toNodeId: 2
-  - fromNodeId: 0
-    toNodeId: 3
+  nodes:
+  - id: 0
+    adjacentNodeIds: 010000000200000003000000
+  - id: 1
+    adjacentNodeIds: 0000000002000000
+  - id: 2
+    adjacentNodeIds: 0000000001000000
+  - id: 3
+    adjacentNodeIds: 00000000
+  nodePositions:
+  - arrangement: 00000000010000000300000002000000
+  - arrangement: 01000000000000000200000003000000
+  - arrangement: 02000000030000000000000001000000
+  - arrangement: 01000000020000000300000000000000

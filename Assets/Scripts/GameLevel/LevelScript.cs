@@ -8,66 +8,82 @@ public class LevelScript : MonoBehaviour
     public GraphData graphData;
     public float initRadius;
     public float nodeAttractionTime=0.1f;
-    public float activeEdgeWidth;
-    public float overlayEdgeWidth = 0.1f;
-    public float overlayEdgeAlpha = 0.1f;
     public Color edgeColor = Color.white;
+    public float edgeWidth = 0.2f;
     public Transform levelParent;
-    public LayerMask anchorLayer;
     public string levelIndex;
-    public bool daily;
-    public LevelState levelState;
+    // public LevelState levelState;
 
 
     [Header("Prefabs")]
-    public GameObject anchorPrefab;
-    public GameObject cardPrefab;
     public GameObject nodePrefab;
     public GameObject edgePrefab;
 
     [Header("Managers")]
+    public List<Vector3> currNodePos;
+    public List<NodeScript> nodeScripts;
     public LevelUI UIManager;
     public bool gamePaused;
-    private System.Random rng = new System.Random();
-    public Dictionary<int, AnchorScript> anchorMap = new Dictionary<int, AnchorScript>();
-    public List<AnchorScript> allAnchors = new List<AnchorScript>();
+    public int activeCardId;
 
     void Start()
     {
         // if (GameManager.Instance)
         // {
         //     levelIndex = GameManager.Instance.selectedLevelId;
-        //     daily = GameManager.Instance.selectedDailyLevel;
+        //     if (GameManager.Instance.selectedDailyLevel) graphData = Resources.Load<GraphData>($"Levels/Daily/Level{levelIndex}");
+        //     else graphData = Resources.Load<GraphData>($"Levels/Normal/Level{levelIndex}");   
         // }
-        // else
-        // {
-        //     levelIndex = "2";
-        //     daily = false;
-        // }
-
-        levelIndex = "2";
-        daily = false;
-
-        if (daily) graphData = Resources.Load<GraphData>($"Levels/Daily/Level{levelIndex}");
-        else graphData = Resources.Load<GraphData>($"Levels/Normal/Level{levelIndex}");
 
         // SaveManager.CurrentState = LoadLevelState();
+        // levelState = SaveManager.CurrentState;
+        
+        graphData = Resources.Load<GraphData>($"Levels/Normal/Level1");   
 
         gamePaused = false;
+        activeCardId =0;
 
-        BuildAnchors();
-        levelState = SaveManager.CurrentState;
+        // UIManager.CreateCardButtons();
+        BuildLevel();
+    }
 
+    public void BuildLevel()
+    {
+        SetNodePos();
 
-        UIManager.CreateCardButtons();
+        BuildNodes();
+        BuildEdges();
+
 
     }
 
-    // public void Restart()
-    // {
-    //     gamePaused = false;
-    //     UIManager.hasShownWin = false;
-    // }
+    private void BuildNodes()
+    {
+       for(int i = 0; i < graphData.nodes.Count(); i++)
+        {
+            GameObject nodeObj = Instantiate(nodePrefab, currNodePos[i], Quaternion.identity, transform);
+            NodeScript nodeScript = nodeObj.GetComponent<NodeScript>();
+            nodeScripts.Add(nodeScript);
+            nodeScript.Initialize(i, this);
+        } 
+    }
+
+    private void BuildEdges()
+    {
+        foreach(GraphData.Edge edge in graphData.edges)
+        {
+            if(edge.fromNodeId == activeCardId || edge.toNodeId == activeCardId) continue;
+            GameObject edgeObj = Instantiate(edgePrefab, transform);
+            EdgeScript edgeScript = edgeObj.GetComponent<EdgeScript>();
+            edgeScript.Initialize(nodeScripts[edge.fromNodeId].transform, nodeScripts[edge.toNodeId].transform, this);
+        }
+    }
+
+    public void Restart()
+    {
+        gamePaused = false;
+        UIManager.hasShownWin = false;
+    }
 
     // private LevelState LoadLevelState()
     // {
@@ -76,33 +92,6 @@ public class LevelScript : MonoBehaviour
 
     //     return CreateFreshLevelState();
     // }
-
-    private List<T> Shuffle<T>(List<T> list)
-    {
-        int n = list.Count;
-        while (n > 1)
-        {
-            n--;
-            int k = rng.Next(n + 1);
-            T value = list[k];
-            list[k] = list[n];
-            list[n] = value;
-        }
-
-        return list;
-    }
-
-    private List<int> ShuffledAnchorIds(int removedId)
-    {
-        List<int> shuffledAnchors = allAnchors
-        .Select(anchor => anchor.id)
-        .ToList();
-
-        Shuffle(shuffledAnchors);
-        shuffledAnchors.RemoveAt(shuffledAnchors.Count - 1);
-
-        return shuffledAnchors;
-    }
 
     // private LevelState CreateFreshLevelState()
     // {
@@ -148,19 +137,6 @@ public class LevelScript : MonoBehaviour
     //     return state;
     // }
 
-    private void BuildAnchors()
-    {
-        int layer = Mathf.RoundToInt(Mathf.Log(anchorLayer.value, 2));
-        for (int i = 0; i < graphData.nodes.Count; i++)
-        {
-            AnchorScript temp = Instantiate(anchorPrefab, getAnchorPos(i, graphData.nodes.Count), Quaternion.identity, levelParent).GetComponent<AnchorScript>();
-            temp.gameObject.layer = layer;
-            Debug.Assert(anchorLayer.value != 0, "Anchor layer not set!");
-            temp.id = i;
-            allAnchors.Add(temp);
-            anchorMap[i] = temp;
-        }
-    }
 
 
     // public bool CheckGraphSolved()
@@ -264,7 +240,17 @@ public class LevelScript : MonoBehaviour
     //     return true;
     // }
 
-    private Vector3 getAnchorPos(int counter, int n)
+    private void SetNodePos()
+    {
+        currNodePos.Clear();
+        for(int i = 0; i < graphData.nodes.Count(); i++)
+        {
+            int currNodePosition = graphData.nodePositions[activeCardId].arrangement[i];
+            currNodePos.Add(getNodePos(currNodePosition, graphData.nodes.Count()));
+        }
+    }
+    
+    private Vector3 getNodePos(int counter, int n)
     {
         float angle = 2 * Mathf.PI * counter / n;
         float x = initRadius * Mathf.Sin(angle);

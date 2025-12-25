@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 [RequireComponent(typeof(LineRenderer))]
@@ -8,6 +9,7 @@ public class EdgeScript : MonoBehaviour
     public Transform PointA;
     public Transform PointB;
 
+    private LevelScript levelManager;
     private float width;
     private LineRenderer lr;
     
@@ -19,25 +21,35 @@ public class EdgeScript : MonoBehaviour
     }
 
     // Update is called once per frame
-    public void Initialize(Transform A, Transform B, float linew, Color linecol)
+    public void Initialize(Transform A, Transform B, LevelScript level)
     {
         PointA = A;
         PointB = B;
-        width = linew;
+        levelManager = level;
+        width = level.edgeWidth;
 
         lr.startWidth = width;
         lr.endWidth = width;
-        lr.startColor = linecol;
-        lr.endColor = linecol;
+        lr.startColor = level.edgeColor;
+        lr.endColor = level.edgeColor;
         
     }
 
     void Update()
     {
-        if (PointA != null && PointB != null)
+        if (PointA != null)
         {
             Vector3 start = PointA.position;
-            Vector3 end = PointB.position;
+            Vector3 end = new Vector3();
+            if (PointB != null) end = PointB.position;
+            else
+            {
+                Vector3 mousePos = Mouse.current.position.ReadValue();
+                mousePos.z = Mathf.Abs(Camera.main.transform.position.z);
+                end = Camera.main.ScreenToWorldPoint(mousePos);
+            }
+            
+            
             lr.SetPosition(0, start);
             lr.SetPosition(1, end);
         }

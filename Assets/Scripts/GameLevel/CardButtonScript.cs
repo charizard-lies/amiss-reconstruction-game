@@ -33,15 +33,6 @@ public class CardButtonScript : MonoBehaviour
     private Color activeGraphColor;
 
 
-    [Header("Swipe Settings")]
-    public float maxOffset = 50f; // how far the card can move upward
-    public float snapSpeed = 10f; // smoothing for snapping animation
-    public float dragThreshold = 10f;
-    public Vector2 bottomPos;
-    public Vector2 topPos;
-    private Vector2 pointerInitialPos;
-
-
     [Header("Swipe Events")]
     public UnityEvent OnSnapTop = new UnityEvent();
     public UnityEvent OnSnapBottom = new UnityEvent();
@@ -50,7 +41,6 @@ public class CardButtonScript : MonoBehaviour
     [Header("Other")]
     public int cardId;
     public bool isSnapping = false;
-    public CardScript card;
     public Dictionary<int, NodeScript> idToNodeScriptMap;
     private RectTransform rect;
     private Vector2 targetPos;
@@ -59,15 +49,6 @@ public class CardButtonScript : MonoBehaviour
     public void Initiate(LevelScript level, LevelUI UI, int id)
     {
         cardId = id;
-        levelManager = level;
-        idToNodeScriptMap = card.nodeMap;
-
-        rect = GetComponent<RectTransform>();
-        cardButton = GetComponent<Button>();
-        UIManager = UI;
-        bottomPos = rect.anchoredPosition;
-        topPos = new Vector2(bottomPos.x, bottomPos.y + maxOffset);
-
         normalCardSprite = UIManager.normalCardSprite;
         activeCardSprite = UIManager.activeCardSprite;
         normalGraphColor = UIManager.normalGraphColor;
@@ -87,33 +68,33 @@ public class CardButtonScript : MonoBehaviour
 
     private void DrawCard()
     {
-        ClearChildren(rect);
-        bool isActive = SaveManager.CurrentState.activeCardId == cardId;
+        // ClearChildren(rect);
+        // bool isActive = SaveManager.CurrentState.activeCardId == cardId;
 
-        if (isActive) gameObject.GetComponent<Image>().sprite = activeCardSprite;
-        else gameObject.GetComponent<Image>().sprite = normalCardSprite;
+        // if (isActive) gameObject.GetComponent<Image>().sprite = activeCardSprite;
+        // else gameObject.GetComponent<Image>().sprite = normalCardSprite;
 
-        foreach (NodeScript node in idToNodeScriptMap.Values)
-        {
-            if (!node.snappedAnchor) continue;
+        // foreach (NodeScript node in idToNodeScriptMap.Values)
+        // {
+        //     if (!node.snappedAnchor) continue;
 
-            GameObject nodeObj = Instantiate(nodeUIPrefab, rect);
-            nodeObj.GetComponent<RectTransform>().anchoredPosition = WorldToUIPos(node.transform.position);
-            nodeObj.GetComponent<Image>().color = isActive ? activeGraphColor : normalGraphColor;
-        }
+        //     GameObject nodeObj = Instantiate(nodeUIPrefab, rect);
+        //     nodeObj.GetComponent<RectTransform>().anchoredPosition = WorldToUIPos(node.transform.position);
+        //     nodeObj.GetComponent<Image>().color = isActive ? activeGraphColor : normalGraphColor;
+        // }
 
-        foreach (var edge in card.allEdges)
-        {
-            if (!edge.PointA.GetComponent<NodeScript>().snappedAnchor || !edge.PointB.GetComponent<NodeScript>().snappedAnchor)
-                continue;
-            var edgeObj = Instantiate(edgeUIPrefab, rect);
-            float adjustedLineWidth = isActive ? lineWidth * 2 : lineWidth;
-            DrawUILine(edgeObj.GetComponent<RectTransform>(),
-                       WorldToUIPos(edge.PointA.position),
-                       WorldToUIPos(edge.PointB.position),
-                       adjustedLineWidth);
-            edgeObj.GetComponent<Image>().color = isActive ? activeGraphColor : normalGraphColor;
-        }
+        // foreach (var edge in card.allEdges)
+        // {
+        //     if (!edge.PointA.GetComponent<NodeScript>().snappedAnchor || !edge.PointB.GetComponent<NodeScript>().snappedAnchor)
+        //         continue;
+        //     var edgeObj = Instantiate(edgeUIPrefab, rect);
+        //     float adjustedLineWidth = isActive ? lineWidth * 2 : lineWidth;
+        //     DrawUILine(edgeObj.GetComponent<RectTransform>(),
+        //                WorldToUIPos(edge.PointA.position),
+        //                WorldToUIPos(edge.PointB.position),
+        //                adjustedLineWidth);
+        //     edgeObj.GetComponent<Image>().color = isActive ? activeGraphColor : normalGraphColor;
+        // }
     }
 
     void ClearChildren(RectTransform parent)
