@@ -18,6 +18,7 @@ public class EdgeScript : MonoBehaviour
         lr = GetComponent<LineRenderer>();
         lr.sortingLayerName = "Default";
         lr.sortingOrder = 0;
+        lr.enabled = false;
     }
 
     // Update is called once per frame
@@ -32,15 +33,17 @@ public class EdgeScript : MonoBehaviour
         lr.endWidth = width;
         lr.startColor = level.edgeColor;
         lr.endColor = level.edgeColor;
-        
+
+        SetEndpoints();
+        lr.enabled = true;
     }
 
-    void Update()
+    public void SetEndpoints()
     {
         if (PointA != null)
         {
             Vector3 start = PointA.position;
-            Vector3 end = new Vector3();
+            Vector3 end;
             if (PointB != null) end = PointB.position;
             else
             {
@@ -53,5 +56,10 @@ public class EdgeScript : MonoBehaviour
             lr.SetPosition(0, start);
             lr.SetPosition(1, end);
         }
+    }
+
+    void Update()
+    {
+        SetEndpoints();
     }
 }

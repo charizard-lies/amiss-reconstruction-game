@@ -124,7 +124,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 1.8
+  m_Radius: 2.5
 --- !u!114 &9160648349318288427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -137,9 +137,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a39d41a61ebd2494c89fed7802548c4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  anchorLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  snapRadius: 0.6
-  nodeId: 0
-  snappedAnchor: {fileID: 0}
+  id: 0

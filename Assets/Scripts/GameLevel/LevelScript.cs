@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.InputSystem;
 using UnityEngine;
 
 public class LevelScript : MonoBehaviour
@@ -19,12 +20,17 @@ public class LevelScript : MonoBehaviour
     public GameObject nodePrefab;
     public GameObject edgePrefab;
 
-    [Header("Managers")]
+    [Header("Other")]
+    public LevelUI UIManager;
     public List<Vector3> currNodePos;
     public List<NodeScript> nodeScripts;
-    public LevelUI UIManager;
+    public List<char> colors;
+    public List<Dictionary<int, EdgeScript>> drawnEdges = new List<Dictionary<int, EdgeScript>>();
+    public EdgeScript currentDrawingEdge;
+
+
+    public int removedId;
     public bool gamePaused;
-    public int activeCardId;
 
     void Start()
     {
@@ -39,50 +45,179 @@ public class LevelScript : MonoBehaviour
         // levelState = SaveManager.CurrentState;
         
         graphData = Resources.Load<GraphData>($"Levels/Normal/Level1");   
+        for(int i = 0; i < graphData.nodes.Count(); i++)
+        {
+            drawnEdges.Add(new Dictionary<int, EdgeScript>());
+        }
 
         gamePaused = false;
-        activeCardId =0;
 
         // UIManager.CreateCardButtons();
-        BuildLevel();
+        BuildCard(removedId);
     }
 
-    public void BuildLevel()
+    public void BuildCard(int removedId)
     {
-        SetNodePos();
-
-        BuildNodes();
+        SetNodePos(removedId);
+        ComputeWLColouring(removedId);
+        
+        for(int i = 0; i < graphData.nodes.Count(); i++)
+        {
+            nodeScripts.Add(BuildNode(i));
+        } 
         BuildEdges();
 
 
     }
-
-    private void BuildNodes()
+    
+    private NodeScript BuildNode(int id)
     {
-       for(int i = 0; i < graphData.nodes.Count(); i++)
-        {
-            GameObject nodeObj = Instantiate(nodePrefab, currNodePos[i], Quaternion.identity, transform);
-            NodeScript nodeScript = nodeObj.GetComponent<NodeScript>();
-            nodeScripts.Add(nodeScript);
-            nodeScript.Initialize(i, this);
-        } 
+        GameObject nodeObj = Instantiate(nodePrefab, currNodePos[id], Quaternion.identity, transform);
+        NodeScript nodeScript = nodeObj.GetComponent<NodeScript>();
+        nodeScript.Initialize(id, this);
+        return nodeScript;
+    }
+
+    private EdgeScript BuildEdge(int a, int? b)
+    {
+        GameObject edgeObj = Instantiate(edgePrefab, transform);
+        EdgeScript edgeScript = edgeObj.GetComponent<EdgeScript>();
+        if (b==null) edgeScript.Initialize(nodeScripts[a].transform, null, this);
+        else edgeScript.Initialize(nodeScripts[a].transform, nodeScripts[b.Value].transform, this);
+
+        return edgeScript;
     }
 
     private void BuildEdges()
     {
         foreach(GraphData.Edge edge in graphData.edges)
         {
-            if(edge.fromNodeId == activeCardId || edge.toNodeId == activeCardId) continue;
-            GameObject edgeObj = Instantiate(edgePrefab, transform);
-            EdgeScript edgeScript = edgeObj.GetComponent<EdgeScript>();
-            edgeScript.Initialize(nodeScripts[edge.fromNodeId].transform, nodeScripts[edge.toNodeId].transform, this);
+            if(edge.fromNodeId == removedId || edge.toNodeId == removedId) continue;
+            BuildEdge(edge.fromNodeId, edge.toNodeId);
         }
+    }
+
+    public void PenDown()
+    {
+        currentDrawingEdge = BuildEdge(removedId, null);
+    }
+
+    public void PenUp(int? nodeId)
+    {
+        if(nodeId == null || drawnEdges[removedId].TryGetValue(nodeId.Value, out _))
+        {
+            Destroy(currentDrawingEdge.gameObject);
+            currentDrawingEdge = null;
+            return;
+        }
+        
+        currentDrawingEdge.PointB = nodeScripts[nodeId.Value].transform;
+        drawnEdges[removedId][nodeId.Value] = currentDrawingEdge;
+        currentDrawingEdge = null;
+
+        Debug.Log(CheckGraph());
+    }
+
+    public void EraseEdge(int nodeId)
+    {
+        if(!drawnEdges[removedId].TryGetValue(nodeId, out _)) return;
+        EdgeScript edgeToErase = drawnEdges[removedId][nodeId];
+        if(!edgeToErase) return;
+
+        Destroy(edgeToErase.gameObject);
+        drawnEdges[removedId].Remove(nodeId);
+        Debug.Log(CheckGraph());
+        return;
     }
 
     public void Restart()
     {
         gamePaused = false;
         UIManager.hasShownWin = false;
+    }
+
+    public bool CheckGraph()
+    {
+        List<int> neighboursIds = graphData.nodes[removedId].adjacentNodeIds;
+        List<char> neighbourLabels = neighboursIds.Select(id => colors[id]).ToList();
+
+        List<char> drawnNeighbourLabels = new List<char>();
+        foreach(EdgeScript edgeScript in drawnEdges[removedId].Values)
+        {
+            NodeScript connectedNode = edgeScript.PointB.gameObject.GetComponent<NodeScript>();
+            drawnNeighbourLabels.Add(colors[connectedNode.id]);
+        }
+
+        return neighbourLabels.OrderBy(x=>x).SequenceEqual(drawnNeighbourLabels.OrderBy(x=>x));
+    }
+
+    public void ComputeWLColouring(int cardId)
+    {
+        colors.Clear();
+
+        List<char> currColors = new List<char>();
+        foreach(var node in graphData.nodes)
+        {
+            if(node.id == cardId) currColors.Add('a');
+            else currColors.Add(IntToLetter(node.adjacentNodeIds.Count(neighbourId => neighbourId!=cardId)));
+        }
+        
+        int oldSignatureCount=0;
+        for(int i = 0; i < graphData.nodes.Count(); i++)
+        {
+            Dictionary<int,string> signatures = new Dictionary<int, string>();
+
+            for(int j = 0; j < graphData.nodes.Count(); j++)
+            {
+                List<char> neighbourColors = graphData.nodes[i].adjacentNodeIds
+                    .Where(id => id != cardId)
+                    .Select(id => currColors[id])
+                    .OrderBy(x => x)
+                    .ToList();
+
+                string signature = currColors[j] + "|" + string.Join(",", neighbourColors);
+                signatures[j] = signature;
+            }
+
+            List<string> uniqueSignatures = signatures.Values
+                .Distinct()
+                .OrderBy(x => x)
+                .ToList();
+
+            if (uniqueSignatures.Count() == oldSignatureCount) break;
+
+            oldSignatureCount = uniqueSignatures.Count();
+            for(int j = 0; j < graphData.nodes.Count(); j++)
+            {
+                if(j == removedId) continue;
+                currColors[j] = IntToLetter(uniqueSignatures.IndexOf(signatures[j]));
+                Debug.Log($"node {j} color: {currColors[j]}");
+            }
+        }
+
+        colors = currColors;
+    }
+
+    private char IntToLetter(int num)
+    {
+        return (char)('a' + num);
+    }
+
+    private void Update()
+    {
+        if(gamePaused) return;
+
+        if (Mouse.current.leftButton.wasReleasedThisFrame && currentDrawingEdge != null)
+        {
+            foreach(var nodeScript in nodeScripts)
+            {
+                if(nodeScript.id == removedId) continue;
+                if(!nodeScript.MouseIsOver()) continue;
+
+                PenUp(nodeScript.id);
+            }
+            if (currentDrawingEdge) PenUp(null);
+        }
     }
 
     // private LevelState LoadLevelState()
@@ -108,7 +243,7 @@ public class LevelScript : MonoBehaviour
 
     //     return state;
     // }
-    
+
     // private CardState CreateFreshCardState(int removedId)
     // {
     //     CardState state = new CardState();
@@ -119,8 +254,8 @@ public class LevelScript : MonoBehaviour
     //     state.nodeAnchorIdMap = reducedGraphData.nodeIds
     //     .Select((nodeId, i) => new { nodeId, value = shuffledAnchorIds[i] })
     //     .ToDictionary(x => x.nodeId, x => x.value);
-        
-        
+
+
     //     foreach(int nodeId in graphData.nodeIds)
     //     {
     //         if (nodeId == removedId) continue;
@@ -240,12 +375,12 @@ public class LevelScript : MonoBehaviour
     //     return true;
     // }
 
-    private void SetNodePos()
+    private void SetNodePos(int cardId)
     {
         currNodePos.Clear();
         for(int i = 0; i < graphData.nodes.Count(); i++)
         {
-            int currNodePosition = graphData.nodePositions[activeCardId].arrangement[i];
+            int currNodePosition = graphData.nodePositions[cardId].arrangement[i];
             currNodePos.Add(getNodePos(currNodePosition, graphData.nodes.Count()));
         }
     }

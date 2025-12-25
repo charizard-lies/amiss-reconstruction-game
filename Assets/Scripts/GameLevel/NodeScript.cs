@@ -1,44 +1,33 @@
 using UnityEngine;
-using System.Linq;
-using System.Collections;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Collider2D))]
 public class NodeScript : MonoBehaviour
 {
-    private LayerMask anchorLayer;
-    public float snapRadius;
-    public int nodeId;
-    public AnchorScript snappedAnchor;
-
-    private bool isDragging = false;
-    private bool isSnapping;
+    public int id;
     private Vector2 currMouseWorldPos;
     private Camera cam;
     private LevelScript levelManager;
-    // private NodeState nodeState;
     private Vector3 velocity = Vector3.zero;
+    // private NodeState nodeState;
 
     private void Awake()
     {
         cam = Camera.main;
     }
 
-    public void Initialize(int id, LevelScript level)
+    public void Initialize(int nodeId, LevelScript level)
     {
-        nodeId = id;
+        id = nodeId;
         levelManager = level;
         // nodeState = card.cardState.nodes.First(nodeState => nodeState.nodeId == id);
-        isSnapping = snappedAnchor == null ? false : true;
     }
 
     private void Update()
     {
         if (Mouse.current == null) return;
 
-        Debug.Log(levelManager == null);
-        if (Mouse.current.leftButton.wasPressedThisFrame && !levelManager.gamePaused) ManageNodeClick();
-        // if (Mouse.current.leftButton.wasReleasedThisFrame) ManageNodeRelease();
+        if (Mouse.current.leftButton.wasPressedThisFrame && !levelManager.gamePaused && MouseIsOver()) ManageNodeClick();
         // if (isDragging) ManageNodeDrag();
         // if (isSnapping) ManageNodeSnap();
 
@@ -46,31 +35,14 @@ public class NodeScript : MonoBehaviour
 
     private void ManageNodeClick()
     {
-        if (IsMouseOver())
-        {
-            GameObject edgeObj = Instantiate(levelManager.edgePrefab, levelManager.transform);
-            EdgeScript edgeScript = edgeObj.GetComponent<EdgeScript>();
-            edgeScript.Initialize(transform, null, levelManager);
-        }
+        if (id == levelManager.removedId) levelManager.PenDown();
+        else levelManager.EraseEdge(id);
     }
     
     // private void ManageNodeDrag()
     // {
     //     currMouseWorldPos = cam.ScreenToWorldPoint(Mouse.current.position.ReadValue());
     //     Approach(currMouseWorldPos);
-    // }
-
-    // private void ManageNodeRelease()
-    // {
-    //     isDragging = false;
-    //     AnchorScript potentialSnappingAnchor = FindAnchorToSnap();
-    //     if (potentialSnappingAnchor)
-    //     {
-    //         isSnapping = true;
-    //         SnapToAnchor(potentialSnappingAnchor);
-    //         levelManager.UIManager.UpdateSolved(levelManager.CheckGraphSolved());
-    //     }
-    //     UpdateNodeState();
     // }
     
     // private void ManageNodeSnap()
@@ -90,7 +62,7 @@ public class NodeScript : MonoBehaviour
     //     );
     // }
     
-    private bool IsMouseOver()
+    public bool MouseIsOver()
     {
         Vector3 mousePos = Mouse.current.position.ReadValue();
         mousePos.z = Mathf.Abs(cam.transform.position.z);
