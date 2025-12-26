@@ -1,15 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor.PackageManager;
 
 [CreateAssetMenu(fileName = "GraphData", menuName = "Graph/GraphData")]
 
 //I only control the data of the graphs, preparing it for other scripts to use
 public class GraphData : ScriptableObject
 {
+    private  System.Random rng = new System.Random();
+    
     [System.Serializable]
     public class Node
     {
@@ -30,7 +29,7 @@ public class GraphData : ScriptableObject
     [System.Serializable]
     public class CardArrangement
     {
-        public List<int> arrangement = new List<int>();
+        public List<int> scramble = new List<int>();
     }
 
     [SerializeField] public List<Node> nodes = new List<Node>();
@@ -49,5 +48,32 @@ public class GraphData : ScriptableObject
             return edgeSet.ToList();
         }
     }
-    [SerializeField] public List<CardArrangement> nodePositions = new List<CardArrangement>();
+    [SerializeField] public List<CardArrangement> cardArrangements = new List<CardArrangement>();
+
+    public void GenerateRandomCardArrangements()
+    {
+        for(int i = 0; i < nodes.Count(); i++)
+        {
+            cardArrangements.Add(new CardArrangement());
+
+            List<int> positionIndices = new List<int>();
+            for(int j = 1; j < nodes.Count(); j++)
+            {
+                positionIndices.Add(j);
+            }
+
+            for (int j = positionIndices.Count()-1; j > 0; j--)
+            {
+                int k = rng.Next(j + 1);
+                (positionIndices[j], positionIndices[k]) = (positionIndices[k], positionIndices[j]);
+            }
+
+            int l = 0;
+            for (int j = 0; j < nodes.Count(); j++)
+            {
+                if (j == i) cardArrangements[i].scramble.Add(0);
+                else cardArrangements[i].scramble.Add(positionIndices[l++]);
+            }
+        }
+    }
 }

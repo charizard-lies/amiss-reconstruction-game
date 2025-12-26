@@ -22,11 +22,11 @@ public class LevelScript : MonoBehaviour
 
     [Header("Other")]
     public LevelUI UIManager;
-    public List<Vector3> currNodePos;
-    public List<NodeScript> nodeScripts;
-    public List<char> colors;
+    public List<Vector3> currNodePosMap;
+    public List<NodeScript> currNodeScripts;
+    public List<char> currNodeColorMap;
     public List<Dictionary<int, EdgeScript>> drawnEdges = new List<Dictionary<int, EdgeScript>>();
-    public EdgeScript currentDrawingEdge;
+    public EdgeScript drawingEdge=null;
 
 
     public int removedId;
@@ -45,26 +45,33 @@ public class LevelScript : MonoBehaviour
         // levelState = SaveManager.CurrentState;
         
         graphData = Resources.Load<GraphData>($"Levels/Normal/Level1");   
-        for(int i = 0; i < graphData.nodes.Count(); i++)
-        {
-            drawnEdges.Add(new Dictionary<int, EdgeScript>());
-        }
+        graphData.GenerateRandomCardArrangements();
+
+        for(int i = 0; i < graphData.nodes.Count(); i++) drawnEdges.Add(new Dictionary<int, EdgeScript>());
 
         gamePaused = false;
 
-        UIManager.CreateCardButtons();
+        UIManager.DrawCardButtons();
         BuildCard(removedId);
     }
 
-    public void BuildCard(int removedId)
+    private void BuildCard(int cardId)
     {
-        currNodePos = ReturnNodePos(removedId);
-        ComputeWLColouring(removedId);
-        
+        for(int i = 0; i < transform.childCount; i++)
+        {
+            Destroy(transform.GetChild(i).gameObject);
+        }
+        currNodePosMap.Clear();
+        currNodeColorMap.Clear();
+        currNodeScripts.Clear();
+
+        currNodePosMap = ReturnNodePosMap(cardId);
+        ComputeWLColouring(cardId);
         for(int i = 0; i < graphData.nodes.Count(); i++)
         {
-            nodeScripts.Add(BuildNode(i));
+            currNodeScripts.Add(BuildNode(i));
         } 
+
         BuildEdges();
 
 
@@ -73,7 +80,7 @@ public class LevelScript : MonoBehaviour
     private NodeScript BuildNode(int id)
     {
         GameObject nodeObj = Instantiate(nodePrefab, transform);
-        nodeObj.transform.localPosition = currNodePos[id];
+        nodeObj.transform.localPosition = currNodePosMap[id];
         NodeScript nodeScript = nodeObj.GetComponent<NodeScript>();
         nodeScript.Initialize(id, this);
         return nodeScript;
@@ -83,8 +90,8 @@ public class LevelScript : MonoBehaviour
     {
         GameObject edgeObj = Instantiate(edgePrefab, transform);
         EdgeScript edgeScript = edgeObj.GetComponent<EdgeScript>();
-        if (b==null) edgeScript.Initialize(nodeScripts[a].transform, null, this);
-        else edgeScript.Initialize(nodeScripts[a].transform, nodeScripts[b.Value].transform, this);
+        if (b==null) edgeScript.Initialize(currNodeScripts[a].transform, null, this);
+        else edgeScript.Initialize(currNodeScripts[a].transform, currNodeScripts[b.Value].transform, this);
 
         return edgeScript;
     }
@@ -100,21 +107,21 @@ public class LevelScript : MonoBehaviour
 
     public void PenDown()
     {
-        currentDrawingEdge = BuildEdge(removedId, null);
+        drawingEdge = BuildEdge(removedId, null);
     }
 
     public void PenUp(int? nodeId)
     {
         if(nodeId == null || drawnEdges[removedId].TryGetValue(nodeId.Value, out _))
         {
-            Destroy(currentDrawingEdge.gameObject);
-            currentDrawingEdge = null;
+            Destroy(drawingEdge.gameObject);
+            drawingEdge = null;
             return;
         }
         
-        currentDrawingEdge.PointB = nodeScripts[nodeId.Value].transform;
-        drawnEdges[removedId][nodeId.Value] = currentDrawingEdge;
-        currentDrawingEdge = null;
+        drawingEdge.PointB = currNodeScripts[nodeId.Value].transform;
+        drawnEdges[removedId][nodeId.Value] = drawingEdge;
+        drawingEdge = null;
 
         Debug.Log(CheckGraph());
     }
@@ -131,6 +138,13 @@ public class LevelScript : MonoBehaviour
         return;
     }
 
+    public void SetActiveCard(int cardId)
+    {
+        removedId = cardId;
+        BuildCard(cardId);
+        UIManager.DrawCardButtons();
+    }
+
     public void Restart()
     {
         gamePaused = false;
@@ -140,21 +154,21 @@ public class LevelScript : MonoBehaviour
     public bool CheckGraph()
     {
         List<int> neighboursIds = graphData.nodes[removedId].adjacentNodeIds;
-        List<char> neighbourLabels = neighboursIds.Select(id => colors[id]).ToList();
+        List<char> neighbourLabels = neighboursIds.Select(id => currNodeColorMap[id]).ToList();
 
         List<char> drawnNeighbourLabels = new List<char>();
         foreach(EdgeScript edgeScript in drawnEdges[removedId].Values)
         {
             NodeScript connectedNode = edgeScript.PointB.gameObject.GetComponent<NodeScript>();
-            drawnNeighbourLabels.Add(colors[connectedNode.id]);
+            drawnNeighbourLabels.Add(currNodeColorMap[connectedNode.id]);
         }
 
         return neighbourLabels.OrderBy(x=>x).SequenceEqual(drawnNeighbourLabels.OrderBy(x=>x));
     }
 
-    public void ComputeWLColouring(int cardId)
+    private void ComputeWLColouring(int cardId)
     {
-        colors.Clear();
+        currNodeColorMap.Clear();
 
         List<char> currColors = new List<char>();
         foreach(var node in graphData.nodes)
@@ -196,7 +210,7 @@ public class LevelScript : MonoBehaviour
             }
         }
 
-        colors = currColors;
+        currNodeColorMap = currColors;
     }
 
     private char IntToLetter(int num)
@@ -204,20 +218,41 @@ public class LevelScript : MonoBehaviour
         return (char)('a' + num);
     }
 
+    public List<Vector3> ReturnNodePosMap(int cardId)
+    {
+        List<Vector3> nodePos = new List<Vector3>();
+        for(int i = 0; i < graphData.nodes.Count(); i++)
+        {
+            int positionIndex = graphData.cardArrangements[cardId].scramble[i];
+            nodePos.Add(getCirclePos(positionIndex, graphData.nodes.Count()));
+        }
+
+        return nodePos;
+    }
+    
+    private Vector3 getCirclePos(int counter, int n)
+    {
+        float angle = 2 * Mathf.PI * counter / n;
+        float x = initRadius * Mathf.Sin(angle);
+        float y = initRadius * -Mathf.Cos(angle);
+
+        return new Vector3(x, y, 0);
+    }
+
     private void Update()
     {
         if(gamePaused) return;
 
-        if (Mouse.current.leftButton.wasReleasedThisFrame && currentDrawingEdge != null)
+        if (Mouse.current.leftButton.wasReleasedThisFrame && drawingEdge != null)
         {
-            foreach(var nodeScript in nodeScripts)
+            foreach(var nodeScript in currNodeScripts)
             {
                 if(nodeScript.id == removedId) continue;
                 if(!nodeScript.MouseIsOver()) continue;
 
                 PenUp(nodeScript.id);
             }
-            if (currentDrawingEdge) PenUp(null);
+            if (drawingEdge) PenUp(null);
         }
     }
 
@@ -272,128 +307,4 @@ public class LevelScript : MonoBehaviour
 
     //     return state;
     // }
-
-
-
-    // public bool CheckGraphSolved()
-    // {
-    //     GraphData overlayGraph = BuildOverlayGraph(deck.allCards.Where(card => card.isVisible).ToList());
-    //     bool overlayCorrect = CheckIsomorphism(graphData, overlayGraph);
-
-    //     return overlayCorrect;
-    // }
-
-    // public bool CheckIsomorphism(GraphData g1, GraphData g2)
-    // {
-    //     int n = g1.nodeIds.Count;
-    //     if (n != g2.nodeIds.Count || g1.edges.Count != g2.edges.Count)
-    //         return false;
-
-    //     // Normalize both graphs into adjacency sets
-    //     var g1Adj = BuildAdjacencyList(g1);
-    //     var g2Adj = BuildAdjacencyList(g2);
-
-    //     // Generate all permutations of node indices [0...n-1]
-    //     var permutations = GetPermutations(Enumerable.Range(0, n).ToList());
-
-    //     foreach (var perm in permutations)
-    //     {
-    //         if (IsPermutationIsomorphic(g1Adj, g2Adj, perm))
-    //             return true;
-    //     }
-
-    //     return false;
-    // }
-
-    // private static Dictionary<int, HashSet<int>> BuildAdjacencyList(GraphData g)
-    // {
-    //     var map = new Dictionary<int, int>();
-    //     var sortedNodes = g.nodeIds.OrderBy(id => id).ToList();
-
-    //     //map nodeid to index (ids may not be consecutive)
-    //     for (int i = 0; i < sortedNodes.Count; i++)
-    //         map[sortedNodes[i]] = i;
-
-    //     //construct adjacency list
-    //     var adj = new Dictionary<int, HashSet<int>>();
-    //     for (int i = 0; i < sortedNodes.Count; i++)
-    //         adj[i] = new HashSet<int>();
-
-    //     foreach (var edge in g.edges)
-    //     {
-    //         int a = map[edge.fromNodeId];
-    //         int b = map[edge.toNodeId];
-    //         adj[a].Add(b);
-    //         adj[b].Add(a); // undirected
-    //     }
-
-    //     return adj;
-    // }
-    // private static List<List<int>> GetPermutations(List<int> list)
-    // {
-    //     var result = new List<List<int>>();
-    //     Permute(list, 0, result);
-    //     return result;
-    // }
-
-    // private static void Permute(List<int> list, int start, List<List<int>> result)
-    // {
-    //     if (start >= list.Count)
-    //     {
-    //         result.Add(new List<int>(list));
-    //         return;
-    //     }
-
-    //     for (int i = start; i < list.Count; i++)
-    //     {
-    //         //place every other number into the start position, including itself
-    //         (list[start], list[i]) = (list[i], list[start]);
-    //         //permute the rest of the list, keeping everything at and before start the same.
-    //         Permute(list, start + 1, result);
-    //         // backtrack
-    //         (list[start], list[i]) = (list[i], list[start]); 
-    //     }
-    // }
-
-    // private static bool IsPermutationIsomorphic(
-    //     Dictionary<int, HashSet<int>> g1Adj,
-    //     Dictionary<int, HashSet<int>> g2Adj,
-    //     List<int> perm)
-    // {
-    //     int n = perm.Count;
-    //     for (int i = 0; i < n; i++)
-    //     {
-    //         //find the neighbours of the same node mapped on g1 and g2
-    //         var g1Neighbors = g1Adj[i];
-    //         var g2Neighbors = g2Adj[perm[i]];
-
-    //         //map the neighbours of g1 onto what they would be on g2
-    //         var mappedG1Neighbors = System.Linq.Enumerable.ToHashSet(g1Neighbors.Select(neigh => perm[neigh]));
-
-    //         if (!mappedG1Neighbors.SetEquals(g2Neighbors))
-    //             return false;
-    //     }
-    //     return true;
-    // }
-
-    public List<Vector3> ReturnNodePos(int cardId)
-    {
-        List<Vector3> nodePos = new List<Vector3>();
-        for(int i = 0; i < graphData.nodes.Count(); i++)
-        {
-            int currNodePosition = graphData.nodePositions[cardId].arrangement[i];
-            nodePos.Add(getNodePos(currNodePosition, graphData.nodes.Count()));
-        }
-
-        return nodePos;
-    }
-    
-    private Vector3 getNodePos(int counter, int n)
-    {
-        float angle = 2 * Mathf.PI * counter / n;
-        float x = initRadius * Mathf.Sin(angle);
-        float y = initRadius * -Mathf.Cos(angle);
-
-        return new Vector3(x, y, 0);
-    }
 }

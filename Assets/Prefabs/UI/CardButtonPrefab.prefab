@@ -82,7 +82,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 3367185850919738249, guid: 7dabd26ef521f4d57bc224ca4b91c0ea, type: 3}
+  m_Sprite: {fileID: -1662712975251761576, guid: 5eae41c207db24d6b8228f292b2e7395, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -152,7 +152,8 @@ MonoBehaviour:
   edgeUIPrefab: {fileID: 3737756791824072775, guid: 83775fcc746a84e4d9050cb8175ddba5, type: 3}
   levelManager: {fileID: 0}
   pictureArea: {fileID: 6270399873546372}
-  lineWidth: 1.3
+  normalLineWidth: 0
+  activeLineWidth: 0
   cardId: 0
   isSnapping: 0
 --- !u!114 &3901252962075801510

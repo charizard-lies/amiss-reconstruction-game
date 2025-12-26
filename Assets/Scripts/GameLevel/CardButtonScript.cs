@@ -19,11 +19,11 @@ public class CardButtonScript : MonoBehaviour
     [Header("Layout")]
     public RectTransform pictureArea;
     public float normalLineWidth;
-    // public float activeLineWidth;
-    // private Sprite normalCardSprite;
-    // private Sprite activeCardSprite;
-    // private Color normalGraphColor;
-    // private Color activeGraphColor;
+    public float activeLineWidth;
+    private Sprite normalCardSprite;
+    private Sprite activeCardSprite;
+    private Color normalGraphColor;
+    private Color activeGraphColor;
 
     [Header("Other")]
     public int cardId;
@@ -36,40 +36,42 @@ public class CardButtonScript : MonoBehaviour
         levelManager = level;
         UIManager = UI;
         cardId = id;
+
         normalLineWidth = UIManager.normalLineWidth;
-        // activeLineWidth = UIManager.activeLineWidth;
-        // normalCardSprite = UIManager.normalCardSprite;
-        // activeCardSprite = UIManager.activeCardSprite;
-        // normalGraphColor = UIManager.normalGraphColor;
-        // activeGraphColor = UIManager.activeGraphColor;
+        activeLineWidth = UIManager.activeLineWidth;
+        normalCardSprite = UIManager.normalCardSprite;
+        activeCardSprite = UIManager.activeCardSprite;
+        normalGraphColor = UIManager.normalGraphColor;
+        activeGraphColor = UIManager.activeGraphColor;
     }
 
-    public void DrawCardAfterFrame()
+    public void DrawCardAfterFrame(bool active)
     {
-        StartCoroutine(DrawCardWhenReady());
+        StartCoroutine(DrawCardWhenReady(active));
     }
 
-    private IEnumerator DrawCardWhenReady()
+    private IEnumerator DrawCardWhenReady(bool active)
     {
         yield return null;
-        DrawCard();
+        DrawCard(active);
     }
 
-    public void DrawCard()
+    public void DrawCard(bool isActive)
     {
         ClearChildren(pictureArea);
         // bool isActive = SaveManager.CurrentState.activeCardId == cardId;
 
-        // if (isActive) gameObject.GetComponent<Image>().sprite = activeCardSprite;
-        // else gameObject.GetComponent<Image>().sprite = normalCardSprite;
+        if (isActive) gameObject.GetComponent<Image>().sprite = activeCardSprite;
+        else gameObject.GetComponent<Image>().sprite = normalCardSprite;
 
-        List<Vector3> idToNodePos = levelManager.ReturnNodePos(cardId);
+        List<Vector3> cardNodePosMap = levelManager.ReturnNodePosMap(cardId);
         foreach (var node in levelManager.graphData.nodes)
         {
             if(node.id == cardId) continue;
             GameObject nodeObj = Instantiate(nodeUIPrefab, pictureArea);
-            nodeObj.GetComponent<RectTransform>().anchoredPosition = GraphToCardPos(idToNodePos[node.id]);
-            // nodeObj.GetComponent<Image>().color = isActive ? activeGraphColor : normalGraphColor;
+            nodeObj.GetComponent<RectTransform>().anchoredPosition = GraphToCardPos(cardNodePosMap[node.id]);
+            
+            nodeObj.GetComponent<Image>().color = isActive ? activeGraphColor : normalGraphColor;
         }
 
         foreach (var edge in levelManager.graphData.edges)
@@ -78,14 +80,13 @@ public class CardButtonScript : MonoBehaviour
 
             var edgeObj = Instantiate(edgeUIPrefab, pictureArea);
             Debug.Log($"{edge.fromNodeId} - {edge.toNodeId}");
-            // float adjustedLineWidth = isActive ? lineWidth * 2 : lineWidth;
 
             DrawUILine(edgeObj.GetComponent<RectTransform>(),
-                       GraphToCardPos(idToNodePos[edge.fromNodeId]),
-                       GraphToCardPos(idToNodePos[edge.toNodeId]),
-                       normalLineWidth);
+                       GraphToCardPos(cardNodePosMap[edge.fromNodeId]),
+                       GraphToCardPos(cardNodePosMap[edge.toNodeId]),
+                       isActive ? activeLineWidth: normalLineWidth);
 
-            // edgeObj.GetComponent<Image>().color = isActive ? activeGraphColor : normalGraphColor;
+            edgeObj.GetComponent<Image>().color = isActive ? activeGraphColor : normalGraphColor;
         }
     }
 

@@ -18,15 +18,16 @@ public class LevelUI : MonoBehaviour
 
     [Header("CardUI")]
     public GameObject cardUIPrefab;
+    public Transform cardContentArea;
+    public ScrollRect scrollRect;
+    public RawImage stringImage;
+
     public float normalLineWidth;
     public float activeLineWidth;
     public Sprite normalCardSprite;
     public Sprite activeCardSprite;
     public Color normalGraphColor;
     public Color activeGraphColor;
-    public Transform cardContentArea;
-    public ScrollRect scrollRect;
-    public RawImage stringImage;
 
     [Header("Graph References")]
     public LevelScript levelManager;
@@ -45,7 +46,7 @@ public class LevelUI : MonoBehaviour
         // else levelLabel.text = "Level " + GameManager.Instance.selectedLevelId;
     }
     
-    public void CreateCardButtons()
+    public void DrawCardButtons()
     {
         for (int i = 0; i < cardContentArea.childCount; i++)
         {
@@ -56,15 +57,16 @@ public class LevelUI : MonoBehaviour
 
         for (int i = 0; i < levelManager.graphData.nodes.Count(); i++)
         {
+            int index = i;
             GameObject cardUIObj = Instantiate(cardUIPrefab, cardContentArea);
             cardButtons.Add(cardUIObj);
 
             CardButtonScript cardButtonScript = cardUIObj.GetComponent<CardButtonScript>();
-            cardButtonScript.Initiate(levelManager, this, i);
-            cardButtonScript.DrawCardAfterFrame();
+            cardButtonScript.Initiate(levelManager, this, index);
+            cardButtonScript.DrawCardAfterFrame(index == levelManager.removedId);
 
-            // Button cardButton = cardUIObj.GetComponentInChildren<Button>();
-            // cardButton.onClick.AddListener(() => levelManager.deck.ToggleActiveCard(index));
+            Button cardButton = cardUIObj.GetComponentInChildren<Button>();
+            cardButton.onClick.AddListener(() => levelManager.SetActiveCard(index));
         }
 
 
