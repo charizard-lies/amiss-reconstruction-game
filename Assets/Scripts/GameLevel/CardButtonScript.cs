@@ -6,13 +6,6 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 
-[System.Serializable]
-public class NodeEntry
-{
-    public int id;
-    public NodeScript node;
-}
-
 public class CardButtonScript : MonoBehaviour
 {
     [Header("Prefabs")]
@@ -24,35 +17,31 @@ public class CardButtonScript : MonoBehaviour
     private LevelUI UIManager;
 
     [Header("Layout")]
-    public float horizontalPadding;
-    public float lineWidth;
-
-    private Sprite normalCardSprite;
-    private Sprite activeCardSprite;
-    private Color normalGraphColor;
-    private Color activeGraphColor;
-
-
-    [Header("Swipe Events")]
-    public UnityEvent OnSnapTop = new UnityEvent();
-    public UnityEvent OnSnapBottom = new UnityEvent();
-
+    public RectTransform pictureArea;
+    public float normalLineWidth;
+    // public float activeLineWidth;
+    // private Sprite normalCardSprite;
+    // private Sprite activeCardSprite;
+    // private Color normalGraphColor;
+    // private Color activeGraphColor;
 
     [Header("Other")]
     public int cardId;
     public bool isSnapping = false;
     public Dictionary<int, NodeScript> idToNodeScriptMap;
-    private RectTransform rect;
-    private Vector2 targetPos;
     private Button cardButton;
 
     public void Initiate(LevelScript level, LevelUI UI, int id)
     {
+        levelManager = level;
+        UIManager = UI;
         cardId = id;
-        normalCardSprite = UIManager.normalCardSprite;
-        activeCardSprite = UIManager.activeCardSprite;
-        normalGraphColor = UIManager.normalGraphColor;
-        activeGraphColor = UIManager.activeGraphColor;
+        normalLineWidth = UIManager.normalLineWidth;
+        // activeLineWidth = UIManager.activeLineWidth;
+        // normalCardSprite = UIManager.normalCardSprite;
+        // activeCardSprite = UIManager.activeCardSprite;
+        // normalGraphColor = UIManager.normalGraphColor;
+        // activeGraphColor = UIManager.activeGraphColor;
     }
 
     public void DrawCardAfterFrame()
@@ -66,35 +55,38 @@ public class CardButtonScript : MonoBehaviour
         DrawCard();
     }
 
-    private void DrawCard()
+    public void DrawCard()
     {
-        // ClearChildren(rect);
+        ClearChildren(pictureArea);
         // bool isActive = SaveManager.CurrentState.activeCardId == cardId;
 
         // if (isActive) gameObject.GetComponent<Image>().sprite = activeCardSprite;
         // else gameObject.GetComponent<Image>().sprite = normalCardSprite;
 
-        // foreach (NodeScript node in idToNodeScriptMap.Values)
-        // {
-        //     if (!node.snappedAnchor) continue;
+        List<Vector3> idToNodePos = levelManager.ReturnNodePos(cardId);
+        foreach (var node in levelManager.graphData.nodes)
+        {
+            if(node.id == cardId) continue;
+            GameObject nodeObj = Instantiate(nodeUIPrefab, pictureArea);
+            nodeObj.GetComponent<RectTransform>().anchoredPosition = GraphToCardPos(idToNodePos[node.id]);
+            // nodeObj.GetComponent<Image>().color = isActive ? activeGraphColor : normalGraphColor;
+        }
 
-        //     GameObject nodeObj = Instantiate(nodeUIPrefab, rect);
-        //     nodeObj.GetComponent<RectTransform>().anchoredPosition = WorldToUIPos(node.transform.position);
-        //     nodeObj.GetComponent<Image>().color = isActive ? activeGraphColor : normalGraphColor;
-        // }
+        foreach (var edge in levelManager.graphData.edges)
+        {
+            if(edge.fromNodeId == cardId || edge.toNodeId == cardId) continue;
 
-        // foreach (var edge in card.allEdges)
-        // {
-        //     if (!edge.PointA.GetComponent<NodeScript>().snappedAnchor || !edge.PointB.GetComponent<NodeScript>().snappedAnchor)
-        //         continue;
-        //     var edgeObj = Instantiate(edgeUIPrefab, rect);
-        //     float adjustedLineWidth = isActive ? lineWidth * 2 : lineWidth;
-        //     DrawUILine(edgeObj.GetComponent<RectTransform>(),
-        //                WorldToUIPos(edge.PointA.position),
-        //                WorldToUIPos(edge.PointB.position),
-        //                adjustedLineWidth);
-        //     edgeObj.GetComponent<Image>().color = isActive ? activeGraphColor : normalGraphColor;
-        // }
+            var edgeObj = Instantiate(edgeUIPrefab, pictureArea);
+            Debug.Log($"{edge.fromNodeId} - {edge.toNodeId}");
+            // float adjustedLineWidth = isActive ? lineWidth * 2 : lineWidth;
+
+            DrawUILine(edgeObj.GetComponent<RectTransform>(),
+                       GraphToCardPos(idToNodePos[edge.fromNodeId]),
+                       GraphToCardPos(idToNodePos[edge.toNodeId]),
+                       normalLineWidth);
+
+            // edgeObj.GetComponent<Image>().color = isActive ? activeGraphColor : normalGraphColor;
+        }
     }
 
     void ClearChildren(RectTransform parent)
@@ -103,14 +95,11 @@ public class CardButtonScript : MonoBehaviour
             Destroy(child.gameObject);
     }
 
-    Vector2 WorldToUIPos(Vector3 worldPos)
+    Vector2 GraphToCardPos(Vector3 localPos)
     {
-        Vector3 parentPosition = levelManager.transform.position;
-        Vector3 positionRelativeToParent = worldPos - parentPosition;
-        float parentwidth = levelManager.initRadius * 2f;
-        Vector3 positionProportionalToParent = positionRelativeToParent / parentwidth;
-        float cardBoxLength = Math.Min(rect.rect.width, rect.rect.height) - horizontalPadding * 2;
-        Vector3 positionOnCard = positionProportionalToParent * cardBoxLength;
+        float parentWidth = levelManager.initRadius * 2f;
+        float pictureAreaWidth = Math.Min(pictureArea.rect.width, pictureArea.rect.height);
+        Vector3 positionOnCard = localPos / parentWidth * (pictureAreaWidth * 0.5f);
 
         return new Vector2(positionOnCard.x, positionOnCard.y);
     }

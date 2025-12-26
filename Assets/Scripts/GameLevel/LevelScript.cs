@@ -52,13 +52,13 @@ public class LevelScript : MonoBehaviour
 
         gamePaused = false;
 
-        // UIManager.CreateCardButtons();
+        UIManager.CreateCardButtons();
         BuildCard(removedId);
     }
 
     public void BuildCard(int removedId)
     {
-        SetNodePos(removedId);
+        currNodePos = ReturnNodePos(removedId);
         ComputeWLColouring(removedId);
         
         for(int i = 0; i < graphData.nodes.Count(); i++)
@@ -72,7 +72,8 @@ public class LevelScript : MonoBehaviour
     
     private NodeScript BuildNode(int id)
     {
-        GameObject nodeObj = Instantiate(nodePrefab, currNodePos[id], Quaternion.identity, transform);
+        GameObject nodeObj = Instantiate(nodePrefab, transform);
+        nodeObj.transform.localPosition = currNodePos[id];
         NodeScript nodeScript = nodeObj.GetComponent<NodeScript>();
         nodeScript.Initialize(id, this);
         return nodeScript;
@@ -375,23 +376,23 @@ public class LevelScript : MonoBehaviour
     //     return true;
     // }
 
-    private void SetNodePos(int cardId)
+    public List<Vector3> ReturnNodePos(int cardId)
     {
-        currNodePos.Clear();
+        List<Vector3> nodePos = new List<Vector3>();
         for(int i = 0; i < graphData.nodes.Count(); i++)
         {
             int currNodePosition = graphData.nodePositions[cardId].arrangement[i];
-            currNodePos.Add(getNodePos(currNodePosition, graphData.nodes.Count()));
+            nodePos.Add(getNodePos(currNodePosition, graphData.nodes.Count()));
         }
+
+        return nodePos;
     }
     
     private Vector3 getNodePos(int counter, int n)
     {
         float angle = 2 * Mathf.PI * counter / n;
         float x = initRadius * Mathf.Sin(angle);
-        x += levelParent.position.x;
         float y = initRadius * -Mathf.Cos(angle);
-        y += levelParent.position.y;
 
         return new Vector3(x, y, 0);
     }

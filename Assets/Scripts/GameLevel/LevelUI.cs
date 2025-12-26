@@ -4,6 +4,7 @@ using System;
 using TMPro;
 using System.Collections.Generic;
 using NUnit.Framework;
+using System.Linq;
 
 public class LevelUI : MonoBehaviour
 {
@@ -17,12 +18,15 @@ public class LevelUI : MonoBehaviour
 
     [Header("CardUI")]
     public GameObject cardUIPrefab;
+    public float normalLineWidth;
+    public float activeLineWidth;
     public Sprite normalCardSprite;
     public Sprite activeCardSprite;
     public Color normalGraphColor;
     public Color activeGraphColor;
     public Transform cardContentArea;
     public ScrollRect scrollRect;
+    public RawImage stringImage;
 
     [Header("Graph References")]
     public LevelScript levelManager;
@@ -43,30 +47,25 @@ public class LevelUI : MonoBehaviour
     
     public void CreateCardButtons()
     {
-        // for (int i = 0; i < cardContentArea.childCount; i++)
-        // {
-        //     Destroy(cardContentArea.GetChild(i).gameObject);
-        // }
+        for (int i = 0; i < cardContentArea.childCount; i++)
+        {
+            Destroy(cardContentArea.GetChild(i).gameObject);
+        }
 
-        // cardButtons.Clear();
+        cardButtons.Clear();
 
-        // foreach (var card in levelManager.deck.allCards)
-        // {
-        //     int index = card.removedId;
+        for (int i = 0; i < levelManager.graphData.nodes.Count(); i++)
+        {
+            GameObject cardUIObj = Instantiate(cardUIPrefab, cardContentArea);
+            cardButtons.Add(cardUIObj);
 
-        //     GameObject cardWrapperObj = Instantiate(cardUIPrefab, cardContentArea);
-        //     GameObject cardObj = cardWrapperObj.transform.GetChild(0).gameObject;
-        //     cardButtons.Add(cardObj);
+            CardButtonScript cardButtonScript = cardUIObj.GetComponent<CardButtonScript>();
+            cardButtonScript.Initiate(levelManager, this, i);
+            cardButtonScript.DrawCardAfterFrame();
 
-        //     CardButtonScript cardButtonScript = cardObj.GetComponent<CardButtonScript>();
-        //     cardButtonScript.Initiate(levelManager, this, index);
-        //     cardButtonScript.DrawCardAfterFrame();
-
-        //     Button cardButton = cardObj.GetComponentInChildren<Button>();
-        //     cardButton.onClick.AddListener(() => levelManager.deck.ToggleActiveCard(index));
-
-        //     cardObj.GetComponent<RectTransform>().anchoredPosition = card.isVisible ? cardButtonScript.topPos : cardButtonScript.bottomPos;
-        // }
+            // Button cardButton = cardUIObj.GetComponentInChildren<Button>();
+            // cardButton.onClick.AddListener(() => levelManager.deck.ToggleActiveCard(index));
+        }
 
 
     //     //shift this out!! VVV
@@ -172,5 +171,20 @@ public class LevelUI : MonoBehaviour
     // {
     //     SaveManager.Delete(levelManager.levelIndex);
     // }
+
+    void Update()
+    {
+        float textureAspect = (float)stringImage.texture.width / stringImage.texture.height;
+        float panelWidth   = stringImage.rectTransform.rect.width;
+        float panelHeight  = stringImage.rectTransform.rect.height;
+        float tileWidth = textureAspect * panelHeight;
+
+        stringImage.uvRect = new Rect(0, 0, panelWidth / tileWidth, 1);
+
+        float scrollX = scrollRect.content.anchoredPosition.x;
+        Rect uv = stringImage.uvRect;
+        uv.x = -scrollX / tileWidth;
+        stringImage.uvRect = uv;
+    }
 
 }
