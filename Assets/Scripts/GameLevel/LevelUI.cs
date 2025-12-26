@@ -5,6 +5,7 @@ using TMPro;
 using System.Collections.Generic;
 using NUnit.Framework;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class LevelUI : MonoBehaviour
 {
@@ -33,9 +34,6 @@ public class LevelUI : MonoBehaviour
     public LevelScript levelManager;
     public List<GameObject> cardButtons = new List<GameObject>();
 
-    [Header("Other")]
-    public bool hasShownWin;
-
     private void Start()
     {
         // if (GameManager.Instance.selectedDailyLevel)
@@ -63,116 +61,72 @@ public class LevelUI : MonoBehaviour
 
             CardButtonScript cardButtonScript = cardUIObj.GetComponent<CardButtonScript>();
             cardButtonScript.Initiate(levelManager, this, index);
-            cardButtonScript.DrawCardAfterFrame(index == levelManager.removedId);
+            cardButtonScript.DrawCardAfterFrame();
 
             Button cardButton = cardUIObj.GetComponentInChildren<Button>();
             cardButton.onClick.AddListener(() => levelManager.SetActiveCard(index));
         }
-
-
-    //     //shift this out!! VVV
-    //     if(SaveManager.CurrentState.solved){
-    //         ShowWinMenu();
-    //     }
-    //     else
-    //     {
-    //         hasShownWin = false;
-    //     }
-    //     //shift this out ^^^^^
     }
 
-    // public void UpdateCardButtons()
-    // {
-    //     foreach (var cardButtonObj in cardButtons)
-    //     {
-    //         for (int i = 0; i < cardButtonObj.transform.childCount; i++)
-    //         {
-    //             Destroy(cardButtonObj.transform.GetChild(i).gameObject);
-    //         }
-    //         CardButtonScript cardButtonScript = cardButtonObj.GetComponent<CardButtonScript>();
-    //         cardButtonScript.DrawCardAfterFrame();
-    //     }
-    // }
+    
+    public void UpdateCards()
+    {
+        foreach (var cardUIObj in cardButtons)
+        {
+            CardButtonScript cardButtonScript = cardUIObj.GetComponent<CardButtonScript>();
+            cardButtonScript.DrawCardAfterFrame();
+        }
+    }
 
-    // public void UpdateSolved(bool solved)
-    // {
-    //     if (!solved || hasShownWin) return;
+    public void ShowWinMenu()
+    {
+        winMenu.SetActive(true);
+        pauseBlocker.SetActive(true);
+    }
+
+    public void AdmirePuzzle()
+    {
+        winMenu.SetActive(false);
+        pauseBlocker.SetActive(false);
+    }
+
+    public void Pause()
+    {
+        pauseBlocker.SetActive(true);
+
+        if(levelManager.gameAdmiring) winMenu.SetActive(true);
+        else pauseMenu.SetActive(true);
+    }
+
+    public void Resume()
+    {
+        pauseMenu.SetActive(false);
+        pauseBlocker.SetActive(false);
+    }
+
+    public void TryRestart()
+    {
+        confirmRestartMenu.SetActive(true);
+        winMenu.SetActive(false);
+        pauseBlocker.SetActive(true);
+    }
+
+    public void CancelRestart()
+    {
+        confirmRestartMenu.SetActive(false);
         
-    //     levelManager.levelState.solved = true;
-    //     SaveManager.Save(GameManager.Instance.selectedLevelId);
-    //     ShowWinMenu();
-    // }
+        if(!levelManager.gameAdmiring && levelManager.gameWon) winMenu.SetActive(true);
+        else pauseBlocker.SetActive(false);
+    }
 
-    // public void ShowWinMenu()
-    // {
-    //     winMenu.SetActive(true);
-    //     pauseBlocker.SetActive(true);
-    //     hasShownWin = true;
-    //     levelManager.gamePaused = true;
+    public void Restart()
+    {
+        confirmRestartMenu.SetActive(false);
+        pauseBlocker.SetActive(false);
 
-    //     SaveManager.Save(levelManager.levelIndex);
-    // }
-
-    // public void AdmirePuzzle()
-    // {
-    //     winMenu.SetActive(false);
-    //     pauseBlocker.SetActive(false);
-    // }
-
-    // public void TryRestart()
-    // {
-    //     if (!hasShownWin)
-    //     {
-    //         Restart();
-    //         return;
-    //     } 
-
-    //     confirmRestartMenu.SetActive(true);
-    // }
-
-    // public void Restart()
-    // {
-    //     levelManager.Restart();
-    //     confirmRestartMenu.SetActive(false);
-    //     winMenu.SetActive(false);
-    //     pauseBlocker.SetActive(false);
-    //     levelManager.gamePaused = false;
-
-    //     levelManager.levelState.solved = false;
-    //     SaveManager.Save(GameManager.Instance.selectedLevelId);
-    // }
-
-    // public void CancelRestart()
-    // {
-    //     confirmRestartMenu.SetActive(false);
-    // }
-
-    // public void Pause()
-    // {
-    //     pauseMenu.SetActive(true);
-    //     pauseBlocker.SetActive(true);
-    //     levelManager.gamePaused = true;
-
-    //     SaveManager.Save(levelManager.levelIndex);
-    // }
-
-    // public void Resume()
-    // {
-    //     pauseMenu.SetActive(false);
-    //     pauseBlocker.SetActive(false);
-    //     levelManager.gamePaused = false;
-    // }
-
-    // public void Quit()
-    // {
-    //     if (levelManager.daily) GameManager.Instance.LoadMainMenu();
-    //     else GameManager.Instance.LoadLevelMenu();
-    // }
-
-    // public void DeleteSave()
-    // {
-    //     SaveManager.Delete(levelManager.levelIndex);
-    // }
+        // levelManager.levelState.solved = false;
+        // SaveManager.Save(GameManager.Instance.selectedLevelId);
+    }
 
     void Update()
     {

@@ -45,26 +45,27 @@ public class CardButtonScript : MonoBehaviour
         activeGraphColor = UIManager.activeGraphColor;
     }
 
-    public void DrawCardAfterFrame(bool active)
+    public void DrawCardAfterFrame()
     {
-        StartCoroutine(DrawCardWhenReady(active));
+        StartCoroutine(DrawCardWhenReady());
     }
 
-    private IEnumerator DrawCardWhenReady(bool active)
+    private IEnumerator DrawCardWhenReady()
     {
         yield return null;
-        DrawCard(active);
+        DrawCard();
     }
 
-    public void DrawCard(bool isActive)
+    public void DrawCard()
     {
         ClearChildren(pictureArea);
-        // bool isActive = SaveManager.CurrentState.activeCardId == cardId;
+        bool isActive = levelManager.removedId == cardId;
 
         if (isActive) gameObject.GetComponent<Image>().sprite = activeCardSprite;
         else gameObject.GetComponent<Image>().sprite = normalCardSprite;
 
         List<Vector3> cardNodePosMap = levelManager.ReturnNodePosMap(cardId);
+
         foreach (var node in levelManager.graphData.nodes)
         {
             if(node.id == cardId) continue;
@@ -79,7 +80,6 @@ public class CardButtonScript : MonoBehaviour
             if(edge.fromNodeId == cardId || edge.toNodeId == cardId) continue;
 
             var edgeObj = Instantiate(edgeUIPrefab, pictureArea);
-            Debug.Log($"{edge.fromNodeId} - {edge.toNodeId}");
 
             DrawUILine(edgeObj.GetComponent<RectTransform>(),
                        GraphToCardPos(cardNodePosMap[edge.fromNodeId]),

@@ -8,7 +8,7 @@ using System.Linq;
 public class GraphData : ScriptableObject
 {
     private  System.Random rng = new System.Random();
-    
+
     [System.Serializable]
     public class Node
     {
@@ -32,6 +32,7 @@ public class GraphData : ScriptableObject
         public List<int> scramble = new List<int>();
     }
 
+    
     [SerializeField] public List<Node> nodes = new List<Node>();
     public List<Edge> edges
     {
@@ -48,13 +49,15 @@ public class GraphData : ScriptableObject
             return edgeSet.ToList();
         }
     }
-    [SerializeField] public List<CardArrangement> cardArrangements = new List<CardArrangement>();
 
-    public void GenerateRandomCardArrangements()
+    
+    public List<CardArrangement> GenerateRandomCardArrangements()
     {
+        List<CardArrangement> arrangements = new List<CardArrangement>();
+        
         for(int i = 0; i < nodes.Count(); i++)
         {
-            cardArrangements.Add(new CardArrangement());
+            arrangements.Add(new CardArrangement());
 
             List<int> positionIndices = new List<int>();
             for(int j = 1; j < nodes.Count(); j++)
@@ -71,9 +74,11 @@ public class GraphData : ScriptableObject
             int l = 0;
             for (int j = 0; j < nodes.Count(); j++)
             {
-                if (j == i) cardArrangements[i].scramble.Add(0);
-                else cardArrangements[i].scramble.Add(positionIndices[l++]);
+                if (j == i) arrangements[i].scramble.Add(0);
+                else arrangements[i].scramble.Add(positionIndices[l++]);
             }
         }
+
+        return arrangements;
     }
 }

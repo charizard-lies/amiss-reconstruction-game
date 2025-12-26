@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.InputSystem;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class LevelScript : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class LevelScript : MonoBehaviour
     public float edgeWidth = 0.2f;
     public Transform levelParent;
     public string levelIndex;
-    // public LevelState levelState;
+    public LevelState levelState;
 
 
     [Header("Prefabs")]
@@ -25,11 +26,13 @@ public class LevelScript : MonoBehaviour
     public List<Vector3> currNodePosMap;
     public List<NodeScript> currNodeScripts;
     public List<char> currNodeColorMap;
-    public List<Dictionary<int, EdgeScript>> drawnEdges = new List<Dictionary<int, EdgeScript>>();
+    public Dictionary<int, EdgeScript> currDrawnEdges = new Dictionary<int, EdgeScript>();
     public EdgeScript drawingEdge=null;
 
 
     public int removedId;
+    public bool gameWon;
+    public bool gameAdmiring;
     public bool gamePaused;
 
     void Start()
@@ -41,18 +44,21 @@ public class LevelScript : MonoBehaviour
         //     else graphData = Resources.Load<GraphData>($"Levels/Normal/Level{levelIndex}");   
         // }
 
-        // SaveManager.CurrentState = LoadLevelState();
-        // levelState = SaveManager.CurrentState;
-        
-        graphData = Resources.Load<GraphData>($"Levels/Normal/Level1");   
-        graphData.GenerateRandomCardArrangements();
+        levelIndex = "1";
+        graphData = Resources.Load<GraphData>($"Levels/Normal/Level1");
 
-        for(int i = 0; i < graphData.nodes.Count(); i++) drawnEdges.Add(new Dictionary<int, EdgeScript>());
+        SaveManager.CurrentState = LoadLevelState();
+        levelState = SaveManager.CurrentState;
 
-        gamePaused = false;
+        removedId = levelState.activeCardId;
+        gameWon = levelState.solved;
+        gameAdmiring = false;
+        gamePaused = levelState.solved;
 
         UIManager.DrawCardButtons();
         BuildCard(removedId);
+
+        if(gameWon) Win();
     }
 
     private void BuildCard(int cardId)
@@ -61,9 +67,11 @@ public class LevelScript : MonoBehaviour
         {
             Destroy(transform.GetChild(i).gameObject);
         }
+
         currNodePosMap.Clear();
         currNodeColorMap.Clear();
         currNodeScripts.Clear();
+        currDrawnEdges.Clear();
 
         currNodePosMap = ReturnNodePosMap(cardId);
         ComputeWLColouring(cardId);
@@ -73,8 +81,6 @@ public class LevelScript : MonoBehaviour
         } 
 
         BuildEdges();
-
-
     }
     
     private NodeScript BuildNode(int id)
@@ -103,6 +109,11 @@ public class LevelScript : MonoBehaviour
             if(edge.fromNodeId == removedId || edge.toNodeId == removedId) continue;
             BuildEdge(edge.fromNodeId, edge.toNodeId);
         }
+
+        foreach(int targetNode in levelState.cardStates[removedId].drawnEdges)
+        {
+            currDrawnEdges[targetNode] = BuildEdge(removedId, targetNode);
+        }
     }
 
     public void PenDown()
@@ -112,7 +123,7 @@ public class LevelScript : MonoBehaviour
 
     public void PenUp(int? nodeId)
     {
-        if(nodeId == null || drawnEdges[removedId].TryGetValue(nodeId.Value, out _))
+        if(nodeId == null || currDrawnEdges.TryGetValue(nodeId.Value, out _))
         {
             Destroy(drawingEdge.gameObject);
             drawingEdge = null;
@@ -120,44 +131,43 @@ public class LevelScript : MonoBehaviour
         }
         
         drawingEdge.PointB = currNodeScripts[nodeId.Value].transform;
-        drawnEdges[removedId][nodeId.Value] = drawingEdge;
+        currDrawnEdges[nodeId.Value] = drawingEdge;
+        levelState.cardStates[removedId].drawnEdges.Add(nodeId.Value);
         drawingEdge = null;
 
-        Debug.Log(CheckGraph());
+        if(CheckGraph()) Win();
     }
 
     public void EraseEdge(int nodeId)
     {
-        if(!drawnEdges[removedId].TryGetValue(nodeId, out _)) return;
-        EdgeScript edgeToErase = drawnEdges[removedId][nodeId];
-        if(!edgeToErase) return;
+        if(!currDrawnEdges.TryGetValue(nodeId, out _)) return;
+        EdgeScript edgeToErase = currDrawnEdges[nodeId];
+        if(!edgeToErase) Debug.LogWarning("currDrawnEdges has a node (key) but edgescript == null (value)");
 
         Destroy(edgeToErase.gameObject);
-        drawnEdges[removedId].Remove(nodeId);
-        Debug.Log(CheckGraph());
+        currDrawnEdges.Remove(nodeId);
+        levelState.cardStates[removedId].drawnEdges.Remove(nodeId);
+
+        if(CheckGraph()) Win();
         return;
     }
 
     public void SetActiveCard(int cardId)
     {
         removedId = cardId;
+        levelState.activeCardId = cardId;
         BuildCard(cardId);
-        UIManager.DrawCardButtons();
+        UIManager.UpdateCards();
     }
 
-    public void Restart()
-    {
-        gamePaused = false;
-        UIManager.hasShownWin = false;
-    }
-
+    
     public bool CheckGraph()
     {
         List<int> neighboursIds = graphData.nodes[removedId].adjacentNodeIds;
         List<char> neighbourLabels = neighboursIds.Select(id => currNodeColorMap[id]).ToList();
 
         List<char> drawnNeighbourLabels = new List<char>();
-        foreach(EdgeScript edgeScript in drawnEdges[removedId].Values)
+        foreach(EdgeScript edgeScript in currDrawnEdges.Values)
         {
             NodeScript connectedNode = edgeScript.PointB.gameObject.GetComponent<NodeScript>();
             drawnNeighbourLabels.Add(currNodeColorMap[connectedNode.id]);
@@ -206,7 +216,6 @@ public class LevelScript : MonoBehaviour
             {
                 if(j == removedId) continue;
                 currColors[j] = IntToLetter(uniqueSignatures.IndexOf(signatures[j]));
-                Debug.Log($"node {j} color: {currColors[j]}");
             }
         }
 
@@ -218,12 +227,13 @@ public class LevelScript : MonoBehaviour
         return (char)('a' + num);
     }
 
+
     public List<Vector3> ReturnNodePosMap(int cardId)
     {
         List<Vector3> nodePos = new List<Vector3>();
         for(int i = 0; i < graphData.nodes.Count(); i++)
         {
-            int positionIndex = graphData.cardArrangements[cardId].scramble[i];
+            int positionIndex = levelState.cardStates[cardId].scramble[i];
             nodePos.Add(getCirclePos(positionIndex, graphData.nodes.Count()));
         }
 
@@ -237,6 +247,76 @@ public class LevelScript : MonoBehaviour
         float y = initRadius * -Mathf.Cos(angle);
 
         return new Vector3(x, y, 0);
+    }
+
+
+    public void Win()
+    {
+        gameWon = true;
+        gameAdmiring = false;
+        gamePaused = true;
+
+        UIManager.ShowWinMenu();
+
+        //show all answers!
+        levelState.solved = true;
+        SaveManager.Save(levelIndex);
+    }
+
+    public void Admire()
+    {
+        UIManager.AdmirePuzzle();
+
+        gameWon = true;
+        gameAdmiring = true;
+        gamePaused = true;
+    }
+
+    public void Pause()
+    {
+        UIManager.Pause();
+
+        gameAdmiring = false;
+        gamePaused = true;
+
+
+        SaveManager.Save(levelIndex);
+    }
+
+    public void Resume()
+    {
+        UIManager.Resume();
+
+        gameWon = false;
+        gameAdmiring = false;
+        gamePaused = false;
+    }
+
+    public void TryRestart()
+    {
+        UIManager.TryRestart();
+
+        gamePaused = true;
+    }
+
+    public void CancelRestart()
+    {
+        UIManager.CancelRestart();
+
+        gamePaused = gameWon;
+    }
+
+    public void Restart()
+    {
+        UIManager.Restart();
+
+        gamePaused = false;
+        gameWon = false;
+        gameAdmiring = false;
+
+        SetActiveCard(0);
+
+        //reset save!!!
     }
 
     private void Update()
@@ -256,55 +336,38 @@ public class LevelScript : MonoBehaviour
         }
     }
 
-    // private LevelState LoadLevelState()
-    // {
-    //     LevelState loaded = SaveManager.Load(levelIndex);
-    //     if (loaded != null) return loaded;
 
-    //     return CreateFreshLevelState();
+    // public void Quit()
+    // {
+    //     if (levelManager.daily) GameManager.Instance.LoadMainMenu();
+    //     else GameManager.Instance.LoadLevelMenu();
     // }
 
-    // private LevelState CreateFreshLevelState()
-    // {
-    //     LevelState state = new LevelState();
-    //     state.levelIndex = levelIndex;
-    //     state.activeCardId = graphData.nodeIds[0];
-    //     state.solved = false;
 
-    //     foreach (int nodeId in graphData.nodeIds)
-    //     {
-    //         state.idToCardStatesMap[nodeId] = CreateFreshCardState(nodeId);
-    //     }
-    //     state.EnsureList();
+    private LevelState LoadLevelState()
+    {
+        LevelState loaded = SaveManager.Load(levelIndex);
+        if (loaded != null) return loaded;
 
-    //     return state;
-    // }
+        return CreateFreshLevelState();
+    }
 
-    // private CardState CreateFreshCardState(int removedId)
-    // {
-    //     CardState state = new CardState();
-    //     GraphData reducedGraphData = graphData.GraphReduce(removedId);
-    //     List<int> shuffledAnchorIds = ShuffledAnchorIds(removedId);
+    private LevelState CreateFreshLevelState()
+    {
+        LevelState state = new LevelState();
+        state.levelIndex = levelIndex;
+        state.activeCardId = 0;
+        state.solved = false;
 
-    //     state.isVisible = true;
-    //     state.nodeAnchorIdMap = reducedGraphData.nodeIds
-    //     .Select((nodeId, i) => new { nodeId, value = shuffledAnchorIds[i] })
-    //     .ToDictionary(x => x.nodeId, x => x.value);
+        List<GraphData.CardArrangement> graphArrangement = graphData.GenerateRandomCardArrangements();
 
+        for(int i = 0; i < graphData.nodes.Count(); i++)
+        {
+            state.cardStates.Add(new CardState());
+            state.cardStates[i].id = i;
+            state.cardStates[i].scramble = graphArrangement[i].scramble;
+        }
 
-    //     foreach(int nodeId in graphData.nodeIds)
-    //     {
-    //         if (nodeId == removedId) continue;
-
-    //         NodeState nodeState = new NodeState();
-    //         nodeState.nodeId = nodeId;
-    //         nodeState.snapped = true;
-    //         nodeState.snappedAnchorId = state.nodeAnchorIdMap[nodeId];
-    //         nodeState.pos = anchorMap[state.nodeAnchorIdMap[nodeId]].transform.position;
-
-    //         state.nodes.Add(nodeState);
-    //     }
-
-    //     return state;
-    // }
+        return state;
+    }
 }

@@ -1,34 +1,21 @@
-// using System.Collections.Generic;
-// using System.Data;
-// using System.Linq;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Linq;
 
-// [System.Serializable]
-// public class LevelState
-// {
-//     public string levelIndex;
-//     public int activeCardId;
-//     public bool solved;
-//     public List<idCardStatePair> idCardStatePairs = new List<idCardStatePair>();
-
-//     [System.NonSerialized]
-//     public Dictionary<int, CardState> idToCardStatesMap = new Dictionary<int, CardState>();
-
-//     public void EnsureList()
-//     {
-//         idCardStatePairs = idToCardStatesMap
-//             .Select(kv => new idCardStatePair { cardId = kv.Key, cardState = kv.Value })
-//             .ToList();
-//     }
+[System.Serializable]
+public class LevelState
+{
+    public string levelIndex;
+    public int activeCardId;
+    public bool solved;
     
-//     public void EnsureDict()
-//     {
-//         idToCardStatesMap = idCardStatePairs.ToDictionary(p => p.cardId, p => p.cardState);
-//     }
-// }
+    public List<CardState> cardStates = new List<CardState>();
+}
 
-// [System.Serializable]
-// public class idCardStatePair
-// {
-//     public int cardId;
-//     public CardState cardState;
-// }
+[System.Serializable]
+public class CardState {
+    public int id;
+    public List<int> scramble = new List<int>();
+    public List<int> drawnEdges = new List<int>();
+}
