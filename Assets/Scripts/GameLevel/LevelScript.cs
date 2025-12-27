@@ -252,13 +252,25 @@ public class LevelScript : MonoBehaviour
 
     public void Win()
     {
+        UIManager.ShowWinMenu();
+
         gameWon = true;
         gameAdmiring = false;
         gamePaused = true;
 
-        UIManager.ShowWinMenu();
+        foreach(GraphData.Edge edge in graphData.edges)
+        {
+            if (!levelState.cardStates[edge.fromNodeId].drawnEdges.Contains(edge.toNodeId))
+            {
+                levelState.cardStates[edge.fromNodeId].drawnEdges.Add(edge.toNodeId);
+            }
+            if (!levelState.cardStates[edge.toNodeId].drawnEdges.Contains(edge.fromNodeId))
+            {
+                levelState.cardStates[edge.toNodeId].drawnEdges.Add(edge.fromNodeId);
+            }
+        }
+        SetActiveCard(removedId);
 
-        //show all answers!
         levelState.solved = true;
         SaveManager.Save(levelIndex);
     }
@@ -370,4 +382,5 @@ public class LevelScript : MonoBehaviour
 
         return state;
     }
+
 }
