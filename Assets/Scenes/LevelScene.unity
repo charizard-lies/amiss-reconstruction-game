@@ -142,7 +142,7 @@ PrefabInstance:
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 66158510}
+      objectReference: {fileID: 491654708}
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -153,7 +153,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: LevelUI, Assembly-CSharp
+      value: LevelScript, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -330,15 +330,14 @@ MonoBehaviour:
   cardContentArea: {fileID: 784877123}
   scrollRect: {fileID: 2092462744}
   stringImage: {fileID: 1252042725}
-  normalLineWidth: 1.5
-  activeLineWidth: 2
+  normalLineWidth: 3
+  activeLineWidth: 4
   normalCardSprite: {fileID: -1662712975251761576, guid: 5eae41c207db24d6b8228f292b2e7395, type: 3}
   activeCardSprite: {fileID: -7771273773274425696, guid: a6aceb7013b22412cbaf3af24de3cb6e, type: 3}
-  normalGraphColor: {r: 0.26415092, g: 0.15167333, b: 0.09843359, a: 1}
-  activeGraphColor: {r: 0.13062643, g: 0.105286576, b: 0.24528301, a: 1}
+  normalGraphColor: {r: 0.2830189, g: 0.14147477, b: 0.07342472, a: 1}
+  activeGraphColor: {r: 0.25503892, g: 0.10466359, b: 0.4528302, a: 1}
   levelManager: {fileID: 491654708}
   cardButtons: []
-  hasShownWin: 0
 --- !u!1 &142860109
 GameObject:
   m_ObjectHideFlags: 0
@@ -618,7 +617,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.1350738, y: 1.1350738, z: 1}
+  m_LocalScale: {x: 1.4217981, y: 1.1350738, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -887,7 +886,7 @@ GameObject:
   - component: {fileID: 491654707}
   - component: {fileID: 491654708}
   m_Layer: 0
-  m_Name: LevelParent
+  m_Name: LevelManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -928,9 +927,14 @@ MonoBehaviour:
   initRadius: 3.5
   nodeAttractionTime: 0.1
   edgeColor: {r: 1, g: 1, b: 1, a: 1}
-  edgeWidth: 0.2
+  edgeWidth: 0.13
   levelParent: {fileID: 491654707}
   levelIndex: 0
+  levelState:
+    levelIndex: 
+    activeCardId: 0
+    solved: 0
+    cardStates: []
   nodePrefab: {fileID: 7283619231811921860, guid: 5c222626e57644af58e773b87c896be5, type: 3}
   edgePrefab: {fileID: 1198453481677518125, guid: da6716132ace14cb68737f2c7c9b68df, type: 3}
   UIManager: {fileID: 66158510}
@@ -939,6 +943,8 @@ MonoBehaviour:
   currNodeColorMap: 
   drawingEdge: {fileID: 0}
   removedId: 0
+  gameWon: 0
+  gameAdmiring: 0
   gamePaused: 0
 --- !u!1 &539244818
 GameObject:
@@ -1294,7 +1300,7 @@ PrefabInstance:
     - target: {fileID: 7570164633566889053, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 66158510}
+      objectReference: {fileID: 491654708}
     - target: {fileID: 7570164633566889053, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -1309,7 +1315,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7570164633566889053, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: LevelUI, Assembly-CSharp
+      value: LevelScript, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7570164633566889053, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -1456,7 +1462,7 @@ PrefabInstance:
     - target: {fileID: 7570164633566889053, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 66158510}
+      objectReference: {fileID: 491654708}
     - target: {fileID: 7570164633566889053, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -1471,7 +1477,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7570164633566889053, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: LevelUI, Assembly-CSharp
+      value: LevelScript, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7570164633566889053, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -1642,7 +1648,7 @@ PrefabInstance:
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 66158510}
+      objectReference: {fileID: 491654708}
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -1653,7 +1659,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: LevelUI, Assembly-CSharp
+      value: LevelScript, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -1866,7 +1872,7 @@ PrefabInstance:
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 66158510}
+      objectReference: {fileID: 491654708}
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -1877,7 +1883,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: LevelUI, Assembly-CSharp
+      value: LevelScript, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -2382,8 +2388,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 66158510}
-        m_TargetAssemblyTypeName: LevelUI, Assembly-CSharp
+      - m_Target: {fileID: 491654708}
+        m_TargetAssemblyTypeName: LevelScript, Assembly-CSharp
         m_MethodName: Pause
         m_Mode: 1
         m_Arguments:
@@ -2535,8 +2541,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 66158510}
-        m_TargetAssemblyTypeName: LevelUI, Assembly-CSharp
+      - m_Target: {fileID: 491654708}
+        m_TargetAssemblyTypeName: LevelScript, Assembly-CSharp
         m_MethodName: TryRestart
         m_Mode: 1
         m_Arguments:
@@ -2736,7 +2742,7 @@ PrefabInstance:
     - target: {fileID: 7570164633566889053, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 66158510}
+      objectReference: {fileID: 491654708}
     - target: {fileID: 7570164633566889053, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -2747,11 +2753,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7570164633566889053, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: AdmirePuzzle
+      value: Admire
       objectReference: {fileID: 0}
     - target: {fileID: 7570164633566889053, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: LevelUI, Assembly-CSharp
+      value: LevelScript, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 7570164633566889053, guid: 442af21fb342f48a1be3e9f2b81dd410, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -2936,6 +2942,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: NoRestartButton
       objectReference: {fileID: 0}
+    - target: {fileID: 2245363211381206467, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -2947,7 +2957,7 @@ PrefabInstance:
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 66158510}
+      objectReference: {fileID: 491654708}
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -2958,7 +2968,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: LevelUI, Assembly-CSharp
+      value: LevelScript, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3857209309654615850, guid: 7632be59c74e24ad4a5db94cf29ccb64, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName

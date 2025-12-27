@@ -37,12 +37,12 @@ public class LevelScript : MonoBehaviour
 
     void Start()
     {
-        // if (GameManager.Instance)
-        // {
-        //     levelIndex = GameManager.Instance.selectedLevelId;
-        //     if (GameManager.Instance.selectedDailyLevel) graphData = Resources.Load<GraphData>($"Levels/Daily/Level{levelIndex}");
-        //     else graphData = Resources.Load<GraphData>($"Levels/Normal/Level{levelIndex}");   
-        // }
+        if (GameManager.Instance)
+        {
+            levelIndex = GameManager.Instance.selectedLevelId;
+            if (GameManager.Instance.selectedDailyLevel) graphData = Resources.Load<GraphData>($"Levels/Daily/Level{levelIndex}");
+            else graphData = Resources.Load<GraphData>($"Levels/Normal/Level{levelIndex}");   
+        }
 
         levelIndex = "1";
         graphData = Resources.Load<GraphData>($"Levels/Normal/Level1");
@@ -291,7 +291,6 @@ public class LevelScript : MonoBehaviour
         gameAdmiring = false;
         gamePaused = true;
 
-
         SaveManager.Save(levelIndex);
     }
 
@@ -326,9 +325,11 @@ public class LevelScript : MonoBehaviour
         gameWon = false;
         gameAdmiring = false;
 
-        SetActiveCard(0);
+        foreach(CardState cardState in levelState.cardStates) cardState.drawnEdges.Clear();
+        levelState.solved = false;
+        SaveManager.Save(levelIndex);
 
-        //reset save!!!
+        SetActiveCard(0);
     }
 
     private void Update()
@@ -348,12 +349,11 @@ public class LevelScript : MonoBehaviour
         }
     }
 
-
-    // public void Quit()
-    // {
-    //     if (levelManager.daily) GameManager.Instance.LoadMainMenu();
-    //     else GameManager.Instance.LoadLevelMenu();
-    // }
+    public void Quit()
+    {
+        if (GameManager.Instance.selectedDailyLevel) GameManager.Instance.LoadMainMenu();
+        else GameManager.Instance.LoadLevelMenu();
+    }
 
 
     private LevelState LoadLevelState()
