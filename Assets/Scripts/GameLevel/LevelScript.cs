@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine;
 using Unity.VisualScripting;
 using System;
+using System.Data;
 
 public class LevelScript : MonoBehaviour
 {
@@ -160,7 +161,7 @@ public class LevelScript : MonoBehaviour
         for(int i=0;i<graphData.nodes.Count; i++)
         {
             if(i == removedId) continue;
-            UIManager.SetCardCorrect(i, true);
+            UIManager.SetCardCorrect(i, CheckSubgraph(i));
         }
         if(CheckGraph()) Win();
     }
@@ -240,11 +241,11 @@ public class LevelScript : MonoBehaviour
         return (char)('a' + num);
     }
 
-    public class GraphStruct
+    public class GraphClass
     {
         public HashSet<int>[] Adj;
 
-        public GraphStruct(int n)
+        public GraphClass(int n)
         {
             Adj = new HashSet<int>[n];
             for(int i = 0; i < n; i++)
@@ -256,89 +257,103 @@ public class LevelScript : MonoBehaviour
 
     public bool CheckSubgraph(int cardId)
     {
-        GraphStruct subgraph = new GraphStruct(graphData.nodes.Count-1);
-        GraphStruct drawngraph = new GraphStruct(graphData.nodes.Count);
-
-        Dictionary<int, int> fullToSubNodeIds = new();
-        int index = 0;
-        foreach(GraphData.Node node in graphData.nodes.Values)
+        GraphClass subgraph = new GraphClass(graphData.nodes.Count-1);
+        ComputeGraph(subgraph, cardId, false);
+        
+        for(int i = 0; i < graphData.nodes.Count; i++)
         {
-            if(node.id == cardId) continue;
-            fullToSubNodeIds[node.id] = index++;
+            if(i == removedId) continue;
+
+            GraphClass drawngraph = new GraphClass(graphData.nodes.Count);
+            ComputeGraph(drawngraph, i, true);
+
+            int[] subToDrawnMapping = Enumerable.Repeat(-1, subgraph.Adj.Length).ToArray();
+            int[] drawnToSubMapping = Enumerable.Repeat(-1, drawngraph.Adj.Length).ToArray();
+
+            int[] subDescendingDegreeNodes = Enumerable.Range(0, subgraph.Adj.Length)
+                .OrderByDescending(n => subgraph.Adj[n].Count)
+                .ToArray();
+
+            if(DFSMapping(0, drawngraph, subgraph, drawnToSubMapping, subToDrawnMapping, subDescendingDegreeNodes)) return true;
         }
-
-        foreach(GraphData.Edge edge in graphData.edges)
-        {
-            if(edge.fromNodeId != cardId && edge.toNodeId != cardId)
-            {
-                int a = fullToSubNodeIds[edge.fromNodeId];
-                int b = fullToSubNodeIds[edge.toNodeId];
-                subgraph.Adj[a].Add(b);
-                subgraph.Adj[b].Add(a);
-            }
-            if(edge.fromNodeId != removedId && edge.toNodeId != removedId)
-            {
-                drawngraph.Adj[edge.fromNodeId].Add(edge.toNodeId);
-                drawngraph.Adj[edge.toNodeId].Add(edge.fromNodeId);
-            }
-        }
-
-        foreach(int connectedId in currDrawnEdges.Keys)
-        {
-            drawngraph.Adj[removedId].Add(connectedId);
-            drawngraph.Adj[connectedId].Add(removedId);
-        }
-
-        int[] subToDrawnMapping = Enumerable.Repeat(-1, subgraph.Adj.Length).ToArray();
-        int[] drawnToSubMapping = Enumerable.Repeat(-1, drawngraph.Adj.Length).ToArray();
-
-        int[] subDescendingDegreeNodes = Enumerable.Range(0, subgraph.Adj.Length)
-            .OrderByDescending(n => subgraph.Adj[n].Count)
-            .ToArray();
-
-        return DFSMapping(0, drawngraph, subgraph, subToDrawnMapping, drawnToSubMapping, subDescendingDegreeNodes);
+        return false;
     }
     
-    private bool DFSMapping(int index, GraphStruct drawngraph, GraphStruct subgraph, int[] subToDrawnMapping, int[]drawnToSubMapping, int[] sortedSubIndices)
+    private bool DFSMapping(int index, GraphClass grapha, GraphClass graphb, int[]aTobMapping, int[] bToaMapping, int[] sortedbIndices)
     {
-        if (index == subgraph.Adj.Length) return true;
+        if (index == graphb.Adj.Length) return true;
 
-        int subId = sortedSubIndices[index];
+        int bId = sortedbIndices[index];
 
-        for(int j = 0; j < drawngraph.Adj.Length; j++)
+        for(int j = 0; j < grapha.Adj.Length; j++)
         {
-            if (drawnToSubMapping[j] != -1) continue;
-            if(!MappingIsCompatible(j, subId, drawngraph, subgraph, subToDrawnMapping, drawnToSubMapping)) continue;
+            if (aTobMapping[j] != -1) continue;
+            if(!MappingIsCompatible(j, bId, grapha, graphb, aTobMapping, bToaMapping)) continue;
 
-            subToDrawnMapping[subId] = j;
-            drawnToSubMapping[j] = subId;
-            if(DFSMapping(index+1, drawngraph, subgraph, subToDrawnMapping, drawnToSubMapping, sortedSubIndices)) return true;
-            subToDrawnMapping[subId] = -1;
-            drawnToSubMapping[j] = -1;
+            bToaMapping[bId] = j;
+            aTobMapping[j] = bId;
+            if(DFSMapping(index+1, grapha, graphb, aTobMapping, bToaMapping, sortedbIndices)) return true;
+            bToaMapping[bId] = -1;
+            aTobMapping[j] = -1;
         }
 
         return false;
     }
 
-    private bool MappingIsCompatible(int drawnId, int subId, GraphStruct drawngraph, GraphStruct subgraph, int[] subToDrawnMapping, int[]drawnToSubMapping)
+    private bool MappingIsCompatible(int aId, int bId, GraphClass agraph, GraphClass bgraph, int[]aTobMapping, int[] bToaMapping)
     {
-        if(drawngraph.Adj[drawnId].Count < subgraph.Adj[subId].Count) return false;
+        if(agraph.Adj[aId].Count < bgraph.Adj[bId].Count) return false;
 
-        foreach(int neighbour in subgraph.Adj[subId])
+        foreach(int neighbour in bgraph.Adj[bId])
         {
-            if(subToDrawnMapping[neighbour] == -1) continue;
-            if(!drawngraph.Adj[drawnId].Contains(subToDrawnMapping[neighbour])) return false; 
+            if(bToaMapping[neighbour] == -1) continue;
+            if(!agraph.Adj[aId].Contains(bToaMapping[neighbour])) return false; 
         }
 
-        foreach(int neighbour in drawngraph.Adj[drawnId])
+        foreach(int neighbour in agraph.Adj[aId])
         {
-            if(drawnToSubMapping[neighbour] == -1) continue;
-            if(!subgraph.Adj[subId].Contains(drawnToSubMapping[neighbour])) return false;
+            if(aTobMapping[neighbour] == -1) continue;
+            if(!bgraph.Adj[bId].Contains(aTobMapping[neighbour])) return false;
         }
 
         return true;
     }
 
+    private void ComputeGraph(GraphClass graph, int reducedId, bool drawn)
+    {
+        Dictionary<int, int> fullToSubNodeIds = new();
+        int index = 0;
+        foreach(GraphData.Node node in graphData.nodes.Values)
+        {
+            if(node.id == reducedId) continue;
+            fullToSubNodeIds[node.id] = index++;
+        }
+
+        foreach(GraphData.Edge edge in graphData.edges)
+        {
+            if(drawn && (edge.fromNodeId == removedId || edge.toNodeId == removedId)) continue;
+            if(edge.fromNodeId == reducedId || edge.toNodeId == reducedId) continue;
+                
+            int a = fullToSubNodeIds[edge.fromNodeId];
+            int b = fullToSubNodeIds[edge.toNodeId];
+            graph.Adj[a].Add(b);
+            graph.Adj[b].Add(a);
+        }
+
+        if (!drawn) return;
+        
+        foreach(int connectedId in currDrawnEdges.Keys)
+        {
+            if(connectedId == reducedId) continue;
+            
+            int a = fullToSubNodeIds[removedId];
+            int b = fullToSubNodeIds[connectedId];
+            graph.Adj[a].Add(b);
+            graph.Adj[b].Add(a);
+        }
+    }
+
+   
     public List<Vector3> ReturnNodePosMap(int cardId)
     {
         List<Vector3> nodePos = new List<Vector3>();
