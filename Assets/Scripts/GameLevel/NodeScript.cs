@@ -21,8 +21,10 @@ public class NodeScript : MonoBehaviour
 
     private void Update()
     {
-        if (Mouse.current == null) return;
-        if (Mouse.current.leftButton.wasPressedThisFrame && !levelManager.gamePaused && MouseIsOver()) ManageNodeClick();
+        if (Pointer.current == null) return;
+
+        if (Pointer.current.press.wasPressedThisFrame && !levelManager.gamePaused && PointerIsOver())
+            ManageNodeClick();
     }
 
     private void ManageNodeClick()
@@ -31,13 +33,25 @@ public class NodeScript : MonoBehaviour
         else levelManager.EraseEdge(id);
     }
     
-    public bool MouseIsOver()
+    public bool PointerIsOver()
     {
-        Vector3 mousePos = Mouse.current.position.ReadValue();
-        mousePos.z = Mathf.Abs(cam.transform.position.z);
-        Vector3 worldPos = cam.ScreenToWorldPoint(mousePos);
+        if (Pointer.current == null)
+            return false;
+            
+        Vector2 screenPos = Pointer.current.position.ReadValue();
 
-        Collider2D col = Physics2D.OverlapPoint(worldPos);
+        float radius = Pointer.current is Touchscreen
+            ? levelManager.touchRadius
+            : levelManager.clickRadius;
+
+        Vector3 worldPos = cam.ScreenToWorldPoint(new Vector3(
+            screenPos.x,
+            screenPos.y,
+            Mathf.Abs(cam.transform.position.z)
+        ));
+
+        Collider2D col = Physics2D.OverlapCircle(worldPos, radius);
         return col != null && col.gameObject == gameObject;
     }
+
 }

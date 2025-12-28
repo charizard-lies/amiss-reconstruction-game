@@ -26,13 +26,14 @@ public class LevelUI : MonoBehaviour
     public float normalLineWidth;
     public float activeLineWidth;
     public Sprite normalCardSprite;
+    public Sprite correctCardSprite;
     public Sprite activeCardSprite;
     public Color normalGraphColor;
     public Color activeGraphColor;
 
     [Header("Graph References")]
     public LevelScript levelManager;
-    public List<GameObject> cardButtons = new List<GameObject>();
+    public List<CardButtonScript> cardButtonScripts = new List<CardButtonScript>();
 
     private void Start()
     {
@@ -51,33 +52,37 @@ public class LevelUI : MonoBehaviour
             Destroy(cardContentArea.GetChild(i).gameObject);
         }
 
-        cardButtons.Clear();
+        cardButtonScripts.Clear();
 
         for (int i = 0; i < levelManager.graphData.nodes.Count(); i++)
         {
             int index = i;
             GameObject cardUIObj = Instantiate(cardUIPrefab, cardContentArea);
-            cardButtons.Add(cardUIObj);
 
             CardButtonScript cardButtonScript = cardUIObj.GetComponent<CardButtonScript>();
             cardButtonScript.Initiate(levelManager, this, index);
             cardButtonScript.DrawCardAfterFrame();
+            cardButtonScripts.Add(cardButtonScript);
 
             Button cardButton = cardUIObj.GetComponentInChildren<Button>();
             cardButton.onClick.AddListener(() => levelManager.SetActiveCard(index));
         }
     }
-
     
     public void UpdateCards()
     {
-        foreach (var cardUIObj in cardButtons)
+        foreach (var cardButtonScript in cardButtonScripts)
         {
-            CardButtonScript cardButtonScript = cardUIObj.GetComponent<CardButtonScript>();
             cardButtonScript.DrawCardAfterFrame();
         }
     }
 
+    public void SetCardCorrect(int cardId, bool correct)
+    {
+        CardButtonScript scriptToEdit = cardButtonScripts.Find(cardButtonScript => cardButtonScript.cardId == cardId);
+        scriptToEdit.gameObject.GetComponent<Image>().sprite = correct ? correctCardSprite : normalCardSprite;
+    }
+    
     public void ShowWinMenu()
     {
         winMenu.SetActive(true);

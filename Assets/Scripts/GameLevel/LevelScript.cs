@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine.InputSystem;
 using UnityEngine;
 using Unity.VisualScripting;
+using System;
 
 public class LevelScript : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class LevelScript : MonoBehaviour
     public Transform levelParent;
     public string levelIndex;
     public LevelState levelState;
+    public float touchRadius=0.2f;
+    public float clickRadius=0.05f;
 
 
     [Header("Prefabs")]
@@ -123,9 +126,9 @@ public class LevelScript : MonoBehaviour
 
     public void PenUp(int? nodeId)
     {
-        if(nodeId == null || currDrawnEdges.TryGetValue(nodeId.Value, out _))
+        if(!nodeId.HasValue || currDrawnEdges.TryGetValue(nodeId.Value, out _))
         {
-            Destroy(drawingEdge.gameObject);
+            if(drawingEdge != null) Destroy(drawingEdge.gameObject);
             drawingEdge = null;
             return;
         }
@@ -135,7 +138,7 @@ public class LevelScript : MonoBehaviour
         levelState.cardStates[removedId].drawnEdges.Add(nodeId.Value);
         drawingEdge = null;
 
-        if(CheckGraph()) Win();
+        ManageMove();
     }
 
     public void EraseEdge(int nodeId)
@@ -148,8 +151,18 @@ public class LevelScript : MonoBehaviour
         currDrawnEdges.Remove(nodeId);
         levelState.cardStates[removedId].drawnEdges.Remove(nodeId);
 
-        if(CheckGraph()) Win();
+        ManageMove();
         return;
+    }
+
+    private void ManageMove()
+    {
+        for(int i=0;i<graphData.nodes.Count; i++)
+        {
+            if(i == removedId) continue;
+            UIManager.SetCardCorrect(i, true);
+        }
+        if(CheckGraph()) Win();
     }
 
     public void SetActiveCard(int cardId)
@@ -163,7 +176,7 @@ public class LevelScript : MonoBehaviour
     
     public bool CheckGraph()
     {
-        List<int> neighboursIds = graphData.nodes[removedId].adjacentNodeIds;
+        List<int> neighboursIds = graphData.nodes[removedId].neighbourIds;
         List<char> neighbourLabels = neighboursIds.Select(id => currNodeColorMap[id]).ToList();
 
         List<char> drawnNeighbourLabels = new List<char>();
@@ -181,10 +194,10 @@ public class LevelScript : MonoBehaviour
         currNodeColorMap.Clear();
 
         List<char> currColors = new List<char>();
-        foreach(var node in graphData.nodes)
+        foreach(var node in graphData.nodes.Values)
         {
             if(node.id == cardId) currColors.Add('a');
-            else currColors.Add(IntToLetter(node.adjacentNodeIds.Count(neighbourId => neighbourId!=cardId)));
+            else currColors.Add(IntToLetter(node.neighbourIds.Count(neighbourId => neighbourId!=cardId)));
         }
         
         int oldSignatureCount=0;
@@ -194,7 +207,7 @@ public class LevelScript : MonoBehaviour
 
             for(int j = 0; j < graphData.nodes.Count(); j++)
             {
-                List<char> neighbourColors = graphData.nodes[i].adjacentNodeIds
+                List<char> neighbourColors = graphData.nodes[i].neighbourIds
                     .Where(id => id != cardId)
                     .Select(id => currColors[id])
                     .OrderBy(x => x)
@@ -227,13 +240,110 @@ public class LevelScript : MonoBehaviour
         return (char)('a' + num);
     }
 
+    public class GraphStruct
+    {
+        public HashSet<int>[] Adj;
+
+        public GraphStruct(int n)
+        {
+            Adj = new HashSet<int>[n];
+            for(int i = 0; i < n; i++)
+            {
+                Adj[i] = new HashSet<int>();
+            }
+        }
+    }
+
+    public bool CheckSubgraph(int cardId)
+    {
+        GraphStruct subgraph = new GraphStruct(graphData.nodes.Count-1);
+        GraphStruct drawngraph = new GraphStruct(graphData.nodes.Count);
+
+        Dictionary<int, int> fullToSubNodeIds = new();
+        int index = 0;
+        foreach(GraphData.Node node in graphData.nodes.Values)
+        {
+            if(node.id == cardId) continue;
+            fullToSubNodeIds[node.id] = index++;
+        }
+
+        foreach(GraphData.Edge edge in graphData.edges)
+        {
+            if(edge.fromNodeId != cardId && edge.toNodeId != cardId)
+            {
+                int a = fullToSubNodeIds[edge.fromNodeId];
+                int b = fullToSubNodeIds[edge.toNodeId];
+                subgraph.Adj[a].Add(b);
+                subgraph.Adj[b].Add(a);
+            }
+            if(edge.fromNodeId != removedId && edge.toNodeId != removedId)
+            {
+                drawngraph.Adj[edge.fromNodeId].Add(edge.toNodeId);
+                drawngraph.Adj[edge.toNodeId].Add(edge.fromNodeId);
+            }
+        }
+
+        foreach(int connectedId in currDrawnEdges.Keys)
+        {
+            drawngraph.Adj[removedId].Add(connectedId);
+            drawngraph.Adj[connectedId].Add(removedId);
+        }
+
+        int[] subToDrawnMapping = Enumerable.Repeat(-1, subgraph.Adj.Length).ToArray();
+        int[] drawnToSubMapping = Enumerable.Repeat(-1, drawngraph.Adj.Length).ToArray();
+
+        int[] subDescendingDegreeNodes = Enumerable.Range(0, subgraph.Adj.Length)
+            .OrderByDescending(n => subgraph.Adj[n].Count)
+            .ToArray();
+
+        return DFSMapping(0, drawngraph, subgraph, subToDrawnMapping, drawnToSubMapping, subDescendingDegreeNodes);
+    }
+    
+    private bool DFSMapping(int index, GraphStruct drawngraph, GraphStruct subgraph, int[] subToDrawnMapping, int[]drawnToSubMapping, int[] sortedSubIndices)
+    {
+        if (index == subgraph.Adj.Length) return true;
+
+        int subId = sortedSubIndices[index];
+
+        for(int j = 0; j < drawngraph.Adj.Length; j++)
+        {
+            if (drawnToSubMapping[j] != -1) continue;
+            if(!MappingIsCompatible(j, subId, drawngraph, subgraph, subToDrawnMapping, drawnToSubMapping)) continue;
+
+            subToDrawnMapping[subId] = j;
+            drawnToSubMapping[j] = subId;
+            if(DFSMapping(index+1, drawngraph, subgraph, subToDrawnMapping, drawnToSubMapping, sortedSubIndices)) return true;
+            subToDrawnMapping[subId] = -1;
+            drawnToSubMapping[j] = -1;
+        }
+
+        return false;
+    }
+
+    private bool MappingIsCompatible(int drawnId, int subId, GraphStruct drawngraph, GraphStruct subgraph, int[] subToDrawnMapping, int[]drawnToSubMapping)
+    {
+        if(drawngraph.Adj[drawnId].Count < subgraph.Adj[subId].Count) return false;
+
+        foreach(int neighbour in subgraph.Adj[subId])
+        {
+            if(subToDrawnMapping[neighbour] == -1) continue;
+            if(!drawngraph.Adj[drawnId].Contains(subToDrawnMapping[neighbour])) return false; 
+        }
+
+        foreach(int neighbour in drawngraph.Adj[drawnId])
+        {
+            if(drawnToSubMapping[neighbour] == -1) continue;
+            if(!subgraph.Adj[subId].Contains(drawnToSubMapping[neighbour])) return false;
+        }
+
+        return true;
+    }
 
     public List<Vector3> ReturnNodePosMap(int cardId)
     {
         List<Vector3> nodePos = new List<Vector3>();
-        for(int i = 0; i < graphData.nodes.Count(); i++)
+        foreach(int positionIndex in levelState.cardStates[cardId].scramble)
         {
-            int positionIndex = levelState.cardStates[cardId].scramble[i];
             nodePos.Add(getCirclePos(positionIndex, graphData.nodes.Count()));
         }
 
@@ -258,13 +368,19 @@ public class LevelScript : MonoBehaviour
         gameAdmiring = false;
         gamePaused = true;
 
+        for(int i = 0; i < graphData.nodes.Count(); i++)
+        {
+            if(i == removedId) continue;
+            levelState.cardStates[i].drawnEdges.Clear();
+        }
+
         foreach(GraphData.Edge edge in graphData.edges)
         {
-            if (!levelState.cardStates[edge.fromNodeId].drawnEdges.Contains(edge.toNodeId))
+            if (!levelState.cardStates[edge.fromNodeId].drawnEdges.Contains(edge.toNodeId) && edge.fromNodeId != removedId)
             {
                 levelState.cardStates[edge.fromNodeId].drawnEdges.Add(edge.toNodeId);
             }
-            if (!levelState.cardStates[edge.toNodeId].drawnEdges.Contains(edge.fromNodeId))
+            if (!levelState.cardStates[edge.toNodeId].drawnEdges.Contains(edge.fromNodeId) && edge.toNodeId != removedId)
             {
                 levelState.cardStates[edge.toNodeId].drawnEdges.Add(edge.fromNodeId);
             }
@@ -332,29 +448,36 @@ public class LevelScript : MonoBehaviour
         SetActiveCard(0);
     }
 
-    private void Update()
-    {
-        if(gamePaused) return;
-
-        if (Mouse.current.leftButton.wasReleasedThisFrame && drawingEdge != null)
-        {
-            foreach(var nodeScript in currNodeScripts)
-            {
-                if(nodeScript.id == removedId) continue;
-                if(!nodeScript.MouseIsOver()) continue;
-
-                PenUp(nodeScript.id);
-            }
-            if (drawingEdge) PenUp(null);
-        }
-    }
-
     public void Quit()
     {
         if (GameManager.Instance.selectedDailyLevel) GameManager.Instance.LoadMainMenu();
         else GameManager.Instance.LoadLevelMenu();
     }
 
+    private void Update()
+    {
+        if(gamePaused) return;
+        if(Pointer.current == null) return;
+
+        if (PointerReleasedThisFrame() && drawingEdge != null)
+        {
+            foreach(var nodeScript in currNodeScripts)
+            {
+                if(nodeScript.id == removedId) continue;
+                if(!nodeScript.PointerIsOver()) continue;
+
+                PenUp(nodeScript.id);
+                break;
+            }
+            if (drawingEdge != null) PenUp(null);
+        }
+    }
+
+    private bool PointerReleasedThisFrame()
+    {
+        if (Pointer.current != null && Pointer.current.press.wasReleasedThisFrame) return true;
+        return false;
+    }
 
     private LevelState LoadLevelState()
     {
@@ -382,5 +505,4 @@ public class LevelScript : MonoBehaviour
 
         return state;
     }
-
 }

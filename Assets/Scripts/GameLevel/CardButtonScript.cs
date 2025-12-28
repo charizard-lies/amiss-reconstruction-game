@@ -66,7 +66,7 @@ public class CardButtonScript : MonoBehaviour
 
         List<Vector3> cardNodePosMap = levelManager.ReturnNodePosMap(cardId);
 
-        foreach (var node in levelManager.graphData.nodes)
+        foreach (var node in levelManager.graphData.nodes.Values)
         {
             if(node.id == cardId) continue;
             GameObject nodeObj = Instantiate(nodeUIPrefab, pictureArea);

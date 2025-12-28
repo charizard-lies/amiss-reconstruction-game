@@ -333,11 +333,12 @@ MonoBehaviour:
   normalLineWidth: 3
   activeLineWidth: 4
   normalCardSprite: {fileID: -1662712975251761576, guid: 5eae41c207db24d6b8228f292b2e7395, type: 3}
+  correctCardSprite: {fileID: 3564140389350611654, guid: 3be1d43c3b38c4b5e8ce85ea6e25a07b, type: 3}
   activeCardSprite: {fileID: -7771273773274425696, guid: a6aceb7013b22412cbaf3af24de3cb6e, type: 3}
   normalGraphColor: {r: 0.2830189, g: 0.14147477, b: 0.07342472, a: 1}
   activeGraphColor: {r: 0.25503892, g: 0.10466359, b: 0.4528302, a: 1}
   levelManager: {fileID: 491654708}
-  cardButtons: []
+  cardButtonScripts: []
 --- !u!1 &142860109
 GameObject:
   m_ObjectHideFlags: 0
@@ -935,6 +936,8 @@ MonoBehaviour:
     activeCardId: 0
     solved: 0
     cardStates: []
+  touchRadius: 0.2
+  clickRadius: 0.05
   nodePrefab: {fileID: 7283619231811921860, guid: 5c222626e57644af58e773b87c896be5, type: 3}
   edgePrefab: {fileID: 1198453481677518125, guid: da6716132ace14cb68737f2c7c9b68df, type: 3}
   UIManager: {fileID: 66158510}

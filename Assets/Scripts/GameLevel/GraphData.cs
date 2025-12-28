@@ -4,7 +4,6 @@ using System.Linq;
 
 [CreateAssetMenu(fileName = "GraphData", menuName = "Graph/GraphData")]
 
-//I only control the data of the graphs, preparing it for other scripts to use
 public class GraphData : ScriptableObject
 {
     private  System.Random rng = new System.Random();
@@ -13,7 +12,7 @@ public class GraphData : ScriptableObject
     public class Node
     {
         public int id;
-        public List<int> adjacentNodeIds = new List<int>();
+        public List<int> neighbourIds = new List<int>();
     }
     public class Edge
     {
@@ -33,7 +32,8 @@ public class GraphData : ScriptableObject
     }
 
     
-    [SerializeField] public List<Node> nodes = new List<Node>();
+    [SerializeField] public List<Node> nodeData = new();
+    public Dictionary<int, Node> nodes;
     public List<Edge> edges
     {
         get
@@ -41,7 +41,7 @@ public class GraphData : ScriptableObject
             HashSet<Edge> edgeSet = new HashSet<Edge>();
             for(int i=0;i<nodes.Count();i++)
             {
-                foreach(var adjNodeId in nodes[i].adjacentNodeIds)
+                foreach(var adjNodeId in nodes[i].neighbourIds)
                 {
                     edgeSet.Add(new Edge(i, adjNodeId));
                 }
@@ -50,7 +50,6 @@ public class GraphData : ScriptableObject
         }
     }
 
-    
     public List<CardArrangement> GenerateRandomCardArrangements()
     {
         List<CardArrangement> arrangements = new List<CardArrangement>();
@@ -80,5 +79,10 @@ public class GraphData : ScriptableObject
         }
 
         return arrangements;
+    }
+
+    private void OnEnable()
+    {
+        nodes = nodeData.ToDictionary(n => n.id);
     }
 }
