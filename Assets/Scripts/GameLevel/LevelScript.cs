@@ -31,7 +31,6 @@ public class LevelScript : MonoBehaviour
     public List<NodeScript> currNodeScripts;
     public List<char> currNodeColorMap;
     public Dictionary<int, EdgeScript> currDrawnEdges = new Dictionary<int, EdgeScript>();
-    public bool[] currUsedReducedIds;
     public EdgeScript drawingEdge=null;
 
 
@@ -57,7 +56,6 @@ public class LevelScript : MonoBehaviour
         gameWon = levelState.solved;
         gameAdmiring = false;
         gamePaused = levelState.solved;
-        currUsedReducedIds = new bool [graphData.nodes.Count];
 
         UIManager.DrawCardButtons();
         BuildCard(removedId);
@@ -76,7 +74,6 @@ public class LevelScript : MonoBehaviour
         currNodeColorMap.Clear();
         currNodeScripts.Clear();
         currDrawnEdges.Clear();
-        Array.Clear(currUsedReducedIds, 0, currUsedReducedIds.Length);
 
         currNodePosMap = ReturnNodePosMap(cardId);
         ComputeWLColouring(cardId);
@@ -86,7 +83,6 @@ public class LevelScript : MonoBehaviour
         } 
 
         BuildEdges();
-        ManageMove();
     }
     
     private NodeScript BuildNode(int id)
@@ -160,12 +156,18 @@ public class LevelScript : MonoBehaviour
 
     private void ManageMove()
     {
+        CheckAllSubgraphs();
+        if(CheckGraph()) Win();
+    }
+
+    public void CheckAllSubgraphs()
+    {
+        
         for(int i=0;i<graphData.nodes.Count; i++)
         {
             if(i == removedId) continue;
             UIManager.SetCardCorrect(i, CheckSubgraph(i));
         }
-        if(CheckGraph()) Win();
     }
 
     public void SetActiveCard(int cardId)
@@ -210,7 +212,7 @@ public class LevelScript : MonoBehaviour
 
             for(int j = 0; j < graphData.nodes.Count(); j++)
             {
-                List<char> neighbourColors = graphData.nodes[i].neighbourIds
+                List<char> neighbourColors = graphData.nodes[j].neighbourIds
                     .Where(id => id != cardId)
                     .Select(id => currColors[id])
                     .OrderBy(x => x)
@@ -270,30 +272,20 @@ public class LevelScript : MonoBehaviour
     {
         GraphClass subgraph = new GraphClass(graphData.nodes.Count-1);
         ComputeGraph(subgraph, cardId, false);
-        
-        for(int i = 0; i < graphData.nodes.Count; i++)
-        {
-            if(i == removedId) continue;
-            if(currUsedReducedIds[i]) continue;
 
-            GraphClass drawngraph = new GraphClass(graphData.nodes.Count-1);
-            ComputeGraph(drawngraph, i, true);
+        GraphClass drawngraph = new GraphClass(graphData.nodes.Count-1);
+        ComputeGraph(drawngraph, cardId, true);
 
-            int[] subToDrawnMapping = Enumerable.Repeat(-1, subgraph.Adj.Length).ToArray();
-            int[] drawnToSubMapping = Enumerable.Repeat(-1, drawngraph.Adj.Length).ToArray();
+        int[] subToDrawnMapping = Enumerable.Repeat(-1, subgraph.Adj.Length).ToArray();
+        int[] drawnToSubMapping = Enumerable.Repeat(-1, drawngraph.Adj.Length).ToArray();
 
-            int[] subDescendingDegreeNodes = Enumerable.Range(0, subgraph.Adj.Length)
-                .OrderByDescending(n => subgraph.Adj[n].Count)
-                .ToArray();
+        int[] subDescendingDegreeNodes = Enumerable.Range(0, subgraph.Adj.Length)
+            .OrderByDescending(n => subgraph.Adj[n].Count)
+            .ToArray();
 
-            bool result = DFSMapping(0, drawngraph, subgraph, drawnToSubMapping, subToDrawnMapping, subDescendingDegreeNodes);
+        bool result = DFSMapping(0, drawngraph, subgraph, drawnToSubMapping, subToDrawnMapping, subDescendingDegreeNodes);
 
-            if (result)
-            {
-                currUsedReducedIds[i] = true;
-                return true;  
-            }
-        }
+        if (result) return true;  
         return false;
     }
     
@@ -419,6 +411,11 @@ public class LevelScript : MonoBehaviour
             }
         }
         SetActiveCard(removedId);
+
+        for(int i=0;i<graphData.nodes.Count; i++)
+        {
+            UIManager.SetCardCorrect(i, true);
+        }
 
         levelState.solved = true;
         SaveManager.Save(levelIndex);

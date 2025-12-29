@@ -61,7 +61,8 @@ public class CardButtonScript : MonoBehaviour
         ClearChildren(pictureArea);
         bool isActive = levelManager.removedId == cardId;
 
-        if (isActive) gameObject.GetComponent<Image>().sprite = activeCardSprite;
+        if (levelManager.gameWon) gameObject.GetComponent<Image>().sprite = UIManager.correctCardSprite;
+        else if (isActive) gameObject.GetComponent<Image>().sprite = activeCardSprite;
         else gameObject.GetComponent<Image>().sprite = normalCardSprite;
 
         List<Vector3> cardNodePosMap = levelManager.ReturnNodePosMap(cardId);
