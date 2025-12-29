@@ -22,8 +22,6 @@ public class MainMenuUI : MonoBehaviour
 
     public void OpenLevelMenu()
     {
-        Debug.Log("hey");
-        Debug.Log(GameManager.Instance);
         GameManager.Instance.LoadLevelMenu();
     }
 

@@ -31,6 +31,7 @@ public class LevelScript : MonoBehaviour
     public List<NodeScript> currNodeScripts;
     public List<char> currNodeColorMap;
     public Dictionary<int, EdgeScript> currDrawnEdges = new Dictionary<int, EdgeScript>();
+    public bool[] currUsedReducedIds;
     public EdgeScript drawingEdge=null;
 
 
@@ -47,9 +48,7 @@ public class LevelScript : MonoBehaviour
             if (GameManager.Instance.selectedDailyLevel) graphData = Resources.Load<GraphData>($"Levels/Daily/Level{levelIndex}");
             else graphData = Resources.Load<GraphData>($"Levels/Normal/Level{levelIndex}");   
         }
-
-        levelIndex = "1";
-        graphData = Resources.Load<GraphData>($"Levels/Normal/Level1");
+        graphData.CheckGraphValidity();
 
         SaveManager.CurrentState = LoadLevelState();
         levelState = SaveManager.CurrentState;
@@ -58,6 +57,7 @@ public class LevelScript : MonoBehaviour
         gameWon = levelState.solved;
         gameAdmiring = false;
         gamePaused = levelState.solved;
+        currUsedReducedIds = new bool [graphData.nodes.Count];
 
         UIManager.DrawCardButtons();
         BuildCard(removedId);
@@ -76,6 +76,7 @@ public class LevelScript : MonoBehaviour
         currNodeColorMap.Clear();
         currNodeScripts.Clear();
         currDrawnEdges.Clear();
+        Array.Clear(currUsedReducedIds, 0, currUsedReducedIds.Length);
 
         currNodePosMap = ReturnNodePosMap(cardId);
         ComputeWLColouring(cardId);
@@ -85,6 +86,7 @@ public class LevelScript : MonoBehaviour
         } 
 
         BuildEdges();
+        ManageMove();
     }
     
     private NodeScript BuildNode(int id)
@@ -253,6 +255,15 @@ public class LevelScript : MonoBehaviour
                 Adj[i] = new HashSet<int>();
             }
         }
+
+        public void PrintGraph()
+        {
+            int counter = 0;
+            foreach(var list in Adj)
+            {
+                Debug.Log($"{counter++}: {string.Join(", ", list)}");
+            }
+        }
     }
 
     public bool CheckSubgraph(int cardId)
@@ -263,8 +274,9 @@ public class LevelScript : MonoBehaviour
         for(int i = 0; i < graphData.nodes.Count; i++)
         {
             if(i == removedId) continue;
+            if(currUsedReducedIds[i]) continue;
 
-            GraphClass drawngraph = new GraphClass(graphData.nodes.Count);
+            GraphClass drawngraph = new GraphClass(graphData.nodes.Count-1);
             ComputeGraph(drawngraph, i, true);
 
             int[] subToDrawnMapping = Enumerable.Repeat(-1, subgraph.Adj.Length).ToArray();
@@ -274,7 +286,13 @@ public class LevelScript : MonoBehaviour
                 .OrderByDescending(n => subgraph.Adj[n].Count)
                 .ToArray();
 
-            if(DFSMapping(0, drawngraph, subgraph, drawnToSubMapping, subToDrawnMapping, subDescendingDegreeNodes)) return true;
+            bool result = DFSMapping(0, drawngraph, subgraph, drawnToSubMapping, subToDrawnMapping, subDescendingDegreeNodes);
+
+            if (result)
+            {
+                currUsedReducedIds[i] = true;
+                return true;  
+            }
         }
         return false;
     }

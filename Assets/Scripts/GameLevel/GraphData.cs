@@ -85,4 +85,16 @@ public class GraphData : ScriptableObject
     {
         nodes = nodeData.ToDictionary(n => n.id);
     }
+
+    public void CheckGraphValidity()
+    {
+        foreach(var node in nodeData)
+        {
+            foreach(int neighbour in node.neighbourIds)
+            {
+                if(nodes[neighbour].neighbourIds.Contains(node.id)) continue;
+                else Debug.Log($"node {node.id} -> node {neighbour} not two-way");
+            }
+        }
+    }
 }
