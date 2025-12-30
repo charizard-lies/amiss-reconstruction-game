@@ -27,15 +27,15 @@ public class CardButtonScript : MonoBehaviour
 
     [Header("Other")]
     public int cardId;
-    public bool isSnapping = false;
+    public bool isIncluded = false;
     public Dictionary<int, NodeScript> idToNodeScriptMap;
-    private Button cardButton;
 
-    public void Initiate(LevelScript level, LevelUI UI, int id)
+    public void Initiate(int id)
     {
-        levelManager = level;
-        UIManager = UI;
+        levelManager = LevelScript.Instance;
+        UIManager = LevelUI.Instance;
         cardId = id;
+        isIncluded = false;
 
         normalLineWidth = UIManager.normalLineWidth;
         activeLineWidth = UIManager.activeLineWidth;
@@ -59,10 +59,10 @@ public class CardButtonScript : MonoBehaviour
     public void DrawCard()
     {
         ClearChildren(pictureArea);
-        bool isActive = levelManager.removedId == cardId;
+        bool isActive = levelManager.currRemovedId == cardId;
 
-        if (levelManager.gameWon) gameObject.GetComponent<Image>().sprite = UIManager.correctCardSprite;
-        else if (isActive) gameObject.GetComponent<Image>().sprite = activeCardSprite;
+        if (isActive && !levelManager.gameWon) gameObject.GetComponent<Image>().sprite = activeCardSprite;
+        else if (levelManager.gameWon || isIncluded) gameObject.GetComponent<Image>().sprite = UIManager.correctCardSprite;
         else gameObject.GetComponent<Image>().sprite = normalCardSprite;
 
         List<Vector3> cardNodePosMap = levelManager.ReturnNodePosMap(cardId);

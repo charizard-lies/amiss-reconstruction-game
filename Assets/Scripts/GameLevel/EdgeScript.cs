@@ -21,18 +21,17 @@ public class EdgeScript : MonoBehaviour
         lr.enabled = false;
     }
 
-    // Update is called once per frame
-    public void Initialize(Transform A, Transform B, LevelScript level)
+    public void Initialize(Transform A, Transform B)
     {
         PointA = A;
         PointB = B;
-        levelManager = level;
-        width = level.edgeWidth;
+        levelManager = LevelScript.Instance;
+        width = levelManager.edgeWidth;
 
         lr.startWidth = width;
         lr.endWidth = width;
-        lr.startColor = level.edgeColor;
-        lr.endColor = level.edgeColor;
+        lr.startColor = levelManager.edgeColor;
+        lr.endColor = levelManager.edgeColor;
 
         SetEndpoints();
         lr.enabled = true;

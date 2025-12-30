@@ -9,6 +9,8 @@ using Unity.VisualScripting;
 
 public class LevelUI : MonoBehaviour
 {
+    public static LevelUI Instance;
+
     [Header("UI References")]
     public TextMeshProUGUI levelLabel;
     public GameObject buttonPrefab;
@@ -35,6 +37,12 @@ public class LevelUI : MonoBehaviour
     public LevelScript levelManager;
     public List<CardButtonScript> cardButtonScripts = new List<CardButtonScript>();
 
+    void Awake()
+    {
+        if(Instance == null) Instance = this;
+        else Debug.LogWarning("another levelUI exists?");
+    }
+
     private void Start()
     {
         if (GameManager.Instance.selectedDailyLevel)
@@ -60,7 +68,7 @@ public class LevelUI : MonoBehaviour
             GameObject cardUIObj = Instantiate(cardUIPrefab, cardContentArea);
 
             CardButtonScript cardButtonScript = cardUIObj.GetComponent<CardButtonScript>();
-            cardButtonScript.Initiate(levelManager, this, index);
+            cardButtonScript.Initiate(index);
             cardButtonScript.DrawCardAfterFrame();
             cardButtonScripts.Add(cardButtonScript);
 
@@ -80,6 +88,7 @@ public class LevelUI : MonoBehaviour
     public void SetCardCorrect(int cardId, bool correct)
     {
         CardButtonScript scriptToEdit = cardButtonScripts.Find(cardButtonScript => cardButtonScript.cardId == cardId);
+        scriptToEdit.isIncluded = correct;
         scriptToEdit.gameObject.GetComponent<Image>().sprite = correct ? correctCardSprite : normalCardSprite;
     }
     

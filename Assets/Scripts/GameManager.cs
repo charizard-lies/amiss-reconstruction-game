@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public DateTime startDate = new DateTime(2025, 12, 6);
     public bool selectedDailyLevel;
+    public bool selectedTutorialLevel;
     public string selectedLevelId;
 
     private void Awake()
@@ -32,10 +33,19 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
-        public void LoadDailyLevel()
+    public void LoadDailyLevel()
     {
         selectedLevelId = System.DateTime.Now.ToString("ddMMyyyy");
         selectedDailyLevel = true;
+        selectedTutorialLevel = false;
+        SceneManager.LoadScene("LevelScene");
+    }
+
+    public void LoadTutorialLevel(string id)
+    {
+        selectedLevelId = id;
+        selectedDailyLevel = false;
+        selectedTutorialLevel = true;
         SceneManager.LoadScene("LevelScene");
     }
 
@@ -48,6 +58,7 @@ public class GameManager : MonoBehaviour
     {
         selectedLevelId = id;
         selectedDailyLevel = false;
+        selectedTutorialLevel = false;
         SceneManager.LoadScene("LevelScene");
     }
 }

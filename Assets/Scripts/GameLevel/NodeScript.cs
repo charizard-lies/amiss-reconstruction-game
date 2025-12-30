@@ -1,57 +1,89 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
+using UnityEditor.Rendering;
+
+
 
 [RequireComponent(typeof(Collider2D))]
 public class NodeScript : MonoBehaviour
 {
+    public static NodeScript HeldNode;
     public int id;
     private Camera cam;
     private LevelScript levelManager;
+    public bool isDragged = false;
+    private Vector3 velocity = Vector3.zero;
 
+    public UnityEvent<NodeScript> onClicked;
+    public UnityEvent<NodeScript> onReleased;
+    
     private void Awake()
     {
         cam = Camera.main;
     }
 
-    public void Initialize(int nodeId, LevelScript level)
+    public void Initialize(int nodeId)
     {
+        levelManager = LevelScript.Instance;
         id = nodeId;
-        levelManager = level;
     }
 
     private void Update()
     {
-        if (Pointer.current == null) return;
+        if (Pointer.current.press.wasPressedThisFrame && PointerIsOver())
+        {    
+            onClicked?.Invoke(this);
+            HeldNode = this;
+        }
 
-        if (Pointer.current.press.wasPressedThisFrame && !levelManager.gamePaused && PointerIsOver())
-            ManageNodeClick();
+        if (Pointer.current.press.wasReleasedThisFrame && HeldNode == this)
+        {
+            onReleased?.Invoke(this);
+            HeldNode = null;
+        }
+
+        if (isDragged)
+        {
+            if(TryGetPointerWorldPos(out Vector3 targetPos)) return;
+            Approach(targetPos);
+        }
     }
 
-    private void ManageNodeClick()
+    public void Approach(Vector3 targetPos)
     {
-        if (id == levelManager.removedId) levelManager.PenDown();
-        else levelManager.EraseEdge(id);
+        transform.position = Vector3.SmoothDamp(
+            transform.position,
+            targetPos,
+            ref velocity,
+            levelManager.nodeAttractionTime
+        );
     }
-    
+
     public bool PointerIsOver()
     {
-        if (Pointer.current == null)
-            return false;
-            
-        Vector2 screenPos = Pointer.current.position.ReadValue();
+        if (!TryGetPointerWorldPos(out Vector3 pos))
+        return false;
 
         float radius = Pointer.current is Touchscreen
             ? levelManager.touchRadius
             : levelManager.clickRadius;
-
-        Vector3 worldPos = cam.ScreenToWorldPoint(new Vector3(
-            screenPos.x,
-            screenPos.y,
-            Mathf.Abs(cam.transform.position.z)
-        ));
-
-        Collider2D col = Physics2D.OverlapCircle(worldPos, radius);
+        
+        Collider2D col = Physics2D.OverlapCircle(pos, radius);
         return col != null && col.gameObject == gameObject;
     }
 
+    private bool TryGetPointerWorldPos( out Vector3 worldPos)
+    {
+        worldPos = default;
+
+        if (Pointer.current == null) return false;
+
+        Vector2 screenPos = Pointer.current.position.ReadValue();
+
+        worldPos = cam.ScreenToWorldPoint(screenPos);
+        worldPos.z = 0f;
+        return true;
+    }
+    
 }

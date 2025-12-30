@@ -2,23 +2,25 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.InputSystem;
 using UnityEngine;
-using Unity.VisualScripting;
 using System;
 using System.Data;
+using UnityEditor;
 
 public class LevelScript : MonoBehaviour
 {
+    public static LevelScript Instance;
+
     [Header("Attributes")]
     public GraphData graphData;
     public float initRadius;
     public float nodeAttractionTime=0.1f;
     public Color edgeColor = Color.white;
     public float edgeWidth = 0.2f;
-    public Transform levelParent;
     public string levelIndex;
     public LevelState levelState;
     public float touchRadius=0.2f;
     public float clickRadius=0.05f;
+    public bool tutorial = false;
 
 
     [Header("Prefabs")]
@@ -28,16 +30,22 @@ public class LevelScript : MonoBehaviour
     [Header("Other")]
     public LevelUI UIManager;
     public List<Vector3> currNodePosMap;
-    public List<NodeScript> currNodeScripts;
+    public Dictionary<int, NodeScript> currNodeScripts = new Dictionary<int, NodeScript>();
+    public bool[] usedReduceIds;
     public List<char> currNodeColorMap;
     public Dictionary<int, EdgeScript> currDrawnEdges = new Dictionary<int, EdgeScript>();
-    public EdgeScript drawingEdge=null;
 
 
-    public int removedId;
+    public int currRemovedId;
     public bool gameWon;
     public bool gameAdmiring;
     public bool gamePaused;
+
+    void Awake()
+    {
+        if(Instance == null) Instance = this;
+        else Debug.LogWarning("another levelscript exists?");
+    }
 
     void Start()
     {
@@ -45,20 +53,29 @@ public class LevelScript : MonoBehaviour
         {
             levelIndex = GameManager.Instance.selectedLevelId;
             if (GameManager.Instance.selectedDailyLevel) graphData = Resources.Load<GraphData>($"Levels/Daily/Level{levelIndex}");
+            else if (GameManager.Instance.selectedTutorialLevel)
+            {
+                graphData = Resources.Load<GraphData>($"Levels/Tutorial/Level{levelIndex}");
+                tutorial = true;
+            }
             else graphData = Resources.Load<GraphData>($"Levels/Normal/Level{levelIndex}");   
         }
+
         graphData.CheckGraphValidity();
+
+        if (tutorial) SaveManager.Delete(levelIndex);
 
         SaveManager.CurrentState = LoadLevelState();
         levelState = SaveManager.CurrentState;
 
-        removedId = levelState.activeCardId;
         gameWon = levelState.solved;
         gameAdmiring = false;
         gamePaused = levelState.solved;
 
         UIManager.DrawCardButtons();
-        BuildCard(removedId);
+        SetActiveCard(levelState.activeCardId);
+
+        ToolManager.Instance.SetTool(DrawTool.Instance);
 
         if(gameWon) Win();
     }
@@ -77,9 +94,12 @@ public class LevelScript : MonoBehaviour
 
         currNodePosMap = ReturnNodePosMap(cardId);
         ComputeWLColouring(cardId);
+
         for(int i = 0; i < graphData.nodes.Count(); i++)
         {
-            currNodeScripts.Add(BuildNode(i));
+            NodeScript nodeAdded = BuildNode(i);
+            currNodeScripts[i] = nodeAdded;
+            ToolManager.Instance.Register(nodeAdded);
         } 
 
         BuildEdges();
@@ -90,7 +110,7 @@ public class LevelScript : MonoBehaviour
         GameObject nodeObj = Instantiate(nodePrefab, transform);
         nodeObj.transform.localPosition = currNodePosMap[id];
         NodeScript nodeScript = nodeObj.GetComponent<NodeScript>();
-        nodeScript.Initialize(id, this);
+        nodeScript.Initialize(id);
         return nodeScript;
     }
 
@@ -98,8 +118,8 @@ public class LevelScript : MonoBehaviour
     {
         GameObject edgeObj = Instantiate(edgePrefab, transform);
         EdgeScript edgeScript = edgeObj.GetComponent<EdgeScript>();
-        if (b==null) edgeScript.Initialize(currNodeScripts[a].transform, null, this);
-        else edgeScript.Initialize(currNodeScripts[a].transform, currNodeScripts[b.Value].transform, this);
+        if (b==null) edgeScript.Initialize(currNodeScripts[a].transform, null);
+        else edgeScript.Initialize(currNodeScripts[a].transform, currNodeScripts[b.Value].transform);
 
         return edgeScript;
     }
@@ -108,34 +128,32 @@ public class LevelScript : MonoBehaviour
     {
         foreach(GraphData.Edge edge in graphData.edges)
         {
-            if(edge.fromNodeId == removedId || edge.toNodeId == removedId) continue;
+            if(edge.fromNodeId == currRemovedId || edge.toNodeId == currRemovedId) continue;
             BuildEdge(edge.fromNodeId, edge.toNodeId);
         }
 
-        foreach(int targetNode in levelState.cardStates[removedId].drawnEdges)
+        foreach(int targetNode in levelState.cardStates[currRemovedId].drawnEdges)
         {
-            currDrawnEdges[targetNode] = BuildEdge(removedId, targetNode);
+            currDrawnEdges[targetNode] = BuildEdge(currRemovedId, targetNode);
         }
     }
 
-    public void PenDown()
+    public EdgeScript PenDown()
     {
-        drawingEdge = BuildEdge(removedId, null);
+        return BuildEdge(currRemovedId, null);
     }
 
-    public void PenUp(int? nodeId)
+    public void PenUp(int? nodeId, EdgeScript drawingEdge)
     {
-        if(!nodeId.HasValue || currDrawnEdges.TryGetValue(nodeId.Value, out _))
+        if(!nodeId.HasValue || currDrawnEdges.TryGetValue(nodeId.Value, out _) || nodeId.Value == currRemovedId)
         {
             if(drawingEdge != null) Destroy(drawingEdge.gameObject);
-            drawingEdge = null;
             return;
         }
         
         drawingEdge.PointB = currNodeScripts[nodeId.Value].transform;
         currDrawnEdges[nodeId.Value] = drawingEdge;
-        levelState.cardStates[removedId].drawnEdges.Add(nodeId.Value);
-        drawingEdge = null;
+        levelState.cardStates[currRemovedId].drawnEdges.Add(nodeId.Value);
 
         ManageMove();
     }
@@ -148,7 +166,7 @@ public class LevelScript : MonoBehaviour
 
         Destroy(edgeToErase.gameObject);
         currDrawnEdges.Remove(nodeId);
-        levelState.cardStates[removedId].drawnEdges.Remove(nodeId);
+        levelState.cardStates[currRemovedId].drawnEdges.Remove(nodeId);
 
         ManageMove();
         return;
@@ -162,26 +180,28 @@ public class LevelScript : MonoBehaviour
 
     public void CheckAllSubgraphs()
     {
-        
+        usedReduceIds = Enumerable.Repeat(false, graphData.nodes.Count).ToArray();
         for(int i=0;i<graphData.nodes.Count; i++)
         {
-            if(i == removedId) continue;
+            if(i == currRemovedId) continue;
             UIManager.SetCardCorrect(i, CheckSubgraph(i));
         }
     }
 
     public void SetActiveCard(int cardId)
     {
-        removedId = cardId;
+        currRemovedId = cardId;
         levelState.activeCardId = cardId;
+
         BuildCard(cardId);
         UIManager.UpdateCards();
+        CheckAllSubgraphs();
     }
 
     
     public bool CheckGraph()
     {
-        List<int> neighboursIds = graphData.nodes[removedId].neighbourIds;
+        List<int> neighboursIds = graphData.nodes[currRemovedId].neighbourIds;
         List<char> neighbourLabels = neighboursIds.Select(id => currNodeColorMap[id]).ToList();
 
         List<char> drawnNeighbourLabels = new List<char>();
@@ -232,7 +252,7 @@ public class LevelScript : MonoBehaviour
             oldSignatureCount = uniqueSignatures.Count();
             for(int j = 0; j < graphData.nodes.Count(); j++)
             {
-                if(j == removedId) continue;
+                if(j == currRemovedId) continue;
                 currColors[j] = IntToLetter(uniqueSignatures.IndexOf(signatures[j]));
             }
         }
@@ -273,19 +293,28 @@ public class LevelScript : MonoBehaviour
         GraphClass subgraph = new GraphClass(graphData.nodes.Count-1);
         ComputeGraph(subgraph, cardId, false);
 
-        GraphClass drawngraph = new GraphClass(graphData.nodes.Count-1);
-        ComputeGraph(drawngraph, cardId, true);
+        for(int i = 0; i < graphData.nodes.Count; i++)
+        {
+            if(usedReduceIds[i]) continue;
+            if(i == currRemovedId) continue;
 
-        int[] subToDrawnMapping = Enumerable.Repeat(-1, subgraph.Adj.Length).ToArray();
-        int[] drawnToSubMapping = Enumerable.Repeat(-1, drawngraph.Adj.Length).ToArray();
+            GraphClass drawngraph = new GraphClass(graphData.nodes.Count-1);
+            ComputeGraph(drawngraph, i, true);
 
-        int[] subDescendingDegreeNodes = Enumerable.Range(0, subgraph.Adj.Length)
-            .OrderByDescending(n => subgraph.Adj[n].Count)
-            .ToArray();
+            int[] subToDrawnMapping = Enumerable.Repeat(-1, subgraph.Adj.Length).ToArray();
+            int[] drawnToSubMapping = Enumerable.Repeat(-1, drawngraph.Adj.Length).ToArray();
 
-        bool result = DFSMapping(0, drawngraph, subgraph, drawnToSubMapping, subToDrawnMapping, subDescendingDegreeNodes);
+            int[] subDescendingDegreeNodes = Enumerable.Range(0, subgraph.Adj.Length)
+                .OrderByDescending(n => subgraph.Adj[n].Count)
+                .ToArray();
 
-        if (result) return true;  
+            bool result = DFSMapping(0, drawngraph, subgraph, drawnToSubMapping, subToDrawnMapping, subDescendingDegreeNodes);
+
+            if (!result) continue;
+            
+            usedReduceIds[i] = true;
+            return true;  
+        }
         return false;
     }
     
@@ -341,7 +370,7 @@ public class LevelScript : MonoBehaviour
 
         foreach(GraphData.Edge edge in graphData.edges)
         {
-            if(drawn && (edge.fromNodeId == removedId || edge.toNodeId == removedId)) continue;
+            if(drawn && (edge.fromNodeId == currRemovedId || edge.toNodeId == currRemovedId)) continue;
             if(edge.fromNodeId == reducedId || edge.toNodeId == reducedId) continue;
                 
             int a = fullToSubNodeIds[edge.fromNodeId];
@@ -356,7 +385,7 @@ public class LevelScript : MonoBehaviour
         {
             if(connectedId == reducedId) continue;
             
-            int a = fullToSubNodeIds[removedId];
+            int a = fullToSubNodeIds[currRemovedId];
             int b = fullToSubNodeIds[connectedId];
             graph.Adj[a].Add(b);
             graph.Adj[b].Add(a);
@@ -395,22 +424,22 @@ public class LevelScript : MonoBehaviour
 
         for(int i = 0; i < graphData.nodes.Count(); i++)
         {
-            if(i == removedId) continue;
+            if(i == currRemovedId) continue;
             levelState.cardStates[i].drawnEdges.Clear();
         }
 
         foreach(GraphData.Edge edge in graphData.edges)
         {
-            if (!levelState.cardStates[edge.fromNodeId].drawnEdges.Contains(edge.toNodeId) && edge.fromNodeId != removedId)
+            if (!levelState.cardStates[edge.fromNodeId].drawnEdges.Contains(edge.toNodeId) && edge.fromNodeId != currRemovedId)
             {
                 levelState.cardStates[edge.fromNodeId].drawnEdges.Add(edge.toNodeId);
             }
-            if (!levelState.cardStates[edge.toNodeId].drawnEdges.Contains(edge.fromNodeId) && edge.toNodeId != removedId)
+            if (!levelState.cardStates[edge.toNodeId].drawnEdges.Contains(edge.fromNodeId) && edge.toNodeId != currRemovedId)
             {
                 levelState.cardStates[edge.toNodeId].drawnEdges.Add(edge.fromNodeId);
             }
         }
-        SetActiveCard(removedId);
+        SetActiveCard(currRemovedId);
 
         for(int i=0;i<graphData.nodes.Count; i++)
         {
@@ -484,30 +513,6 @@ public class LevelScript : MonoBehaviour
         else GameManager.Instance.LoadLevelMenu();
     }
 
-    private void Update()
-    {
-        if(gamePaused) return;
-        if(Pointer.current == null) return;
-
-        if (PointerReleasedThisFrame() && drawingEdge != null)
-        {
-            foreach(var nodeScript in currNodeScripts)
-            {
-                if(nodeScript.id == removedId) continue;
-                if(!nodeScript.PointerIsOver()) continue;
-
-                PenUp(nodeScript.id);
-                break;
-            }
-            if (drawingEdge != null) PenUp(null);
-        }
-    }
-
-    private bool PointerReleasedThisFrame()
-    {
-        if (Pointer.current != null && Pointer.current.press.wasReleasedThisFrame) return true;
-        return false;
-    }
 
     private LevelState LoadLevelState()
     {
