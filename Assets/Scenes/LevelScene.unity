@@ -929,7 +929,6 @@ MonoBehaviour:
   nodeAttractionTime: 0.1
   edgeColor: {r: 1, g: 1, b: 1, a: 1}
   edgeWidth: 0.13
-  levelParent: {fileID: 491654707}
   levelIndex: 0
   levelState:
     levelIndex: 
@@ -938,14 +937,16 @@ MonoBehaviour:
     cardStates: []
   touchRadius: 0.2
   clickRadius: 0.05
+  tutorial: 0
+  closeSnapSqrDist: 0.0001
+  snapRadius: 0.5
   nodePrefab: {fileID: 7283619231811921860, guid: 5c222626e57644af58e773b87c896be5, type: 3}
   edgePrefab: {fileID: 1198453481677518125, guid: da6716132ace14cb68737f2c7c9b68df, type: 3}
   UIManager: {fileID: 66158510}
   currNodePosMap: []
-  currNodeScripts: []
+  usedReduceIds: 
   currNodeColorMap: 
-  drawingEdge: {fileID: 0}
-  removedId: 0
+  currRemovedId: 0
   gameWon: 0
   gameAdmiring: 0
   gamePaused: 0

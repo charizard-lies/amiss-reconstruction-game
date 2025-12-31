@@ -37,11 +37,11 @@ public interface ITool
 public class DrawTool: ITool
 {
     public static DrawTool Instance = new DrawTool();
+    public LevelScript levelManager = LevelScript.Instance;
     private EdgeScript drawingEdge=null;
 
     public void OnClicked(NodeScript node)
     {
-        LevelScript levelManager = LevelScript.Instance;
         if(node.id == levelManager.currRemovedId)
         {
             drawingEdge = levelManager.PenDown();
@@ -54,8 +54,6 @@ public class DrawTool: ITool
 
     public void OnReleased(NodeScript node)
     {
-        LevelScript levelManager = LevelScript.Instance;
-
         if(node.id == levelManager.currRemovedId)
         {
             NodeScript releasedOnNode = GetNodeScriptUnderMouse();
@@ -83,13 +81,57 @@ public class DrawTool: ITool
 
 public class SwapTool: ITool
 {
+    public static SwapTool Instance = new SwapTool();
+    LevelScript levelManager = LevelScript.Instance;
+
     public void OnClicked(NodeScript node)
     {
-        
+        if(node.id == levelManager.currRemovedId) return;
+        node.SetFollowPointer();
     }
 
     public void OnReleased(NodeScript node)
     {
-        
+        if(node.id == levelManager.currRemovedId) return;
+        NodeScript nodeToApproach = GetClosestNodeInRange(node.id);
+        if(nodeToApproach == null || nodeToApproach.id == levelManager.currRemovedId) node.SetTargetLocalPos(levelManager.currNodeLocalPosMap[node.id]);
+        else levelManager.SwapNodes(node.id, nodeToApproach.id);
     }
+
+    private bool TryGetPointerWorldPos( out Vector3 worldPos)
+    {
+        worldPos = default;
+        if (Pointer.current == null) return false;
+
+        Vector2 screenPos = Pointer.current.position.ReadValue();
+        worldPos = Camera.main.ScreenToWorldPoint(screenPos);
+        worldPos.z = 0f;
+        return true;
+    }
+
+    private NodeScript GetClosestNodeInRange(int? excludeId)
+    {
+        if(!TryGetPointerWorldPos(out Vector3 mousePos)) return null;
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(mousePos, levelManager.snapRadius);
+        if (hits == null || hits.Length ==0) return null;
+
+        NodeScript closestNode = null;
+        float closestDist = float.PositiveInfinity;
+
+        foreach(var col in hits)
+        {
+            if(!col.TryGetComponent(out NodeScript node)) continue;
+            if(excludeId.HasValue && node.id == excludeId.Value) continue; 
+
+            float sqrDist = (node.transform.position - mousePos).sqrMagnitude;
+            if(sqrDist < closestDist)
+            {
+                closestNode = node;
+                closestDist = sqrDist;
+            }
+        }
+        return closestNode;
+    }
+
 }

@@ -65,7 +65,7 @@ public class CardButtonScript : MonoBehaviour
         else if (levelManager.gameWon || isIncluded) gameObject.GetComponent<Image>().sprite = UIManager.correctCardSprite;
         else gameObject.GetComponent<Image>().sprite = normalCardSprite;
 
-        List<Vector3> cardNodePosMap = levelManager.ReturnNodePosMap(cardId);
+        List<Vector3> cardNodePosMap = levelManager.ReturnNodeLocalPosMap(cardId);
 
         foreach (var node in levelManager.graphData.nodes.Values)
         {

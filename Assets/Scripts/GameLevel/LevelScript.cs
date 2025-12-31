@@ -21,6 +21,8 @@ public class LevelScript : MonoBehaviour
     public float touchRadius=0.2f;
     public float clickRadius=0.05f;
     public bool tutorial = false;
+    public float closeSnapSqrDist = 0.0001f;
+    public float snapRadius;
 
 
     [Header("Prefabs")]
@@ -29,7 +31,7 @@ public class LevelScript : MonoBehaviour
 
     [Header("Other")]
     public LevelUI UIManager;
-    public List<Vector3> currNodePosMap;
+    public List<Vector3> currNodeLocalPosMap;
     public Dictionary<int, NodeScript> currNodeScripts = new Dictionary<int, NodeScript>();
     public bool[] usedReduceIds;
     public List<char> currNodeColorMap;
@@ -43,8 +45,12 @@ public class LevelScript : MonoBehaviour
 
     void Awake()
     {
-        if(Instance == null) Instance = this;
-        else Debug.LogWarning("another levelscript exists?");
+        Instance = this;
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
     }
 
     void Start()
@@ -75,7 +81,7 @@ public class LevelScript : MonoBehaviour
         UIManager.DrawCardButtons();
         SetActiveCard(levelState.activeCardId);
 
-        ToolManager.Instance.SetTool(DrawTool.Instance);
+        ToolManager.Instance.SetTool(SwapTool.Instance);
 
         if(gameWon) Win();
     }
@@ -87,12 +93,12 @@ public class LevelScript : MonoBehaviour
             Destroy(transform.GetChild(i).gameObject);
         }
 
-        currNodePosMap.Clear();
+        currNodeLocalPosMap.Clear();
         currNodeColorMap.Clear();
         currNodeScripts.Clear();
         currDrawnEdges.Clear();
 
-        currNodePosMap = ReturnNodePosMap(cardId);
+        currNodeLocalPosMap = ReturnNodeLocalPosMap(cardId);
         ComputeWLColouring(cardId);
 
         for(int i = 0; i < graphData.nodes.Count(); i++)
@@ -108,7 +114,7 @@ public class LevelScript : MonoBehaviour
     private NodeScript BuildNode(int id)
     {
         GameObject nodeObj = Instantiate(nodePrefab, transform);
-        nodeObj.transform.localPosition = currNodePosMap[id];
+        nodeObj.transform.localPosition = currNodeLocalPosMap[id];
         NodeScript nodeScript = nodeObj.GetComponent<NodeScript>();
         nodeScript.Initialize(id);
         return nodeScript;
@@ -136,6 +142,13 @@ public class LevelScript : MonoBehaviour
         {
             currDrawnEdges[targetNode] = BuildEdge(currRemovedId, targetNode);
         }
+    }
+
+
+    private void ManageMove()
+    {
+        CheckAllSubgraphs();
+        if(CheckGraph()) Win();
     }
 
     public EdgeScript PenDown()
@@ -172,12 +185,6 @@ public class LevelScript : MonoBehaviour
         return;
     }
 
-    private void ManageMove()
-    {
-        CheckAllSubgraphs();
-        if(CheckGraph()) Win();
-    }
-
     public void CheckAllSubgraphs()
     {
         usedReduceIds = Enumerable.Repeat(false, graphData.nodes.Count).ToArray();
@@ -198,6 +205,23 @@ public class LevelScript : MonoBehaviour
         CheckAllSubgraphs();
     }
 
+    public void SwapNodes(int a, int b)
+    {
+        NodeScript nodeA = currNodeScripts[a];
+        NodeScript nodeB = currNodeScripts[b];
+
+        int positionIndexA = levelState.cardStates[currRemovedId].scramble[a];
+        int positionIndexB = levelState.cardStates[currRemovedId].scramble[b];
+        
+        nodeA.SetTargetLocalPos(currNodeLocalPosMap[b]);
+        nodeB.SetTargetLocalPos(currNodeLocalPosMap[a]);
+        
+        levelState.cardStates[currRemovedId].scramble[a] = positionIndexB;
+        levelState.cardStates[currRemovedId].scramble[b] = positionIndexA;
+
+        currNodeLocalPosMap = ReturnNodeLocalPosMap(currRemovedId);
+        UIManager.UpdateCards();
+    }
     
     public bool CheckGraph()
     {
@@ -392,19 +416,18 @@ public class LevelScript : MonoBehaviour
         }
     }
 
-   
-    public List<Vector3> ReturnNodePosMap(int cardId)
+    public List<Vector3> ReturnNodeLocalPosMap(int cardId)
     {
         List<Vector3> nodePos = new List<Vector3>();
         foreach(int positionIndex in levelState.cardStates[cardId].scramble)
         {
-            nodePos.Add(getCirclePos(positionIndex, graphData.nodes.Count()));
+            nodePos.Add(getLocalCirclePos(positionIndex, graphData.nodes.Count()));
         }
 
         return nodePos;
     }
     
-    private Vector3 getCirclePos(int counter, int n)
+    private Vector3 getLocalCirclePos(int counter, int n)
     {
         float angle = 2 * Mathf.PI * counter / n;
         float x = initRadius * Mathf.Sin(angle);

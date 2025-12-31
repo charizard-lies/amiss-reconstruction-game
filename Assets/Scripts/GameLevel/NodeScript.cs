@@ -12,7 +12,9 @@ public class NodeScript : MonoBehaviour
     public int id;
     private Camera cam;
     private LevelScript levelManager;
-    public bool isDragged = false;
+    private Vector3 targetPos = new Vector3();
+    private bool approaching = false;
+    private bool followingMouse = false;
     private Vector3 velocity = Vector3.zero;
 
     public UnityEvent<NodeScript> onClicked;
@@ -43,21 +45,51 @@ public class NodeScript : MonoBehaviour
             HeldNode = null;
         }
 
-        if (isDragged)
+
+        if(!approaching && !followingMouse) return;
+
+        if(followingMouse)
         {
-            if(TryGetPointerWorldPos(out Vector3 targetPos)) return;
-            Approach(targetPos);
+            if(!TryGetPointerWorldPos(out Vector3 pos)) return;
+            targetPos = pos;
         }
+
+        Approach(targetPos);
     }
 
-    public void Approach(Vector3 targetPos)
+    public void SetFollowPointer()
+    {
+        approaching = false;
+        followingMouse = true;
+    }
+
+    public void SetTargetLocalPos(Vector3 pos)
+    {
+        targetPos = pos + levelManager.transform.position;
+        approaching = true;
+        followingMouse = false;
+    }
+
+    public void SetStatic()
+    {
+        approaching = false;
+    }
+
+    private void Approach(Vector3 pos)
     {
         transform.position = Vector3.SmoothDamp(
             transform.position,
-            targetPos,
+            pos,
             ref velocity,
             levelManager.nodeAttractionTime
         );
+
+        if ((transform.position - pos).sqrMagnitude < LevelScript.Instance.closeSnapSqrDist)
+        {
+            transform.position = pos;
+            velocity = Vector3.zero;
+            SetStatic();
+        }
     }
 
     public bool PointerIsOver()
