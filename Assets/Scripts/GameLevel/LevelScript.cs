@@ -5,7 +5,6 @@ using UnityEngine;
 using System;
 using System.Data;
 using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 
 public class LevelScript : MonoBehaviour
 {
@@ -21,7 +20,7 @@ public class LevelScript : MonoBehaviour
     public LevelState levelState;
     public float touchRadius=0.2f;
     public float clickRadius=0.05f;
-    public bool tutorial = false;
+    public bool isTutorial = false;
     public float closeSnapSqrDist = 0.0001f;
     public float snapRadius;
 
@@ -29,6 +28,9 @@ public class LevelScript : MonoBehaviour
     [Header("Prefabs")]
     public GameObject nodePrefab;
     public GameObject edgePrefab;
+    public Sprite MainNodeSprite;
+    public Sprite NormalNodeSprite;
+
 
     [Header("Other")]
     public LevelUI UIManager;
@@ -38,11 +40,14 @@ public class LevelScript : MonoBehaviour
     public List<char> currNodeColorMap;
     public Dictionary<int, EdgeScript> currDrawnEdges = new Dictionary<int, EdgeScript>();
 
-
     public int currRemovedId;
     public bool gameWon;
     public bool gameAdmiring;
     public bool gamePaused;
+
+    
+    public event Action OnCardChanged;
+    public event Action OnRestart;
 
     void Awake()
     {
@@ -61,21 +66,25 @@ public class LevelScript : MonoBehaviour
 
     void Start()
     {
-        if (GameManager.Instance)
-        {
-            levelIndex = GameManager.Instance.selectedLevelId;
-            if (GameManager.Instance.selectedDailyLevel) graphData = Resources.Load<GraphData>($"Levels/Daily/Level{levelIndex}");
-            else if (GameManager.Instance.selectedTutorialLevel)
-            {
-                graphData = Resources.Load<GraphData>($"Levels/Tutorial/Level{levelIndex}");
-                tutorial = true;
-            }
-            else graphData = Resources.Load<GraphData>($"Levels/Normal/Level{levelIndex}");   
-        }
+        // if (GameManager.Instance)
+        // {
+        //     levelIndex = GameManager.Instance.selectedLevelId;
+        //     if (GameManager.Instance.selectedDailyLevel) graphData = Resources.Load<GraphData>($"Levels/Daily/Level{levelIndex}");
+        //     else if (GameManager.Instance.selectedTutorialLevel)
+        //     {
+        //         graphData = Resources.Load<GraphData>($"Levels/Tutorial/Level{levelIndex}");
+        //         tutorial = true;
+        //     }
+        //     else graphData = Resources.Load<GraphData>($"Levels/Normal/Level{levelIndex}");   
+        // }
+
+        levelIndex = "Tutorial";
+        graphData = Resources.Load<GraphData>($"Levels/Tutorial/Level{levelIndex}");
+
 
         graphData.CheckGraphValidity();
 
-        if (tutorial) SaveManager.Delete(levelIndex);
+        if (true) SaveManager.Delete(levelIndex); // change to check if its a tutorial level, necessary?
 
         SaveManager.CurrentState = LoadLevelState();
         levelState = SaveManager.CurrentState;
@@ -89,7 +98,20 @@ public class LevelScript : MonoBehaviour
 
         SelectDrawTool();
 
+        if (true) isTutorial = true; // change to only if its a tutorial level!!!
+
         if(gameWon) Win();
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current == null) return;
+
+        if (Keyboard.current.digit1Key.wasPressedThisFrame)
+            SelectDrawTool();
+
+        if (Keyboard.current.digit2Key.wasPressedThisFrame)
+            SelectSwapTool();
     }
 
     private void BuildCard(int cardId)
@@ -121,6 +143,9 @@ public class LevelScript : MonoBehaviour
     {
         GameObject nodeObj = Instantiate(nodePrefab, transform);
         nodeObj.transform.localPosition = currNodeLocalPosMap[id];
+
+        nodeObj.GetComponent<SpriteRenderer>().sprite = id == currRemovedId? MainNodeSprite : NormalNodeSprite;
+
         NodeScript nodeScript = nodeObj.GetComponent<NodeScript>();
         nodeScript.Initialize(id);
         return nodeScript;
@@ -203,12 +228,16 @@ public class LevelScript : MonoBehaviour
 
     public void SetActiveCard(int cardId)
     {
+        if(isTutorial && !TutorialGate.AllowChangeCard) return;
+
         currRemovedId = cardId;
         levelState.activeCardId = cardId;
 
         BuildCard(cardId);
         UIManager.UpdateCards();
         CheckAllSubgraphs();
+
+        if(isTutorial) OnCardChanged?.Invoke();
     }
 
     public void SwapNodes(int a, int b)
@@ -444,14 +473,16 @@ public class LevelScript : MonoBehaviour
 
     public void SelectDrawTool()
     {
-        Debug.Log("selectDrawTool run");
+        if(isTutorial && !TutorialGate.AllowSwapTool) return;
+
         ToolManager.Instance.SetTool(DrawTool.Instance);
         UIManager.SelectDrawTool();
     }
 
     public void SelectSwapTool()
     {
-        Debug.Log("selectSwapTool run");
+        if(isTutorial && !TutorialGate.AllowSwapTool) return;
+        
         ToolManager.Instance.SetTool(SwapTool.Instance);
         UIManager.SelectSwapTool();
     }
@@ -459,6 +490,8 @@ public class LevelScript : MonoBehaviour
 
     public void Win()
     {
+        if(isTutorial) return;
+
         UIManager.ShowWinMenu();
 
         gameWon = true;
@@ -482,14 +515,16 @@ public class LevelScript : MonoBehaviour
                 levelState.cardStates[edge.toNodeId].drawnEdges.Add(edge.fromNodeId);
             }
         }
+
         SetActiveCard(currRemovedId);
 
-        for(int i=0;i<graphData.nodes.Count; i++)
-        {
-            UIManager.SetCardCorrect(i, true);
-        }
-
         levelState.solved = true;
+        SaveState();
+    }
+
+    public void SaveState()
+    {
+        if(isTutorial) return;
         SaveManager.Save(levelIndex);
     }
 
@@ -509,7 +544,7 @@ public class LevelScript : MonoBehaviour
         gameAdmiring = false;
         gamePaused = true;
 
-        SaveManager.Save(levelIndex);
+        SaveState();
     }
 
     public void Resume()
@@ -537,6 +572,8 @@ public class LevelScript : MonoBehaviour
 
     public void Restart()
     {
+        if(isTutorial && !TutorialGate.AllowRestart) return;
+
         UIManager.Restart();
 
         gamePaused = false;
@@ -545,9 +582,11 @@ public class LevelScript : MonoBehaviour
 
         foreach(CardState cardState in levelState.cardStates) cardState.drawnEdges.Clear();
         levelState.solved = false;
-        SaveManager.Save(levelIndex);
+        SaveState();
 
         SetActiveCard(0);
+
+        if(isTutorial) OnRestart?.Invoke();
     }
 
     public void Quit()

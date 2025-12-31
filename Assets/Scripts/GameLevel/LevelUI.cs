@@ -49,12 +49,14 @@ public class LevelUI : MonoBehaviour
 
     private void Start()
     {
-        if (GameManager.Instance.selectedDailyLevel)
-        {
-            int dayIndex = (DateTime.Now.Date - GameManager.Instance.startDate.Date).Days + 1;
-            levelLabel.text = "Daily Level #" + dayIndex;
-        }
-        else levelLabel.text = "Level " + GameManager.Instance.selectedLevelId;
+        // if (GameManager.Instance.selectedDailyLevel)
+        // {
+        //     int dayIndex = (DateTime.Now.Date - GameManager.Instance.startDate.Date).Days + 1;
+        //     levelLabel.text = "Daily Level #" + dayIndex;
+        // }
+        // else levelLabel.text = "Level " + GameManager.Instance.selectedLevelId;
+
+        levelLabel.text = "Level Tutorial";
     }
     
     public void DrawCardButtons()
@@ -154,9 +156,6 @@ public class LevelUI : MonoBehaviour
     {
         confirmRestartMenu.SetActive(false);
         pauseBlocker.SetActive(false);
-
-        // levelManager.levelState.solved = false;
-        // SaveManager.Save(GameManager.Instance.selectedLevelId);
     }
 
     void Update()

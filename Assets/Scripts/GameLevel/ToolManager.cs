@@ -1,18 +1,38 @@
-using System.Linq;
+using System;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Events;
 
 public class ToolManager
 {
     public static ToolManager Instance = new ToolManager();
 
     public ITool currentTool {get; private set; }
+    public event Action OnLineDrawn;
+    public event Action OnLineErased;
+    public event Action OnSwapTool;
+    public event Action OnSwapNode;
+
+    public void InvokeLineDrawn()
+    {
+        OnLineDrawn?.Invoke();
+    }
+
+    public void InvokeLineErased()
+    {
+        OnLineErased?.Invoke();
+    }
+
+    public void InvokeSwapNode()
+    {
+        OnSwapNode?.Invoke();
+    }
 
     public void SetTool(ITool tool)
     {
         currentTool = tool;
-        Debug.Log("set tool to: " + currentTool);
+
+        if(LevelScript.Instance.isTutorial) OnSwapTool?.Invoke();
     }
 
     public void Register(NodeScript node)
@@ -51,24 +71,32 @@ public class DrawTool: ITool
     {
         if(node.id == levelManager.currRemovedId)
         {
+            if(levelManager.isTutorial && !TutorialGate.AllowDrawLine) return;
+
             drawingEdge = levelManager.PenDown();
         }
         else
         {
+            if(levelManager.isTutorial && !TutorialGate.AllowEraseLine) return;
+
             levelManager.EraseEdge(node.id);
+            
+            if(levelManager.isTutorial) ToolManager.Instance.InvokeLineErased();
         }
     }
 
     public void OnReleased(NodeScript node)
     {
-        if(node.id == levelManager.currRemovedId)
-        {
-            NodeScript releasedOnNode = GetNodeScriptUnderMouse();
-            int? releasedNodeId = releasedOnNode == null ? null : releasedOnNode.id;
-            LevelScript.Instance.PenUp(releasedNodeId, drawingEdge);
+        if((levelManager.isTutorial && !TutorialGate.AllowDrawLine) || drawingEdge == null) return;
+        if(node.id != levelManager.currRemovedId) return;
 
-            drawingEdge = null;
-        }
+        NodeScript releasedOnNode = GetNodeScriptUnderMouse();
+        int? releasedNodeId = releasedOnNode == null ? null : releasedOnNode.id;
+        LevelScript.Instance.PenUp(releasedNodeId, drawingEdge);
+
+        drawingEdge = null;
+
+        if(releasedNodeId != null && levelManager.isTutorial) ToolManager.Instance.InvokeLineDrawn();
     }
 
     private Vector3 GetPointerWorldPos()
@@ -87,22 +115,34 @@ public class DrawTool: ITool
 }
 
 public class SwapTool: ITool
+
 {
     public static SwapTool Instance = new SwapTool();
     LevelScript levelManager => LevelScript.Instance;
 
     public void OnClicked(NodeScript node)
     {
+        if(levelManager.isTutorial && !TutorialGate.AllowSwapNode) return;
         if(node.id == levelManager.currRemovedId) return;
+
         node.SetFollowPointer();
     }
 
     public void OnReleased(NodeScript node)
     {
+        if(levelManager.isTutorial && !TutorialGate.AllowSwapNode) return;
         if(node.id == levelManager.currRemovedId) return;
+
         NodeScript nodeToApproach = GetClosestNodeInRange(node.id);
-        if(nodeToApproach == null || nodeToApproach.id == levelManager.currRemovedId) node.SetTargetLocalPos(levelManager.currNodeLocalPosMap[node.id]);
-        else levelManager.SwapNodes(node.id, nodeToApproach.id);
+        if(nodeToApproach == null || nodeToApproach.id == levelManager.currRemovedId)
+        {
+            node.SetTargetLocalPos(levelManager.currNodeLocalPosMap[node.id]);
+            return;
+        }
+        
+        levelManager.SwapNodes(node.id, nodeToApproach.id);
+
+        if(levelManager.isTutorial) ToolManager.Instance.InvokeSwapNode();
     }
 
     private bool TryGetPointerWorldPos( out Vector3 worldPos)
