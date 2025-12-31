@@ -5,6 +5,7 @@ using UnityEngine;
 using System;
 using System.Data;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 
 public class LevelScript : MonoBehaviour
 {
@@ -51,6 +52,11 @@ public class LevelScript : MonoBehaviour
     void OnDestroy()
     {
         if (Instance == this) Instance = null;
+
+        foreach(var node in currNodeScripts.Values)
+        {
+            ToolManager.Instance.DeRegister(node);
+        }
     }
 
     void Start()
@@ -81,7 +87,7 @@ public class LevelScript : MonoBehaviour
         UIManager.DrawCardButtons();
         SetActiveCard(levelState.activeCardId);
 
-        ToolManager.Instance.SetTool(SwapTool.Instance);
+        SelectDrawTool();
 
         if(gameWon) Win();
     }
@@ -434,6 +440,20 @@ public class LevelScript : MonoBehaviour
         float y = initRadius * -Mathf.Cos(angle);
 
         return new Vector3(x, y, 0);
+    }
+
+    public void SelectDrawTool()
+    {
+        Debug.Log("selectDrawTool run");
+        ToolManager.Instance.SetTool(DrawTool.Instance);
+        UIManager.SelectDrawTool();
+    }
+
+    public void SelectSwapTool()
+    {
+        Debug.Log("selectSwapTool run");
+        ToolManager.Instance.SetTool(SwapTool.Instance);
+        UIManager.SelectSwapTool();
     }
 
 

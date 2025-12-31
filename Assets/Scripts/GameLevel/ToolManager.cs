@@ -12,6 +12,7 @@ public class ToolManager
     public void SetTool(ITool tool)
     {
         currentTool = tool;
+        Debug.Log("set tool to: " + currentTool);
     }
 
     public void Register(NodeScript node)
@@ -26,6 +27,12 @@ public class ToolManager
             currentTool.OnReleased(n);
         });
     }
+
+    public void DeRegister(NodeScript node)
+    {
+        node.onClicked.RemoveAllListeners();
+        node.onReleased.RemoveAllListeners();
+    }
 }
 
 public interface ITool
@@ -37,7 +44,7 @@ public interface ITool
 public class DrawTool: ITool
 {
     public static DrawTool Instance = new DrawTool();
-    public LevelScript levelManager = LevelScript.Instance;
+    public LevelScript levelManager => LevelScript.Instance;
     private EdgeScript drawingEdge=null;
 
     public void OnClicked(NodeScript node)
@@ -82,7 +89,7 @@ public class DrawTool: ITool
 public class SwapTool: ITool
 {
     public static SwapTool Instance = new SwapTool();
-    LevelScript levelManager = LevelScript.Instance;
+    LevelScript levelManager => LevelScript.Instance;
 
     public void OnClicked(NodeScript node)
     {

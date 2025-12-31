@@ -155,7 +155,7 @@ MonoBehaviour:
   normalLineWidth: 0
   activeLineWidth: 0
   cardId: 0
-  isSnapping: 0
+  isIncluded: 0
 --- !u!114 &3901252962075801510
 MonoBehaviour:
   m_ObjectHideFlags: 0

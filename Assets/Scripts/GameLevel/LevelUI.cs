@@ -18,6 +18,10 @@ public class LevelUI : MonoBehaviour
     public GameObject pauseBlocker;
     public GameObject winMenu;
     public GameObject confirmRestartMenu;
+    public GameObject drawToolBg;
+    public GameObject swapToolBg;
+    public Color normalToolColor;
+    public Color selectedToolColor;
 
     [Header("CardUI")]
     public GameObject cardUIPrefab;
@@ -92,6 +96,19 @@ public class LevelUI : MonoBehaviour
         scriptToEdit.gameObject.GetComponent<Image>().sprite = correct ? correctCardSprite : normalCardSprite;
     }
     
+    public void SelectDrawTool()
+    {
+        drawToolBg.GetComponent<Image>().color = selectedToolColor;
+        swapToolBg.GetComponent<Image>().color = normalToolColor;
+    }
+
+    public void SelectSwapTool()
+    {
+        drawToolBg.GetComponent<Image>().color = normalToolColor;
+        swapToolBg.GetComponent<Image>().color = selectedToolColor;
+    }
+
+
     public void ShowWinMenu()
     {
         winMenu.SetActive(true);
