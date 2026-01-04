@@ -22,6 +22,9 @@ public class LevelUI : MonoBehaviour
     public GameObject swapToolBg;
     public Color normalToolColor;
     public Color selectedToolColor;
+    public GameObject tutorialTextArea;
+    public TextMeshProUGUI tutorialTextLabel;
+    public Image tutorialImage;
 
     [Header("CardUI")]
     public GameObject cardUIPrefab;
@@ -49,14 +52,13 @@ public class LevelUI : MonoBehaviour
 
     private void Start()
     {
-        // if (GameManager.Instance.selectedDailyLevel)
-        // {
-        //     int dayIndex = (DateTime.Now.Date - GameManager.Instance.startDate.Date).Days + 1;
-        //     levelLabel.text = "Daily Level #" + dayIndex;
-        // }
-        // else levelLabel.text = "Level " + GameManager.Instance.selectedLevelId;
-
-        levelLabel.text = "Level Tutorial";
+        if (GameManager.Instance.selectedDailyLevel)
+        {
+            int dayIndex = (DateTime.Now.Date - GameManager.Instance.startDate.Date).Days + 1;
+            levelLabel.text = "Daily Level #" + dayIndex;
+        }
+        else if(GameManager.Instance.selectedTutorialLevel) levelLabel.text = "Level Tutorial";
+        else levelLabel.text = "Level " + GameManager.Instance.selectedLevelId;
     }
     
     public void DrawCardButtons()
@@ -111,6 +113,25 @@ public class LevelUI : MonoBehaviour
     }
 
 
+    public void SetTutorialUI(bool show)
+    {
+        tutorialTextArea.SetActive(show);
+    }
+    
+    public void ShowTutorialText(string text)
+    {
+        tutorialTextLabel.text = text;
+    }
+    
+    public void ShowTutorialImage(Sprite img)
+    {
+        if(img == null) tutorialImage.enabled = false;
+        tutorialImage.sprite = img;
+        if(img != null) tutorialImage.enabled = true;
+        tutorialImage.preserveAspect = true;
+    }
+    
+    
     public void ShowWinMenu()
     {
         winMenu.SetActive(true);

@@ -71,23 +71,17 @@ public class DrawTool: ITool
     {
         if(node.id == levelManager.currRemovedId)
         {
-            if(levelManager.isTutorial && !TutorialGate.AllowDrawLine) return;
-
             drawingEdge = levelManager.PenDown();
         }
         else
         {
-            if(levelManager.isTutorial && !TutorialGate.AllowEraseLine) return;
-
+            if(levelManager.isTutorial && levelManager.currDrawnEdges.TryGetValue(node.id, out _)) ToolManager.Instance.InvokeLineErased();
             levelManager.EraseEdge(node.id);
-            
-            if(levelManager.isTutorial) ToolManager.Instance.InvokeLineErased();
         }
     }
 
     public void OnReleased(NodeScript node)
     {
-        if((levelManager.isTutorial && !TutorialGate.AllowDrawLine) || drawingEdge == null) return;
         if(node.id != levelManager.currRemovedId) return;
 
         NodeScript releasedOnNode = GetNodeScriptUnderMouse();
@@ -96,7 +90,7 @@ public class DrawTool: ITool
 
         drawingEdge = null;
 
-        if(releasedNodeId != null && levelManager.isTutorial) ToolManager.Instance.InvokeLineDrawn();
+        if(releasedNodeId.HasValue && levelManager.isTutorial) ToolManager.Instance.InvokeLineDrawn();
     }
 
     private Vector3 GetPointerWorldPos()
@@ -122,7 +116,6 @@ public class SwapTool: ITool
 
     public void OnClicked(NodeScript node)
     {
-        if(levelManager.isTutorial && !TutorialGate.AllowSwapNode) return;
         if(node.id == levelManager.currRemovedId) return;
 
         node.SetFollowPointer();
@@ -130,7 +123,6 @@ public class SwapTool: ITool
 
     public void OnReleased(NodeScript node)
     {
-        if(levelManager.isTutorial && !TutorialGate.AllowSwapNode) return;
         if(node.id == levelManager.currRemovedId) return;
 
         NodeScript nodeToApproach = GetClosestNodeInRange(node.id);

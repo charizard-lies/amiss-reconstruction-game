@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8e00e30d857d438293b2d7b45fe3353, type: 3}
+  m_Name: EraseLineStep
+  m_EditorClassIdentifier: 
+  slides:
+  - text: "Great job! Notice how some pictures turn green? That\u2019s a sign that
+      the sub-constellation in that picture already exists in the constellation you\u2019ve
+      drawn! Sometimes (not always), that could mean you\u2019re really close to
+      the solution!"
+    image: {fileID: 21300000, guid: 371ea11d9fbae4489844c4e7818dfc73, type: 3}
+  - text: "Now, even the most experienced star analysts sometimes make mistakes.
+      Try erasing a line you\u2019ve drawn by clicking on the star connected to the
+      viewing star!"
+    image: {fileID: 21300000, guid: 113f305650d8e40b780c2d495b46ca87, type: 3}
+  trigger: {fileID: 11400000, guid: 6fd756377c757451996b690c607ba584, type: 2}

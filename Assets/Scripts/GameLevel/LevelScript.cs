@@ -5,6 +5,7 @@ using UnityEngine;
 using System;
 using System.Data;
 using UnityEditor;
+using System.Security.Cryptography;
 
 public class LevelScript : MonoBehaviour
 {
@@ -34,6 +35,7 @@ public class LevelScript : MonoBehaviour
 
     [Header("Other")]
     public LevelUI UIManager;
+    public TutorialManager tutorialManager;
     public List<Vector3> currNodeLocalPosMap;
     public Dictionary<int, NodeScript> currNodeScripts = new Dictionary<int, NodeScript>();
     public bool[] usedReduceIds;
@@ -48,6 +50,7 @@ public class LevelScript : MonoBehaviour
     
     public event Action OnCardChanged;
     public event Action OnRestart;
+    public event Action OnTutorialTextClicked;
 
     void Awake()
     {
@@ -66,41 +69,41 @@ public class LevelScript : MonoBehaviour
 
     void Start()
     {
-        // if (GameManager.Instance)
-        // {
-        //     levelIndex = GameManager.Instance.selectedLevelId;
-        //     if (GameManager.Instance.selectedDailyLevel) graphData = Resources.Load<GraphData>($"Levels/Daily/Level{levelIndex}");
-        //     else if (GameManager.Instance.selectedTutorialLevel)
-        //     {
-        //         graphData = Resources.Load<GraphData>($"Levels/Tutorial/Level{levelIndex}");
-        //         tutorial = true;
-        //     }
-        //     else graphData = Resources.Load<GraphData>($"Levels/Normal/Level{levelIndex}");   
-        // }
-
-        levelIndex = "Tutorial";
-        graphData = Resources.Load<GraphData>($"Levels/Tutorial/Level{levelIndex}");
-
+        bool tempisTutorial = false;
+        if (GameManager.Instance)
+        {
+            levelIndex = GameManager.Instance.selectedLevelId;
+            if (GameManager.Instance.selectedDailyLevel) graphData = Resources.Load<GraphData>($"Levels/Daily/Level{levelIndex}");
+            else if (GameManager.Instance.selectedTutorialLevel)
+            {
+                graphData = Resources.Load<GraphData>($"Levels/Tutorial/Level{levelIndex}");
+                tempisTutorial = true;
+            }
+            else graphData = Resources.Load<GraphData>($"Levels/Normal/Level{levelIndex}");   
+        }
 
         graphData.CheckGraphValidity();
 
-        if (true) SaveManager.Delete(levelIndex); // change to check if its a tutorial level, necessary?
+        if (tempisTutorial) SaveManager.Delete(levelIndex);
 
         SaveManager.CurrentState = LoadLevelState();
         levelState = SaveManager.CurrentState;
 
-        gameWon = levelState.solved;
         gameAdmiring = false;
+        gameWon = levelState.solved;
         gamePaused = levelState.solved;
 
         UIManager.DrawCardButtons();
-        SetActiveCard(levelState.activeCardId);
 
+        SetActiveCard(levelState.activeCardId);
         SelectDrawTool();
 
-        if (true) isTutorial = true; // change to only if its a tutorial level!!!
-
-        if(gameWon) Win();
+        if (tempisTutorial) 
+        {
+            isTutorial = true;
+            tutorialManager.StartTutorial();
+        }
+        else if(gameWon) Win();
     }
 
     private void Update()
@@ -228,8 +231,6 @@ public class LevelScript : MonoBehaviour
 
     public void SetActiveCard(int cardId)
     {
-        if(isTutorial && !TutorialGate.AllowChangeCard) return;
-
         currRemovedId = cardId;
         levelState.activeCardId = cardId;
 
@@ -473,18 +474,32 @@ public class LevelScript : MonoBehaviour
 
     public void SelectDrawTool()
     {
-        if(isTutorial && !TutorialGate.AllowSwapTool) return;
-
         ToolManager.Instance.SetTool(DrawTool.Instance);
         UIManager.SelectDrawTool();
     }
 
     public void SelectSwapTool()
     {
-        if(isTutorial && !TutorialGate.AllowSwapTool) return;
-        
         ToolManager.Instance.SetTool(SwapTool.Instance);
         UIManager.SelectSwapTool();
+    }
+
+
+    public void ManageTutorialTextClick()
+    {
+        OnTutorialTextClicked?.Invoke();
+    }
+
+    public void ShowTutorialSlide(TutorialSlide slide)
+    {
+        UIManager.ShowTutorialText(slide.text);
+        UIManager.ShowTutorialImage(slide.image);
+        UIManager.SetTutorialUI(true);
+    }
+
+    public void CloseTutorialText()
+    {
+        UIManager.SetTutorialUI(false);
     }
 
 
@@ -572,8 +587,6 @@ public class LevelScript : MonoBehaviour
 
     public void Restart()
     {
-        if(isTutorial && !TutorialGate.AllowRestart) return;
-
         UIManager.Restart();
 
         gamePaused = false;
@@ -591,7 +604,7 @@ public class LevelScript : MonoBehaviour
 
     public void Quit()
     {
-        if (GameManager.Instance.selectedDailyLevel) GameManager.Instance.LoadMainMenu();
+        if (GameManager.Instance.selectedDailyLevel || GameManager.Instance.selectedTutorialLevel) GameManager.Instance.LoadMainMenu();
         else GameManager.Instance.LoadLevelMenu();
     }
 

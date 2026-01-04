@@ -1,0 +1,2470 @@
+fileFormatVersion: 2
+guid: 4eb893a36f05c4350bbfc1a47c5921ea
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4920500297666313462
+    second: Tutorial 1_11_0
+  - first:
+      213: -6996408776087172626
+    second: Tutorial 1_11_1
+  - first:
+      213: 1110454237863748979
+    second: Tutorial 1_11_2
+  - first:
+      213: 8570420119699790196
+    second: Tutorial 1_11_3
+  - first:
+      213: 695046231009975117
+    second: Tutorial 1_11_4
+  - first:
+      213: -786875472884611278
+    second: Tutorial 1_11_5
+  - first:
+      213: 4339835175782091933
+    second: Tutorial 1_11_6
+  - first:
+      213: -5669136372651247610
+    second: Tutorial 1_11_7
+  - first:
+      213: 6267562014064719108
+    second: Tutorial 1_11_8
+  - first:
+      213: -346834361714404763
+    second: Tutorial 1_11_9
+  - first:
+      213: 8988628233169926733
+    second: Tutorial 1_11_10
+  - first:
+      213: 6072651464492213636
+    second: Tutorial 1_11_11
+  - first:
+      213: 660499084353899596
+    second: Tutorial 1_11_12
+  - first:
+      213: -7182235592991464489
+    second: Tutorial 1_11_13
+  - first:
+      213: -488781982677138425
+    second: Tutorial 1_11_14
+  - first:
+      213: 2082688037582316239
+    second: Tutorial 1_11_15
+  - first:
+      213: 4752387737569602709
+    second: Tutorial 1_11_16
+  - first:
+      213: 2544028710135762704
+    second: Tutorial 1_11_17
+  - first:
+      213: 3669448204058787195
+    second: Tutorial 1_11_18
+  - first:
+      213: -2219951224106608637
+    second: Tutorial 1_11_19
+  - first:
+      213: 1652914377389949343
+    second: Tutorial 1_11_20
+  - first:
+      213: 7196647025434794618
+    second: Tutorial 1_11_21
+  - first:
+      213: 3474660723247133091
+    second: Tutorial 1_11_22
+  - first:
+      213: 7315114152206128511
+    second: Tutorial 1_11_23
+  - first:
+      213: -2432454918426743225
+    second: Tutorial 1_11_24
+  - first:
+      213: 582290609424830577
+    second: Tutorial 1_11_25
+  - first:
+      213: -7423263677349337443
+    second: Tutorial 1_11_26
+  - first:
+      213: 3198880171492785103
+    second: Tutorial 1_11_27
+  - first:
+      213: 6652896486288902251
+    second: Tutorial 1_11_28
+  - first:
+      213: -3997497589471270517
+    second: Tutorial 1_11_29
+  - first:
+      213: -7253370503566549855
+    second: Tutorial 1_11_30
+  - first:
+      213: 2985282929516729145
+    second: Tutorial 1_11_31
+  - first:
+      213: 1220687183993207791
+    second: Tutorial 1_11_32
+  - first:
+      213: 7088388966373581415
+    second: Tutorial 1_11_33
+  - first:
+      213: 1816485144455878121
+    second: Tutorial 1_11_34
+  - first:
+      213: 6419608693041756461
+    second: Tutorial 1_11_35
+  - first:
+      213: -251198334869021941
+    second: Tutorial 1_11_36
+  - first:
+      213: -2908391062429685001
+    second: Tutorial 1_11_37
+  - first:
+      213: -4045936686993534343
+    second: Tutorial 1_11_38
+  - first:
+      213: 6502052923160039123
+    second: Tutorial 1_11_39
+  - first:
+      213: 1823785915561365571
+    second: Tutorial 1_11_40
+  - first:
+      213: 5705673900073484235
+    second: Tutorial 1_11_41
+  - first:
+      213: -4507463260772417896
+    second: Tutorial 1_11_42
+  - first:
+      213: 4507411022305910970
+    second: Tutorial 1_11_43
+  - first:
+      213: -8077701523859857856
+    second: Tutorial 1_11_44
+  - first:
+      213: 5221079928444158753
+    second: Tutorial 1_11_45
+  - first:
+      213: 7071302025883502777
+    second: Tutorial 1_11_46
+  - first:
+      213: 1811082769179161633
+    second: Tutorial 1_11_47
+  - first:
+      213: 38432831507193564
+    second: Tutorial 1_11_48
+  - first:
+      213: -7541288157075419870
+    second: Tutorial 1_11_49
+  - first:
+      213: 3539466062401163699
+    second: Tutorial 1_11_50
+  - first:
+      213: 1947842136156861197
+    second: Tutorial 1_11_51
+  - first:
+      213: -5220022167785040436
+    second: Tutorial 1_11_52
+  - first:
+      213: -6762884807044240661
+    second: Tutorial 1_11_53
+  - first:
+      213: -5707714279621133376
+    second: Tutorial 1_11_54
+  - first:
+      213: -3155333993353537866
+    second: Tutorial 1_11_55
+  - first:
+      213: 1349346629459586010
+    second: Tutorial 1_11_56
+  - first:
+      213: -1490317593258832687
+    second: Tutorial 1_11_57
+  - first:
+      213: 7258124876869827767
+    second: Tutorial 1_11_58
+  - first:
+      213: -6302577586102087402
+    second: Tutorial 1_11_59
+  - first:
+      213: 2234945442890461249
+    second: Tutorial 1_11_60
+  - first:
+      213: -7891044653122414360
+    second: Tutorial 1_11_61
+  - first:
+      213: 7067001927232251767
+    second: Tutorial 1_11_62
+  - first:
+      213: 5900695549527262925
+    second: Tutorial 1_11_63
+  - first:
+      213: -5889377995806259995
+    second: Tutorial 1_11_64
+  - first:
+      213: -3878070748905199222
+    second: Tutorial 1_11_65
+  - first:
+      213: -4343049979992187731
+    second: Tutorial 1_11_66
+  - first:
+      213: 6153473801161457151
+    second: Tutorial 1_11_67
+  - first:
+      213: -5330049952732828160
+    second: Tutorial 1_11_68
+  - first:
+      213: -957512456279971681
+    second: Tutorial 1_11_69
+  - first:
+      213: 7151800558885011914
+    second: Tutorial 1_11_70
+  - first:
+      213: 415822297530207211
+    second: Tutorial 1_11_71
+  - first:
+      213: -8602614897371045264
+    second: Tutorial 1_11_72
+  - first:
+      213: -4365868068731085092
+    second: Tutorial 1_11_73
+  - first:
+      213: -7652419538726373476
+    second: Tutorial 1_11_74
+  - first:
+      213: 4764684286123135592
+    second: Tutorial 1_11_75
+  - first:
+      213: 6051447877695271025
+    second: Tutorial 1_11_76
+  - first:
+      213: 3037774621030645479
+    second: Tutorial 1_11_77
+  - first:
+      213: 1226594724368728003
+    second: Tutorial 1_11_78
+  - first:
+      213: 6179742356638627727
+    second: Tutorial 1_11_79
+  - first:
+      213: -6711143874182984129
+    second: Tutorial 1_11_80
+  - first:
+      213: 1696695826717634055
+    second: Tutorial 1_11_81
+  - first:
+      213: -4208847802665893732
+    second: Tutorial 1_11_82
+  - first:
+      213: 6264779939931739425
+    second: Tutorial 1_11_83
+  - first:
+      213: -4148508075555974923
+    second: Tutorial 1_11_84
+  - first:
+      213: 7780874811641847792
+    second: Tutorial 1_11_85
+  - first:
+      213: 3090954097707357021
+    second: Tutorial 1_11_86
+  - first:
+      213: 7903995506510614831
+    second: Tutorial 1_11_87
+  - first:
+      213: -3430836228126139208
+    second: Tutorial 1_11_88
+  - first:
+      213: -5247870879297873352
+    second: Tutorial 1_11_89
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Tutorial 1_11_0
+      rect:
+        serializedVersion: 2
+        x: 1067
+        y: 1328
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6fcba9763f0294440800000000000000
+      internalID: 4920500297666313462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_1
+      rect:
+        serializedVersion: 2
+        x: 1190
+        y: 1333
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee906e56943c7ee90800000000000000
+      internalID: -6996408776087172626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_2
+      rect:
+        serializedVersion: 2
+        x: 972
+        y: 1315
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3752233fe30296f00800000000000000
+      internalID: 1110454237863748979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_3
+      rect:
+        serializedVersion: 2
+        x: 1220
+        y: 1323
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 479119ad0bf30f670800000000000000
+      internalID: 8570420119699790196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_4
+      rect:
+        serializedVersion: 2
+        x: 1229
+        y: 1317
+        width: 10
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4bd2d55ddc45a900800000000000000
+      internalID: 695046231009975117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_5
+      rect:
+        serializedVersion: 2
+        x: 1265
+        y: 1318
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 237ce3c2de47415f0800000000000000
+      internalID: -786875472884611278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_6
+      rect:
+        serializedVersion: 2
+        x: 1416
+        y: 1317
+        width: 13
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9c8c3459113a3c30800000000000000
+      internalID: 4339835175782091933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_7
+      rect:
+        serializedVersion: 2
+        x: 997
+        y: 1307
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60830e4618e2351b0800000000000000
+      internalID: -5669136372651247610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_8
+      rect:
+        serializedVersion: 2
+        x: 1005
+        y: 1258
+        width: 67
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4053f00e17adaf650800000000000000
+      internalID: 6267562014064719108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_9
+      rect:
+        serializedVersion: 2
+        x: 1169
+        y: 1305
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5621d125cfbcf2bf0800000000000000
+      internalID: -346834361714404763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_10
+      rect:
+        serializedVersion: 2
+        x: 1214
+        y: 1308
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4af32811c50ebc70800000000000000
+      internalID: 8988628233169926733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_11
+      rect:
+        serializedVersion: 2
+        x: 1232
+        y: 1282
+        width: 30
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48560d92554664450800000000000000
+      internalID: 6072651464492213636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_12
+      rect:
+        serializedVersion: 2
+        x: 1290
+        y: 1292
+        width: 29
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4c8261fa609a2900800000000000000
+      internalID: 660499084353899596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_13
+      rect:
+        serializedVersion: 2
+        x: 1302
+        y: 1313
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d3a39208c2935c90800000000000000
+      internalID: -7182235592991464489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_14
+      rect:
+        serializedVersion: 2
+        x: 900
+        y: 1295
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7040bed506f7739f0800000000000000
+      internalID: -488781982677138425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_15
+      rect:
+        serializedVersion: 2
+        x: 915
+        y: 1295
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc2ac025cb137ec10800000000000000
+      internalID: 2082688037582316239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_16
+      rect:
+        serializedVersion: 2
+        x: 940
+        y: 1302
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59c22c4d77fd3f140800000000000000
+      internalID: 4752387737569602709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_17
+      rect:
+        serializedVersion: 2
+        x: 1177
+        y: 1242
+        width: 44
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01f890e02a43e4320800000000000000
+      internalID: 2544028710135762704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_18
+      rect:
+        serializedVersion: 2
+        x: 1224
+        y: 1300
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7d7e9433bf7ce230800000000000000
+      internalID: 3669448204058787195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_19
+      rect:
+        serializedVersion: 2
+        x: 1267
+        y: 1298
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3089e6c9f162131e0800000000000000
+      internalID: -2219951224106608637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_20
+      rect:
+        serializedVersion: 2
+        x: 1329
+        y: 1302
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f91c6746ed450f610800000000000000
+      internalID: 1652914377389949343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_21
+      rect:
+        serializedVersion: 2
+        x: 897
+        y: 1263
+        width: 39
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a7a99e41750afd360800000000000000
+      internalID: 7196647025434794618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_22
+      rect:
+        serializedVersion: 2
+        x: 932
+        y: 1290
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a1b52ca489783030800000000000000
+      internalID: 3474660723247133091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_23
+      rect:
+        serializedVersion: 2
+        x: 1080
+        y: 1288
+        width: 16
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f75dda57091848560800000000000000
+      internalID: 7315114152206128511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_24
+      rect:
+        serializedVersion: 2
+        x: 1224
+        y: 1285
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74ea50fa32f2e3ed0800000000000000
+      internalID: -2432454918426743225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_25
+      rect:
+        serializedVersion: 2
+        x: 1267
+        y: 1178
+        width: 162
+        height: 119
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17010d26936b41800800000000000000
+      internalID: 582290609424830577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_26
+      rect:
+        serializedVersion: 2
+        x: 1427
+        y: 1277
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d96688df3054bf890800000000000000
+      internalID: -7423263677349337443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_27
+      rect:
+        serializedVersion: 2
+        x: 994
+        y: 1270
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcb3edc4194b46c20800000000000000
+      internalID: 3198880171492785103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_28
+      rect:
+        serializedVersion: 2
+        x: 1142
+        y: 1278
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b68c1b01b16d35c50800000000000000
+      internalID: 6652896486288902251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_29
+      rect:
+        serializedVersion: 2
+        x: 1229
+        y: 1272
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b89a51d3f190688c0800000000000000
+      internalID: -3997497589471270517
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_30
+      rect:
+        serializedVersion: 2
+        x: 913
+        y: 1250
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ac9e9ef4f9d65b90800000000000000
+      internalID: -7253370503566549855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_31
+      rect:
+        serializedVersion: 2
+        x: 935
+        y: 1252
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 933d1e7f10bdd6920800000000000000
+      internalID: 2985282929516729145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_32
+      rect:
+        serializedVersion: 2
+        x: 1100
+        y: 1258
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: feb79cfb680c0f010800000000000000
+      internalID: 1220687183993207791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_33
+      rect:
+        serializedVersion: 2
+        x: 1242
+        y: 1257
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 762ee7285340f5260800000000000000
+      internalID: 7088388966373581415
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_34
+      rect:
+        serializedVersion: 2
+        x: 1260
+        y: 1253
+        width: 16
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e5111f5d93753910800000000000000
+      internalID: 1816485144455878121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_35
+      rect:
+        serializedVersion: 2
+        x: 1462
+        y: 1248
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2973c10818071950800000000000000
+      internalID: 6419608693041756461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_36
+      rect:
+        serializedVersion: 2
+        x: 897
+        y: 1247
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0b56f10270938cf0800000000000000
+      internalID: -251198334869021941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_37
+      rect:
+        serializedVersion: 2
+        x: 980
+        y: 1185
+        width: 92
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fa25ffecb153a7d0800000000000000
+      internalID: -2908391062429685001
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_38
+      rect:
+        serializedVersion: 2
+        x: 1065
+        y: 1247
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 972970cf402f9d7c0800000000000000
+      internalID: -4045936686993534343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_39
+      rect:
+        serializedVersion: 2
+        x: 1072
+        y: 1237
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3de8ebb2faeeb3a50800000000000000
+      internalID: 6502052923160039123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_40
+      rect:
+        serializedVersion: 2
+        x: 1129
+        y: 1245
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 340556b90a36f4910800000000000000
+      internalID: 1823785915561365571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_41
+      rect:
+        serializedVersion: 2
+        x: 1222
+        y: 1238
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bcff812ae20ae2f40800000000000000
+      internalID: 5705673900073484235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_42
+      rect:
+        serializedVersion: 2
+        x: 925
+        y: 1217
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89e398fbb064271c0800000000000000
+      internalID: -4507463260772417896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_43
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 1218
+        width: 16
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab06939817a8d8e30800000000000000
+      internalID: 4507411022305910970
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_44
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 1225
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04e93b4f24d36ef80800000000000000
+      internalID: -8077701523859857856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_45
+      rect:
+        serializedVersion: 2
+        x: 1189
+        y: 1227
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12306de4880057840800000000000000
+      internalID: 5221079928444158753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_46
+      rect:
+        serializedVersion: 2
+        x: 1427
+        y: 1223
+        width: 17
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b849482abf422260800000000000000
+      internalID: 7071302025883502777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_47
+      rect:
+        serializedVersion: 2
+        x: 1469
+        y: 1212
+        width: 24
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12431cbde22422910800000000000000
+      internalID: 1811082769179161633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_48
+      rect:
+        serializedVersion: 2
+        x: 635
+        y: 261
+        width: 1059
+        height: 961
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cded2b5e47a888000800000000000000
+      internalID: 38432831507193564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_49
+      rect:
+        serializedVersion: 2
+        x: 1230
+        y: 1217
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22dc8a86066f75790800000000000000
+      internalID: -7541288157075419870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_50
+      rect:
+        serializedVersion: 2
+        x: 1696
+        y: 955
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b1d8ff71a5be1130800000000000000
+      internalID: 3539466062401163699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_51
+      rect:
+        serializedVersion: 2
+        x: 628
+        y: 911
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d03fa2c4a10280b10800000000000000
+      internalID: 1947842136156861197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_52
+      rect:
+        serializedVersion: 2
+        x: 1692
+        y: 871
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc51289ce71ce87b0800000000000000
+      internalID: -5220022167785040436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_53
+      rect:
+        serializedVersion: 2
+        x: 607
+        y: 815
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: beaed3b69186522a0800000000000000
+      internalID: -6762884807044240661
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_54
+      rect:
+        serializedVersion: 2
+        x: 1689
+        y: 811
+        width: 24
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cbf1cb7a102ac0b0800000000000000
+      internalID: -5707714279621133376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_55
+      rect:
+        serializedVersion: 2
+        x: 527
+        y: 750
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b6927263700634d0800000000000000
+      internalID: -3155333993353537866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_56
+      rect:
+        serializedVersion: 2
+        x: 555
+        y: 755
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: adb2fcf3c97d9b210800000000000000
+      internalID: 1349346629459586010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_57
+      rect:
+        serializedVersion: 2
+        x: 572
+        y: 733
+        width: 75
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1dcca438b04515be0800000000000000
+      internalID: -1490317593258832687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_58
+      rect:
+        serializedVersion: 2
+        x: 573
+        y: 718
+        width: 12
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bc704dce1a0ab460800000000000000
+      internalID: 7258124876869827767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_59
+      rect:
+        serializedVersion: 2
+        x: 1699
+        y: 723
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 611db03f31fb888a0800000000000000
+      internalID: -6302577586102087402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_60
+      rect:
+        serializedVersion: 2
+        x: 580
+        y: 706
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1403ddff90f140f10800000000000000
+      internalID: 2234945442890461249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_61
+      rect:
+        serializedVersion: 2
+        x: 597
+        y: 698
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e894ef42b06d7290800000000000000
+      internalID: -7891044653122414360
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_62
+      rect:
+        serializedVersion: 2
+        x: 615
+        y: 708
+        width: 15
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 777edab6fc8031260800000000000000
+      internalID: 7067001927232251767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_63
+      rect:
+        serializedVersion: 2
+        x: 1696
+        y: 705
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc60d4dc65b73e150800000000000000
+      internalID: 5900695549527262925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_64
+      rect:
+        serializedVersion: 2
+        x: 630
+        y: 660
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e447f38ae9b44ea0800000000000000
+      internalID: -5889377995806259995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_65
+      rect:
+        serializedVersion: 2
+        x: 1667
+        y: 666
+        width: 31
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a892ca563335e2ac0800000000000000
+      internalID: -3878070748905199222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_66
+      rect:
+        serializedVersion: 2
+        x: 1697
+        y: 660
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dac5cccbd036ab3c0800000000000000
+      internalID: -4343049979992187731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_67
+      rect:
+        serializedVersion: 2
+        x: 1694
+        y: 640
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ffdb6e4d1d7856550800000000000000
+      internalID: 6153473801161457151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_68
+      rect:
+        serializedVersion: 2
+        x: 1672
+        y: 580
+        width: 44
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00ea54ccecbd706b0800000000000000
+      internalID: -5330049952732828160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_69
+      rect:
+        serializedVersion: 2
+        x: 1729
+        y: 605
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f98ab6f7e7b36b2f0800000000000000
+      internalID: -957512456279971681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_70
+      rect:
+        serializedVersion: 2
+        x: 1717
+        y: 585
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac108c867bc404360800000000000000
+      internalID: 7151800558885011914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_71
+      rect:
+        serializedVersion: 2
+        x: 1694
+        y: 566
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: beb89fd2d2c45c500800000000000000
+      internalID: 415822297530207211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_72
+      rect:
+        serializedVersion: 2
+        x: 1704
+        y: 548
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07227b6545f5d9880800000000000000
+      internalID: -8602614897371045264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_73
+      rect:
+        serializedVersion: 2
+        x: 1055
+        y: 251
+        width: 12
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cde10137f125963c0800000000000000
+      internalID: -4365868068731085092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_74
+      rect:
+        serializedVersion: 2
+        x: 1095
+        y: 234
+        width: 14
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c97b4f949f42dc590800000000000000
+      internalID: -7652419538726373476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_75
+      rect:
+        serializedVersion: 2
+        x: 1129
+        y: 259
+        width: 10
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86251452d1f8f1240800000000000000
+      internalID: 4764684286123135592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_76
+      rect:
+        serializedVersion: 2
+        x: 1147
+        y: 249
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17071d668cf0bf350800000000000000
+      internalID: 6051447877695271025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_77
+      rect:
+        serializedVersion: 2
+        x: 1204
+        y: 254
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ee7a3a4ce7582a20800000000000000
+      internalID: 3037774621030645479
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_78
+      rect:
+        serializedVersion: 2
+        x: 1262
+        y: 259
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3cfbd5d276db50110800000000000000
+      internalID: 1226594724368728003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_79
+      rect:
+        serializedVersion: 2
+        x: 1369
+        y: 259
+        width: 12
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8771e28eead2c550800000000000000
+      internalID: 6179742356638627727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_80
+      rect:
+        serializedVersion: 2
+        x: 1052
+        y: 234
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3ec8ce143a3dd2a0800000000000000
+      internalID: -6711143874182984129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_81
+      rect:
+        serializedVersion: 2
+        x: 1149
+        y: 228
+        width: 12
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70e646b6ddfdb8710800000000000000
+      internalID: 1696695826717634055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_82
+      rect:
+        serializedVersion: 2
+        x: 1189
+        y: 246
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c908a60193b2795c0800000000000000
+      internalID: -4208847802665893732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_83
+      rect:
+        serializedVersion: 2
+        x: 1049
+        y: 223
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 125df93c928f0f650800000000000000
+      internalID: 6264779939931739425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_84
+      rect:
+        serializedVersion: 2
+        x: 1187
+        y: 181
+        width: 89
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f095a092e98d66c0800000000000000
+      internalID: -4148508075555974923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_85
+      rect:
+        serializedVersion: 2
+        x: 1272
+        y: 224
+        width: 15
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ff52b59a683bfb60800000000000000
+      internalID: 7780874811641847792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_86
+      rect:
+        serializedVersion: 2
+        x: 1169
+        y: 189
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5392e2106645ea20800000000000000
+      internalID: 3090954097707357021
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_87
+      rect:
+        serializedVersion: 2
+        x: 1274
+        y: 179
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2159d73902a0bd60800000000000000
+      internalID: 7903995506510614831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_88
+      rect:
+        serializedVersion: 2
+        x: 1307
+        y: 174
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bc100cb0a83360d0800000000000000
+      internalID: -3430836228126139208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tutorial 1_11_89
+      rect:
+        serializedVersion: 2
+        x: 1192
+        y: 146
+        width: 15
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83a555c5d31db27b0800000000000000
+      internalID: -5247870879297873352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Tutorial 1_11_0: 4920500297666313462
+      Tutorial 1_11_1: -6996408776087172626
+      Tutorial 1_11_10: 8988628233169926733
+      Tutorial 1_11_11: 6072651464492213636
+      Tutorial 1_11_12: 660499084353899596
+      Tutorial 1_11_13: -7182235592991464489
+      Tutorial 1_11_14: -488781982677138425
+      Tutorial 1_11_15: 2082688037582316239
+      Tutorial 1_11_16: 4752387737569602709
+      Tutorial 1_11_17: 2544028710135762704
+      Tutorial 1_11_18: 3669448204058787195
+      Tutorial 1_11_19: -2219951224106608637
+      Tutorial 1_11_2: 1110454237863748979
+      Tutorial 1_11_20: 1652914377389949343
+      Tutorial 1_11_21: 7196647025434794618
+      Tutorial 1_11_22: 3474660723247133091
+      Tutorial 1_11_23: 7315114152206128511
+      Tutorial 1_11_24: -2432454918426743225
+      Tutorial 1_11_25: 582290609424830577
+      Tutorial 1_11_26: -7423263677349337443
+      Tutorial 1_11_27: 3198880171492785103
+      Tutorial 1_11_28: 6652896486288902251
+      Tutorial 1_11_29: -3997497589471270517
+      Tutorial 1_11_3: 8570420119699790196
+      Tutorial 1_11_30: -7253370503566549855
+      Tutorial 1_11_31: 2985282929516729145
+      Tutorial 1_11_32: 1220687183993207791
+      Tutorial 1_11_33: 7088388966373581415
+      Tutorial 1_11_34: 1816485144455878121
+      Tutorial 1_11_35: 6419608693041756461
+      Tutorial 1_11_36: -251198334869021941
+      Tutorial 1_11_37: -2908391062429685001
+      Tutorial 1_11_38: -4045936686993534343
+      Tutorial 1_11_39: 6502052923160039123
+      Tutorial 1_11_4: 695046231009975117
+      Tutorial 1_11_40: 1823785915561365571
+      Tutorial 1_11_41: 5705673900073484235
+      Tutorial 1_11_42: -4507463260772417896
+      Tutorial 1_11_43: 4507411022305910970
+      Tutorial 1_11_44: -8077701523859857856
+      Tutorial 1_11_45: 5221079928444158753
+      Tutorial 1_11_46: 7071302025883502777
+      Tutorial 1_11_47: 1811082769179161633
+      Tutorial 1_11_48: 38432831507193564
+      Tutorial 1_11_49: -7541288157075419870
+      Tutorial 1_11_5: -786875472884611278
+      Tutorial 1_11_50: 3539466062401163699
+      Tutorial 1_11_51: 1947842136156861197
+      Tutorial 1_11_52: -5220022167785040436
+      Tutorial 1_11_53: -6762884807044240661
+      Tutorial 1_11_54: -5707714279621133376
+      Tutorial 1_11_55: -3155333993353537866
+      Tutorial 1_11_56: 1349346629459586010
+      Tutorial 1_11_57: -1490317593258832687
+      Tutorial 1_11_58: 7258124876869827767
+      Tutorial 1_11_59: -6302577586102087402
+      Tutorial 1_11_6: 4339835175782091933
+      Tutorial 1_11_60: 2234945442890461249
+      Tutorial 1_11_61: -7891044653122414360
+      Tutorial 1_11_62: 7067001927232251767
+      Tutorial 1_11_63: 5900695549527262925
+      Tutorial 1_11_64: -5889377995806259995
+      Tutorial 1_11_65: -3878070748905199222
+      Tutorial 1_11_66: -4343049979992187731
+      Tutorial 1_11_67: 6153473801161457151
+      Tutorial 1_11_68: -5330049952732828160
+      Tutorial 1_11_69: -957512456279971681
+      Tutorial 1_11_7: -5669136372651247610
+      Tutorial 1_11_70: 7151800558885011914
+      Tutorial 1_11_71: 415822297530207211
+      Tutorial 1_11_72: -8602614897371045264
+      Tutorial 1_11_73: -4365868068731085092
+      Tutorial 1_11_74: -7652419538726373476
+      Tutorial 1_11_75: 4764684286123135592
+      Tutorial 1_11_76: 6051447877695271025
+      Tutorial 1_11_77: 3037774621030645479
+      Tutorial 1_11_78: 1226594724368728003
+      Tutorial 1_11_79: 6179742356638627727
+      Tutorial 1_11_8: 6267562014064719108
+      Tutorial 1_11_80: -6711143874182984129
+      Tutorial 1_11_81: 1696695826717634055
+      Tutorial 1_11_82: -4208847802665893732
+      Tutorial 1_11_83: 6264779939931739425
+      Tutorial 1_11_84: -4148508075555974923
+      Tutorial 1_11_85: 7780874811641847792
+      Tutorial 1_11_86: 3090954097707357021
+      Tutorial 1_11_87: 7903995506510614831
+      Tutorial 1_11_88: -3430836228126139208
+      Tutorial 1_11_89: -5247870879297873352
+      Tutorial 1_11_9: -346834361714404763
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

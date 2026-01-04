@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public DateTime startDate = new DateTime(2025, 12, 6);
+    public DateTime startDate = new DateTime(2026, 1, 6);
     public bool selectedDailyLevel;
     public bool selectedTutorialLevel;
     public string selectedLevelId;
@@ -35,15 +35,15 @@ public class GameManager : MonoBehaviour
 
     public void LoadDailyLevel()
     {
-        selectedLevelId = System.DateTime.Now.ToString("ddMMyyyy");
+        selectedLevelId = DateTime.Now.ToString("ddMMyyyy");
         selectedDailyLevel = true;
         selectedTutorialLevel = false;
         SceneManager.LoadScene("LevelScene");
     }
 
-    public void LoadTutorialLevel(string id)
+    public void LoadTutorialLevel()
     {
-        selectedLevelId = id;
+        selectedLevelId = "Tutorial";
         selectedDailyLevel = false;
         selectedTutorialLevel = true;
         SceneManager.LoadScene("LevelScene");

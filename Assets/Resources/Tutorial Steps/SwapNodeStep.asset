@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8e00e30d857d438293b2d7b45fe3353, type: 3}
+  m_Name: SwapNodeStep
+  m_EditorClassIdentifier: 
+  slides:
+  - text: Perfect! Now, try to drag one of the stars onto the position of another
+      star. This will swap their positions, while keeping their lines consistent.
+    image: {fileID: 21300000, guid: 705891b7b064b48b4ba65f853c7ec74c, type: 3}
+  trigger: {fileID: 11400000, guid: 5a3cbf6893a86412384427f7c55c8483, type: 2}

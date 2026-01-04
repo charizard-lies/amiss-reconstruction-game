@@ -20,6 +20,11 @@ public class MainMenuUI : MonoBehaviour
         GameManager.Instance.LoadDailyLevel();
     }
 
+    public void OpenTutorial()
+    {
+        GameManager.Instance.LoadTutorialLevel();
+    }
+
     public void OpenLevelMenu()
     {
         GameManager.Instance.LoadLevelMenu();
