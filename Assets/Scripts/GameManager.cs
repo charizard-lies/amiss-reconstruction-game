@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public DateTime startDate = new DateTime(2026, 1, 6);
+    public DateTime startDate = new DateTime(2026, 3, 4);
     public bool selectedDailyLevel;
     public bool selectedTutorialLevel;
     public string selectedLevelId;
