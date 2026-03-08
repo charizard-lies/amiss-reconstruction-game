@@ -5,7 +5,6 @@ using UnityEngine;
 using System;
 using System.Data;
 using UnityEditor;
-using System.Security.Cryptography;
 
 public class LevelScript : MonoBehaviour
 {

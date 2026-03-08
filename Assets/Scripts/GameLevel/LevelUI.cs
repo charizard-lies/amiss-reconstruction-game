@@ -3,9 +3,7 @@ using UnityEngine.UI;
 using System;
 using TMPro;
 using System.Collections.Generic;
-using NUnit.Framework;
 using System.Linq;
-using Unity.VisualScripting;
 
 public class LevelUI : MonoBehaviour
 {

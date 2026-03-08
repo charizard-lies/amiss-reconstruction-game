@@ -1,7 +1,5 @@
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(LineRenderer))]
 public class EdgeScript : MonoBehaviour
